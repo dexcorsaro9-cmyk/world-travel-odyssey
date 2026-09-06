@@ -504,33 +504,78 @@ body {
 .nav-tab-btn {
   background: none;
   border: none;
-  color: #64748b;
+  color: #94a3b8;
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: 10px;
-  font-weight: 700;
-  gap: 3px;
+  font-weight: 800;
+  gap: 2px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
   width: 20%;
   pointer-events: auto !important;
   touch-action: manipulation;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  padding: 3px 0;
 }
 
 .nav-tab-btn * {
   pointer-events: none;
 }
 
-.nav-tab-btn.active {
-  color: var(--accent-cyan);
-  transform: translateY(-2px);
+.nav-tab-btn .tab-icon-svg {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
 }
 
-.nav-tab-btn span.tab-icon {
-  font-size: 18px;
+.nav-tab-btn.active {
+  color: #fef08a;
+}
+
+.nav-tab-btn.active .tab-icon-svg {
+  transform: translateY(-3px) scale(1.16);
+}
+
+.nav-tab-btn[data-tab="tab-arena"].active {
+  color: #38bdf8;
+}
+.nav-tab-btn[data-tab="tab-arena"].active .tab-icon-svg {
+  filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.85)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+}
+
+.nav-tab-btn[data-tab="tab-spire"].active {
+  color: #4ade80;
+}
+.nav-tab-btn[data-tab="tab-spire"].active .tab-icon-svg {
+  filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.85)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+}
+
+.nav-tab-btn[data-tab="tab-collection"].active {
+  color: #facc15;
+}
+.nav-tab-btn[data-tab="tab-collection"].active .tab-icon-svg {
+  filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.85)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
+}
+
+.nav-tab-btn[data-tab="tab-booster"].active {
+  color: #c084fc;
+}
+.nav-tab-btn[data-tab="tab-booster"].active .tab-icon-svg {
+  filter: drop-shadow(0 0 12px rgba(192, 132, 252, 0.95)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.9));
+}
+
+.nav-tab-btn[data-tab="tab-codex"].active {
+  color: #fb923c;
+}
+.nav-tab-btn[data-tab="tab-codex"].active .tab-icon-svg {
+  filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.85)) drop-shadow(0 0 4px rgba(255, 255, 255, 0.9));
 }
 
 /* Modali e Cut-In */

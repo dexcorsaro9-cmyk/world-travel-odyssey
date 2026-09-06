@@ -245,18 +245,34 @@
         <!-- Header Superiore: Profilo Avversario & Modalità PvP -->
         <header class="top-header">
           <div class="avatar-badge">
-            <div class="avatar-circle" id="rival-avatar">🌍</div>
+            <div class="avatar-circle" id="rival-avatar" style="overflow:hidden; display:flex; align-items:center; justify-content:center; background:#1e1b4b; border:2px solid #a855f7;">
+              <svg viewBox="0 0 36 36" width="26" height="26" fill="none">
+                <circle cx="18" cy="18" r="16" fill="#0f172a"/>
+                <ellipse cx="18" cy="18" rx="14" ry="6" stroke="#c084fc" stroke-width="1.2"/>
+                <polygon points="18,5 21,15 31,18 21,21 18,31 15,21 5,18 15,15" fill="#facc15"/>
+                <circle cx="18" cy="18" r="3.5" fill="#38bdf8"/>
+              </svg>
+            </div>
             <div>
               <div style="font-size: 11px; font-weight: 800; color: #cbd5e1;" id="rival-name">Rival Explorer • Level 8</div>
               <div class="ai-intent-pill" id="rival-intent-box" title="Preveggenza Tattica (Slay the Spire)">
-                <span>👁️</span> <span id="ai-intent-text">Volo su Tokyo...</span>
+                <svg viewBox="0 0 20 20" width="12" height="12" fill="none" style="flex-shrink:0;">
+                  <circle cx="10" cy="10" r="8" stroke="#ef4444" stroke-width="1.2" stroke-dasharray="2 2"/>
+                  <ellipse cx="10" cy="10" rx="6" ry="3.5" stroke="#f87171" stroke-width="1.2"/>
+                  <circle cx="10" cy="10" r="2" fill="#ef4444"/>
+                </svg>
+                <span id="ai-intent-text">Volo su Tokyo...</span>
               </div>
             </div>
           </div>
 
           <div class="game-meta-badge">
-            <button id="btn-pvp-switch" class="pvp-mode-pill" title="Seleziona modalità PvP o Solo vs IA">
-              <span>⚔️</span> <span id="pvp-badge-text">VS IA</span>
+            <button id="btn-pvp-switch" class="pvp-mode-pill" title="Seleziona modalità PvP o Solo vs IA" style="display:inline-flex; align-items:center; gap:4px;">
+              <svg viewBox="0 0 20 20" width="13" height="13" fill="none">
+                <path d="M4 16 L16 4 M16 4 L11 4 M16 4 L16 9" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 4 L16 16 M4 4 L9 4 M4 4 L4 9" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <span id="pvp-badge-text">VS IA</span>
             </button>
             <button id="btn-audio-toggle" style="background:none; border:none; font-size:15px; cursor:pointer;" title="Mute/Unmute">🔊</button>
             <div class="turn-pill" id="turn-display">Scalo 1/6</div>
@@ -280,14 +296,24 @@
           </div>
 
           <div style="display: flex; gap: 6px; align-items: center;">
-            <button id="btn-retreat" class="btn-retreat" title="Ritirati perdendo solo 1 Miglio prima del raddoppio">
-              🏳️ RITIRO
+            <button id="btn-retreat" class="btn-retreat" title="Ritirati perdendo solo 1 Miglio prima del raddoppio" style="display:inline-flex; align-items:center; gap:4px;">
+              <svg viewBox="0 0 20 20" width="13" height="13" fill="none">
+                <line x1="4" y1="3" x2="4" y2="18" stroke="#cbd5e1" stroke-width="2" stroke-linecap="round"/>
+                <path d="M4 4 L14 8 L4 12 Z" fill="rgba(255,255,255,0.25)" stroke="#cbd5e1" stroke-width="1.5"/>
+              </svg>
+              <span>RITIRO</span>
             </button>
-            <button id="btn-overcharge" class="btn-overcharge" title="First Class Upgrade: Raddoppia la posta (Snap)">
-              ⚡ 1st CLASS
+            <button id="btn-overcharge" class="btn-overcharge" title="First Class Upgrade: Raddoppia la posta (Snap)" style="display:inline-flex; align-items:center; gap:4px;">
+              <svg viewBox="0 0 20 20" width="13" height="13" fill="none">
+                <path d="M11 2 L4 11 L10 11 L9 18 L16 9 L10 9 Z" fill="#fef08a" stroke="#f59e0b" stroke-width="1.2"/>
+              </svg>
+              <span>1st CLASS</span>
             </button>
-            <button id="btn-end-turn" class="btn-end-turn">
-              DECOLLO
+            <button id="btn-end-turn" class="btn-end-turn" style="display:inline-flex; align-items:center; gap:4px;">
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+                <path d="M10 2 L17 12 L13 12 L13 17 L7 17 L7 12 L3 12 Z" fill="#ffffff" stroke="#93c5fd" stroke-width="1.2"/>
+              </svg>
+              <span>DECOLLO</span>
             </button>
           </div>
         </section>
@@ -301,12 +327,15 @@
     <!-- ==================== TAB 2: IL GIRO DEL MONDO IN 80 GIORNI (SPIRE) ==================== -->
     <section id="tab-spire" class="tab-view spire-view">
       <div class="spire-header">
-        <h2 style="font-size: 18px; font-weight: 900; color: #facc15;">🗺️ IL GIRO DEL MONDO</h2>
+        <h2 style="font-size: 18px; font-weight: 900; color: #facc15; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><circle cx="12" cy="12" r="9" stroke="#facc15" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="9" ry="4" stroke="#facc15" stroke-width="1.2"/><line x1="3" y1="12" x2="21" y2="12" stroke="#facc15" stroke-width="1.2"/></svg>
+          IL GIRO DEL MONDO
+        </h2>
         <p style="font-size: 11px; color: #94a3b8;">Scala i continenti, fai sosta ai Duty Free e conquista il Globo.</p>
         <div style="display: flex; justify-content: center; gap: 14px; margin-top: 8px; font-size: 11px;">
-          <span>🧳 Valigia: <b>30/30</b></span>
-          <span>🪙 Miglia d'Oro: <b id="spire-gold">350</b></span>
-          <span>📍 Scalo: <b id="spire-floor">1/6</b></span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><svg viewBox="0 0 16 16" width="13" height="13" fill="none"><rect x="2" y="5" width="12" height="9" rx="2" stroke="#38bdf8" stroke-width="1.2"/><path d="M5 5 V3 Q5 2 8 2 Q11 2 11 3 V5" stroke="#38bdf8" stroke-width="1.2"/></svg> Valigia: <b>30/30</b></span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><svg viewBox="0 0 16 16" width="13" height="13" fill="none"><circle cx="8" cy="8" r="6" fill="#facc15" stroke="#b45309" stroke-width="1.2"/><circle cx="8" cy="8" r="4" stroke="#ffffff" stroke-width="0.8" stroke-dasharray="1 1"/><text x="8" y="10" font-size="6" font-weight="900" fill="#78350f" text-anchor="middle">M</text></svg> Miglia d'Oro: <b id="spire-gold">350</b></span>
+          <span style="display:inline-flex; align-items:center; gap:4px;"><svg viewBox="0 0 16 16" width="13" height="13" fill="none"><path d="M8 2 C6 2 4 4 4 6.5 C4 9.5 8 14 8 14 C8 14 12 9.5 12 6.5 C12 4 10 2 8 2 Z" fill="#ef4444" stroke="#ffffff" stroke-width="0.8"/><circle cx="8" cy="6.5" r="1.5" fill="#ffffff"/></svg> Scalo: <b id="spire-floor">1/6</b></span>
         </div>
       </div>
 
@@ -316,7 +345,10 @@
     <!-- ==================== TAB 3: PASSAPORTO & COLLEZIONE PAESI ==================== -->
     <section id="tab-collection" class="tab-view collection-view">
       <div style="text-align: center;">
-        <h2 style="font-size: 18px; font-weight: 900; color: #38bdf8;">🎴 PASSAPORTO MONDIALE (39 CARTE)</h2>
+        <h2 style="font-size: 18px; font-weight: 900; color: #38bdf8; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="#1e1b4b" stroke="#38bdf8" stroke-width="1.5"/><circle cx="12" cy="12" r="5" stroke="#ffd700" stroke-width="1.2"/><polygon points="12,5 13,8 12,10 11,8" fill="#ffd700"/></svg>
+          PASSAPORTO MONDIALE (39 CARTE)
+        </h2>
         <p style="font-size: 11px; color: #94a3b8;">Filtra per Nazione ed esplora i materiali autentici.</p>
       </div>
 
@@ -408,26 +440,214 @@
       </div>
     </section>
 
-    <!-- ==================== BOTTOM THUMB-BAR ==================== -->
+    <!-- ==================== BOTTOM THUMB-BAR (ICONE 2D MOBILE GAME) ==================== -->
     <nav class="bottom-thumb-nav">
+      <!-- 1. VOLO (ARENA) -->
       <button class="nav-tab-btn active" data-tab="tab-arena">
-        <span class="tab-icon">✈️</span>
+        <span class="tab-icon-svg">
+          <svg viewBox="0 0 48 48" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tabVoloGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fffef0"/>
+                <stop offset="35%" stop-color="#f59e0b"/>
+                <stop offset="100%" stop-color="#b45309"/>
+              </linearGradient>
+              <linearGradient id="tabVoloJet" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="40%" stop-color="#e0f2fe"/>
+                <stop offset="100%" stop-color="#38bdf8"/>
+              </linearGradient>
+              <linearGradient id="tabVoloFlame" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#00f0ff"/>
+                <stop offset="60%" stop-color="#ec4899"/>
+                <stop offset="100%" stop-color="transparent"/>
+              </linearGradient>
+            </defs>
+            <circle cx="24" cy="24" r="21" stroke="url(#tabVoloGrad)" stroke-width="1.8" stroke-dasharray="3 2" opacity="0.75"/>
+            <circle cx="24" cy="24" r="18.5" fill="rgba(15, 23, 42, 0.75)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+            <path d="M21 32 L24 43 L27 32 Q24 36 21 32 Z" fill="url(#tabVoloFlame)"/>
+            <circle cx="24" cy="34" r="2" fill="#ffffff"/>
+            <path d="M24 10 L39 27 L34 29 L26 27 L27 35 L30 38 L27 38 L24 35 L21 38 L18 38 L21 35 L22 27 L14 29 L9 27 Z" fill="url(#tabVoloJet)" stroke="#0369a1" stroke-width="0.8"/>
+            <circle cx="38" cy="27" r="1.2" fill="#ef4444"/>
+            <circle cx="10" cy="27" r="1.2" fill="#22c55e"/>
+            <path d="M24 8 L27 25 L24 34 L21 25 Z" fill="url(#tabVoloGrad)"/>
+            <ellipse cx="24" cy="17" rx="2" ry="4" fill="#0284c7" stroke="#38bdf8" stroke-width="0.8"/>
+            <path d="M23 15 Q24 14 25 15 Q24 17 23 15 Z" fill="#ffffff" opacity="0.9"/>
+            <line x1="8" y1="16" x2="12" y2="21" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+            <line x1="40" y1="16" x2="36" y2="21" stroke="#38bdf8" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          </svg>
+        </span>
         <span>Volo</span>
       </button>
+
+      <!-- 2. MONDO (SPIRE) -->
       <button class="nav-tab-btn" data-tab="tab-spire">
-        <span class="tab-icon">🗺️</span>
+        <span class="tab-icon-svg">
+          <svg viewBox="0 0 48 48" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="tabGlobeOcean" cx="40%" cy="40%" r="60%">
+                <stop offset="0%" stop-color="#0284c7"/>
+                <stop offset="60%" stop-color="#0369a1"/>
+                <stop offset="100%" stop-color="#0c2340"/>
+              </radialGradient>
+              <linearGradient id="tabGoldRing" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fef08a"/>
+                <stop offset="40%" stop-color="#facc15"/>
+                <stop offset="80%" stop-color="#d97706"/>
+                <stop offset="100%" stop-color="#78350f"/>
+              </linearGradient>
+              <linearGradient id="tabLandGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4ade80"/>
+                <stop offset="100%" stop-color="#15803d"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="24" cy="24" rx="22" ry="8" transform="rotate(-28 24 24)" stroke="url(#tabGoldRing)" stroke-width="2" opacity="0.45"/>
+            <circle cx="24" cy="24" r="15" fill="url(#tabGlobeOcean)" stroke="url(#tabGoldRing)" stroke-width="1.5"/>
+            <path d="M21 13 Q24 12 26 15 Q25 18 28 20 Q26 25 24 28 Q22 26 21 21 Z" fill="url(#tabLandGrad)" opacity="0.95"/>
+            <path d="M12 18 Q14 16 15 20 Q14 24 13 28 Q11 25 11 20 Z" fill="url(#tabLandGrad)" opacity="0.95"/>
+            <path d="M31 16 Q34 18 35 22 Q33 25 31 23 Q30 19 31 16 Z" fill="url(#tabLandGrad)" opacity="0.95"/>
+            <circle cx="35" cy="19" r="1" fill="#facc15"/>
+            <path d="M9 24 C9 24 16 29 24 29 C32 29 39 24 39 24" stroke="rgba(255,255,255,0.3)" stroke-width="1" fill="none"/>
+            <ellipse cx="24" cy="24" rx="7" ry="14.5" stroke="rgba(255,255,255,0.25)" stroke-width="1" fill="none"/>
+            <path d="M6 31 Q15 40 33 29" stroke="url(#tabGoldRing)" stroke-width="2.5" stroke-linecap="round"/>
+            <g transform="translate(22, 10)">
+              <path d="M3 0 C1.3 0 0 1.3 0 3 C0 5.2 3 9 3 9 C3 9 6 5.2 6 3 C6 1.3 4.7 0 3 0 Z" fill="#ef4444" stroke="#ffffff" stroke-width="0.8"/>
+              <circle cx="3" cy="3" r="1.2" fill="#ffffff"/>
+            </g>
+            <circle cx="39" cy="16" r="2" fill="#ffd700"/>
+            <polygon points="39,12 40,15 43,16 40,17 39,20 38,17 35,16 38,15" fill="#fffbeb"/>
+          </svg>
+        </span>
         <span>Mondo</span>
       </button>
+
+      <!-- 3. PASSAPORTO (COLLECTION) -->
       <button class="nav-tab-btn" data-tab="tab-collection">
-        <span class="tab-icon">🎴</span>
+        <span class="tab-icon-svg">
+          <svg viewBox="0 0 48 48" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tabPassCover" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#1e1b4b"/>
+                <stop offset="50%" stop-color="#0f172a"/>
+                <stop offset="100%" stop-color="#020617"/>
+              </linearGradient>
+              <linearGradient id="tabCardBackHolo" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ec4899"/>
+                <stop offset="50%" stop-color="#8b5cf6"/>
+                <stop offset="100%" stop-color="#00f0ff"/>
+              </linearGradient>
+              <linearGradient id="tabPassGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fffbeb"/>
+                <stop offset="40%" stop-color="#facc15"/>
+                <stop offset="100%" stop-color="#b45309"/>
+              </linearGradient>
+            </defs>
+            <g transform="rotate(14 26 24)">
+              <rect x="18" y="7" width="19" height="28" rx="3.5" fill="url(#tabCardBackHolo)" stroke="url(#tabPassGold)" stroke-width="1.2"/>
+              <rect x="20" y="9" width="15" height="24" rx="2" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.8"/>
+              <circle cx="27.5" cy="21" r="3.5" fill="#facc15" opacity="0.8"/>
+            </g>
+            <g transform="rotate(-6 20 25)">
+              <rect x="9" y="8" width="22" height="31" rx="3" fill="#000000" opacity="0.4"/>
+              <rect x="8" y="7" width="22" height="31" rx="3" fill="url(#tabPassCover)" stroke="url(#tabPassGold)" stroke-width="1.5"/>
+              <line x1="12" y1="7" x2="12" y2="38" stroke="url(#tabPassGold)" stroke-width="1" opacity="0.6"/>
+              <polygon points="8,7 13,7 8,12" fill="url(#tabPassGold)"/>
+              <polygon points="30,7 25,7 30,12" fill="url(#tabPassGold)"/>
+              <polygon points="30,38 25,38 30,33" fill="url(#tabPassGold)"/>
+              <polygon points="8,38 13,38 8,33" fill="url(#tabPassGold)"/>
+              <circle cx="20" cy="20" r="5.5" fill="none" stroke="url(#tabPassGold)" stroke-width="1.2"/>
+              <ellipse cx="20" cy="20" rx="5.5" ry="2.2" fill="none" stroke="url(#tabPassGold)" stroke-width="0.8"/>
+              <line x1="20" y1="14.5" x2="20" y2="25.5" stroke="url(#tabPassGold)" stroke-width="0.8"/>
+              <polygon points="20,11 21.5,13 18.5,13" fill="url(#tabPassGold)"/>
+              <rect x="17.5" y="29" width="5" height="3.5" rx="0.8" fill="none" stroke="url(#tabPassGold)" stroke-width="0.9"/>
+              <line x1="16" y1="30.7" x2="24" y2="30.7" stroke="url(#tabPassGold)" stroke-width="0.8"/>
+              <circle cx="20" cy="30.7" r="1" fill="url(#tabPassGold)"/>
+            </g>
+            <path d="M30 28 L35 38 L32 35 L29 38 Z" fill="#ef4444"/>
+            <circle cx="31" cy="28" r="4.5" fill="#dc2626" stroke="#fbbf24" stroke-width="1"/>
+            <text x="31" y="30.5" font-size="5" font-weight="900" fill="#fbbf24" text-anchor="middle">★</text>
+          </svg>
+        </span>
         <span>Passaporto</span>
       </button>
+
+      <!-- 4. DUTY FREE (BOOSTER) -->
       <button class="nav-tab-btn" data-tab="tab-booster">
-        <span class="tab-icon">🛍️</span>
+        <span class="tab-icon-svg">
+          <svg viewBox="0 0 48 48" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tabPackGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#4c1d95"/>
+                <stop offset="35%" stop-color="#7c3aed"/>
+                <stop offset="70%" stop-color="#c026d3"/>
+                <stop offset="100%" stop-color="#1e1b4b"/>
+              </linearGradient>
+              <linearGradient id="tabPackGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fffbeb"/>
+                <stop offset="40%" stop-color="#fbbf24"/>
+                <stop offset="100%" stop-color="#b45309"/>
+              </linearGradient>
+              <linearGradient id="tabPackSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="20%" stop-color="rgba(255,255,255,0)"/>
+                <stop offset="50%" stop-color="rgba(255,255,255,0.45)"/>
+                <stop offset="80%" stop-color="rgba(255,255,255,0)"/>
+              </linearGradient>
+            </defs>
+            <circle cx="24" cy="24" r="18" fill="rgba(245, 158, 11, 0.15)"/>
+            <path d="M14 7 L34 7 L32 41 L16 41 Z" fill="url(#tabPackGrad)" stroke="url(#tabPackGold)" stroke-width="1.6"/>
+            <path d="M14 7 L34 7 L32 41 L16 41 Z" fill="url(#tabPackSheen)"/>
+            <path d="M14 7 L16 9 L18 7 L20 9 L22 7 L24 9 L26 7 L28 9 L30 7 L32 9 L34 7" stroke="url(#tabPackGold)" stroke-width="1.2" fill="none"/>
+            <path d="M16 41 L18 39 L20 41 L22 39 L24 41 L26 39 L28 41 L30 39 L32 41" stroke="url(#tabPackGold)" stroke-width="1.2" fill="none"/>
+            <line x1="14.5" y1="16" x2="33.5" y2="16" stroke="#facc15" stroke-width="1.5" stroke-dasharray="2.5 1.5"/>
+            <circle cx="17" cy="16" r="3" fill="url(#tabPackGold)" stroke="#ffffff" stroke-width="0.8"/>
+            <circle cx="17" cy="16" r="1.2" fill="#78350f"/>
+            <polygon points="24,21 25.5,25 29.5,25.5 26.5,28 27.5,32 24,29.5 20.5,32 21.5,28 18.5,25.5 22.5,25" fill="url(#tabPackGold)"/>
+            <circle cx="24" cy="27" r="1.5" fill="#ffffff"/>
+            <circle cx="34" cy="12" r="1.5" fill="#ffd700"/>
+            <circle cx="13" cy="28" r="1.2" fill="#38bdf8"/>
+          </svg>
+        </span>
         <span>Duty Free</span>
       </button>
+
+      <!-- 5. CODEX -->
       <button class="nav-tab-btn" data-tab="tab-codex">
-        <span class="tab-icon">📜</span>
+        <span class="tab-icon-svg">
+          <svg viewBox="0 0 48 48" width="28" height="28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tabTomeLeather" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#3b1d11"/>
+                <stop offset="40%" stop-color="#241108"/>
+                <stop offset="100%" stop-color="#140803"/>
+              </linearGradient>
+              <linearGradient id="tabTomeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#fef08a"/>
+                <stop offset="50%" stop-color="#f59e0b"/>
+                <stop offset="100%" stop-color="#78350f"/>
+              </linearGradient>
+              <linearGradient id="tabPageGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#fef3c7"/>
+                <stop offset="100%" stop-color="#d97706"/>
+              </linearGradient>
+            </defs>
+            <rect x="10" y="9" width="28" height="32" rx="4" fill="#000000" opacity="0.5"/>
+            <rect x="14" y="9" width="25" height="30" rx="3" fill="url(#tabPageGlow)" stroke="url(#tabTomeGold)" stroke-width="0.8"/>
+            <rect x="9" y="8" width="26" height="32" rx="3.5" fill="url(#tabTomeLeather)" stroke="url(#tabTomeGold)" stroke-width="1.8"/>
+            <rect x="9" y="8" width="5" height="32" rx="1.5" fill="#1b0b04" stroke="url(#tabTomeGold)" stroke-width="0.8"/>
+            <line x1="9" y1="14" x2="14" y2="14" stroke="url(#tabTomeGold)" stroke-width="1"/>
+            <line x1="9" y1="24" x2="14" y2="24" stroke="url(#tabTomeGold)" stroke-width="1"/>
+            <line x1="9" y1="34" x2="14" y2="34" stroke="url(#tabTomeGold)" stroke-width="1"/>
+            <path d="M14 8 L19 8 L14 13 Z" fill="url(#tabTomeGold)"/>
+            <path d="M35 8 L30 8 L35 13 Z" fill="url(#tabTomeGold)"/>
+            <path d="M35 40 L30 40 L35 35 Z" fill="url(#tabTomeGold)"/>
+            <path d="M14 40 L19 40 L14 35 Z" fill="url(#tabTomeGold)"/>
+            <circle cx="24" cy="24" r="7.5" fill="#1e1b4b" stroke="url(#tabTomeGold)" stroke-width="1.3"/>
+            <circle cx="24" cy="24" r="5" fill="none" stroke="rgba(245,158,11,0.5)" stroke-width="0.8"/>
+            <polygon points="24,18 25.5,23 29.5,24 25.5,25 24,30 22.5,25 18.5,24 22.5,23" fill="url(#tabTomeGold)"/>
+            <circle cx="24" cy="24" r="1.2" fill="#ffffff"/>
+            <path d="M22 6 L26 6 L26 14 L24 12 L22 14 Z" fill="#00f0ff"/>
+          </svg>
+        </span>
         <span>Codex</span>
       </button>
     </nav>
@@ -2175,8 +2395,12 @@
         document.getElementById('ai-intent-text').textContent = this.aiIntent;
 
         const btnOver = document.getElementById('btn-overcharge');
-        btnOver.className = this.playerOvercharged ? 'btn-overcharge is-active' : 'btn-overcharge';
-        btnOver.innerHTML = this.playerOvercharged ? `✈️ 1st CLASS (${this.stakes}x)` : `⚡ 1st CLASS`;
+        if (btnOver) {
+          btnOver.className = this.playerOvercharged ? 'btn-overcharge is-active' : 'btn-overcharge';
+          btnOver.innerHTML = this.playerOvercharged ? 
+            `<svg viewBox="0 0 20 20" width="13" height="13" fill="none" style="vertical-align:middle; margin-right:3px;"><path d="M10 2 L17 11 L13 11 L13 16 L7 16 L7 11 L3 11 Z" fill="#ffffff"/></svg> 1st CLASS (${this.stakes}x)` : 
+            `<svg viewBox="0 0 20 20" width="13" height="13" fill="none" style="vertical-align:middle; margin-right:3px;"><path d="M11 2 L4 11 L10 11 L9 18 L16 9 L10 9 Z" fill="#fef08a" stroke="#f59e0b" stroke-width="1.2"/></svg> 1st CLASS`;
+        }
 
         const container = document.getElementById('altars-score-container');
         container.innerHTML = '';
