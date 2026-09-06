@@ -29,11 +29,14 @@ body {
   color: #f1f5f9;
   font-family: var(--font-main);
   height: 100vh;
+  height: 100dvh;
   width: 100vw;
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
+  margin: 0;
 }
 
 /* Mobile Frame Container (Verticale 9:16 ergonomico) */
@@ -42,6 +45,7 @@ body {
   width: 100%;
   max-width: 440px;
   height: 100%;
+  height: 100dvh;
   max-height: 920px;
   background: var(--bg-deep);
   box-shadow: 0 0 60px rgba(0, 240, 255, 0.18), 0 0 25px rgba(0, 0, 0, 0.95);
@@ -51,7 +55,24 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-@media (min-width: 600px) {
+@media (max-width: 600px), (display-mode: standalone), (max-height: 940px) and (max-width: 500px) {
+  body {
+    align-items: stretch;
+    justify-content: stretch;
+  }
+  #app-container {
+    max-width: 100% !important;
+    width: 100vw !important;
+    max-height: none !important;
+    height: 100% !important;
+    height: 100dvh !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+}
+
+@media (min-width: 601px) and (min-height: 930px) {
   #app-container {
     border-radius: 30px;
     height: 95vh;
@@ -86,7 +107,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 60px - env(safe-area-inset-bottom, 0px));
+  height: calc(100% - 58px - max(10px, env(safe-area-inset-bottom, 0px)));
   display: none !important;
   flex-direction: column;
   overflow: hidden;
@@ -117,9 +138,10 @@ body {
 
 /* Header Superiore Avversario */
 .top-header {
-  height: 56px;
-  padding: 6px 14px;
-  background: linear-gradient(180deg, rgba(15, 18, 27, 0.96), rgba(6, 7, 10, 0.7));
+  min-height: calc(56px + max(0px, env(safe-area-inset-top, 0px)));
+  height: auto;
+  padding: calc(10px + max(4px, env(safe-area-inset-top, 0px))) 12px 8px;
+  background: linear-gradient(180deg, rgba(15, 18, 27, 0.98), rgba(6, 7, 10, 0.85));
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -190,7 +212,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
   padding: 0 10px;
-  margin-top: 50px;
+  margin-top: 14px;
 }
 
 .altar-score-card {
@@ -201,11 +223,24 @@ body {
   text-align: center;
   backdrop-filter: blur(6px);
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .altar-score-card:active {
   transform: scale(0.96);
+}
+
+.altar-score-card.drag-targeted {
+  transform: scale(1.08) translateY(-4px) !important;
+  border-color: #ffd700 !important;
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), inset 0 0 12px rgba(253, 224, 71, 0.5) !important;
+  background: rgba(30, 27, 75, 0.95) !important;
+  animation: pulse-beacon 0.8s infinite alternate;
+}
+
+@keyframes pulse-beacon {
+  0% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.7), inset 0 0 8px rgba(253, 224, 71, 0.4); }
+  100% { box-shadow: 0 0 30px rgba(56, 189, 248, 1), inset 0 0 15px rgba(56, 189, 248, 0.6); border-color: #38bdf8; }
 }
 
 .altar-mini-cards {
@@ -383,6 +418,40 @@ body {
   box-shadow: 0 16px 36px rgba(245, 158, 11, 0.8), 0 0 24px rgba(255, 255, 255, 0.6) !important;
 }
 
+/* ==================== MARVEL SNAP CARD DRAG & FLICK ==================== */
+.card-item {
+  touch-action: none !important;
+}
+
+.card-item.dragging {
+  z-index: 2000 !important;
+  cursor: grabbing !important;
+  transform-origin: center center;
+  filter: brightness(1.15) drop-shadow(0 20px 30px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 16px rgba(56, 189, 248, 0.8));
+  box-shadow: 0 0 25px rgba(245, 158, 11, 0.9), inset 0 0 0 2px #fde047 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+
+.card-item.drag-flight {
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.38s ease, filter 0.38s ease !important;
+  z-index: 2500 !important;
+  pointer-events: none !important;
+}
+
+.card-item.returning {
+  transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+  z-index: 1000 !important;
+}
+
+.drag-trajectory-line {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1500;
+  border-left: 2px dashed rgba(245, 158, 11, 0.6);
+  transform-origin: top center;
+}
+
 /* Header con Sigilli Fusi e Medaglioni Intagliati */
 .card-head-bar {
   display: flex;
@@ -522,7 +591,7 @@ body {
     linear-gradient(180deg, rgba(9, 9, 29, 0.25) 0%, rgba(5, 6, 14, 0.38) 45%, rgba(2, 3, 7, 0.65) 100%),
     url('assets/backgrounds/bg_spire.jpg') no-repeat center top / cover;
   position: relative;
-  padding: 16px 14px 80px;
+  padding: calc(62px + max(8px, env(safe-area-inset-top, 0px))) 14px 80px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -587,7 +656,7 @@ body {
     linear-gradient(180deg, rgba(20, 12, 6, 0.25) 0%, rgba(12, 7, 3, 0.38) 45%, rgba(6, 3, 2, 0.65) 100%),
     url('assets/backgrounds/bg_deck.jpg') no-repeat center top / cover;
   position: relative;
-  padding: 16px 14px 80px;
+  padding: calc(62px + max(8px, env(safe-area-inset-top, 0px))) 14px 80px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -616,10 +685,27 @@ body {
     url('assets/backgrounds/bg_dutyfree.jpg') no-repeat center center / cover;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   padding: 0;
   overflow: hidden;
   position: relative;
+}
+
+.booster-top-badge {
+  padding-top: max(10px, env(safe-area-inset-top, 0px));
+  padding-bottom: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 900;
+  color: #ffd700;
+  letter-spacing: 0.5px;
+  background: rgba(10, 15, 29, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  z-index: 10;
 }
 
 /* 3D Pack Theater & Stage */
@@ -817,7 +903,7 @@ body {
     linear-gradient(180deg, rgba(9, 14, 26, 0.25) 0%, rgba(6, 9, 18, 0.38) 45%, rgba(2, 3, 6, 0.65) 100%),
     url('assets/backgrounds/bg_codex.jpg') no-repeat center top / cover;
   position: relative;
-  padding: 16px 14px 80px;
+  padding: calc(62px + max(8px, env(safe-area-inset-top, 0px))) 14px 80px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -985,15 +1071,16 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: calc(60px + env(safe-area-inset-bottom, 0px));
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  background: linear-gradient(0deg, #050608, #0d0f16);
+  height: calc(58px + max(10px, env(safe-area-inset-bottom, 0px)));
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  background: #050608;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: 9999 !important;
   pointer-events: auto !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.7);
 }
 
 .nav-tab-btn {
@@ -1624,7 +1711,7 @@ body {
 /* ==================== GLOBAL TOP BAR (CURRENCY & SETTINGS) ==================== */
 .global-app-bar {
   position: absolute;
-  top: 8px;
+  top: max(8px, env(safe-area-inset-top, 0px));
   left: 10px;
   right: 10px;
   display: flex;
@@ -2600,6 +2687,641 @@ body {
 .luggage-tag-skip-btn:hover {
   color: #94a3b8;
 }
+
+/* ==================== STARTER FLIGHT PACK UNBOXING MODAL ==================== */
+.starter-pack-modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100000;
+  background: radial-gradient(circle at 50% 30%, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.starter-pack-dialog {
+  width: 100%;
+  max-width: 440px;
+  background: linear-gradient(160deg, #1e293b 0%, #0f172a 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 20px;
+  padding: 20px 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.85), 0 0 40px rgba(245, 158, 11, 0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: center;
+  animation: starterModalEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes starterModalEnter {
+  0% { transform: scale(0.85) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.starter-pack-badge {
+  display: inline-block;
+  align-self: center;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1.2px solid #f59e0b;
+  color: #fbbf24;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+.starter-pack-title {
+  font-size: 19px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.starter-pack-sub {
+  font-size: 11.5px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+.starter-cards-carousel {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 8px 4px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.starter-cards-carousel::-webkit-scrollbar {
+  height: 4px;
+}
+.starter-cards-carousel::-webkit-scrollbar-thumb {
+  background: #38bdf8;
+  border-radius: 4px;
+}
+
+.starter-card-mini {
+  flex: 0 0 85px;
+  height: 130px;
+  border-radius: 10px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border: 1.5px solid #38bdf8;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  scroll-snap-align: start;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.starter-card-mini:hover {
+  transform: translateY(-4px);
+}
+
+.starter-card-mini.featured {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+}
+
+.starter-card-cost {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  background: #0284c7;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.starter-card-power {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background: #b45309;
+  color: #ffd700;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 4px;
+}
+
+.starter-card-name {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e2e8f0;
+  font-size: 8px;
+  font-weight: 800;
+  padding: 3px 2px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.starter-bonus-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.starter-bonus-chip {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 11px;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.starter-bonus-chip strong {
+  color: #fbbf24;
+}
+
+.starter-claim-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border: 1.5px solid #fde047;
+  color: #000;
+  font-size: 13px;
+  font-weight: 900;
+  padding: 13px 20px;
+  border-radius: 14px;
+  cursor: pointer;
+  letter-spacing: 0.8px;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5);
+  transition: all 0.2s ease;
+}
+
+.starter-claim-btn:active, .starter-claim-btn:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  transform: scale(1.02);
+  box-shadow: 0 0 25px rgba(251, 191, 36, 0.85);
+}
+
+/* ==================== DUTY FREE SUB-NAVIGATION ==================== */
+.duty-free-nav {
+  display: flex;
+  gap: 6px;
+  padding: 4px 10px 8px;
+  overflow-x: auto;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  -webkit-overflow-scrolling: touch;
+}
+
+.duty-free-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.duty-subtab-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 7px 12px;
+  border-radius: 16px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.duty-subtab-btn.active {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #fff;
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.4);
+}
+
+.duty-subview {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+}
+
+/* Free pack voucher pill */
+.free-voucher-pill {
+  background: linear-gradient(135deg, #9333ea, #4f46e5);
+  border: 1.5px solid #c084fc;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 8px 14px;
+  border-radius: 20px;
+  margin: 6px auto 10px;
+  text-align: center;
+  max-width: 320px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.5);
+  animation: voucherPulse 2s infinite alternate;
+}
+
+@keyframes voucherPulse {
+  0% { transform: scale(0.98); box-shadow: 0 2px 10px rgba(147, 51, 234, 0.4); }
+  100% { transform: scale(1.02); box-shadow: 0 4px 20px rgba(192, 132, 252, 0.7); }
+}
+
+/* ==================== STORE PACKS & BUNDLES ==================== */
+.store-pack-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 20px;
+}
+
+.store-pack-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+  border: 1.5px solid rgba(56, 189, 248, 0.3);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.store-pack-card:hover {
+  transform: translateY(-2px);
+  border-color: #38bdf8;
+}
+
+.store-pack-card.vip-bundle {
+  border: 2px solid #f59e0b;
+  background: linear-gradient(135deg, rgba(45, 21, 11, 0.9), rgba(15, 23, 42, 0.95));
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+}
+
+.store-pack-icon {
+  font-size: 28px;
+  flex: 0 0 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.store-pack-info {
+  flex: 1;
+}
+
+.store-pack-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.store-pack-desc {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.store-pack-btn {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border: 1px solid #38bdf8;
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.store-pack-btn:hover {
+  background: #38bdf8;
+  color: #000;
+}
+
+.store-pack-card.vip-bundle .store-pack-btn {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: 1px solid #ffd700;
+  color: #000;
+  font-weight: 900;
+}
+
+/* ==================== MILES RECHARGE SHOP ==================== */
+.miles-shop-header {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.miles-shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding-bottom: 20px;
+}
+
+.miles-shop-card {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border: 1.5px solid rgba(251, 191, 36, 0.4);
+  border-radius: 16px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: transform 0.2s;
+}
+
+.miles-shop-card:hover {
+  transform: translateY(-3px);
+  border-color: #f59e0b;
+}
+
+.miles-bonus-tag {
+  position: absolute;
+  top: -8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.miles-shop-icon {
+  font-size: 26px;
+}
+
+.miles-shop-amount {
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffd700;
+}
+
+.miles-shop-name {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.miles-buy-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  border: 1px solid #fde047;
+  color: #000;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 8px 0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.miles-buy-btn:hover {
+  background: #ffd700;
+  transform: scale(1.02);
+}
+
+/* ==================== COSMETICS BOUTIQUE ==================== */
+.cosmetics-filter-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+}
+
+.cosmetics-cat-btn {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #cbd5e1;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cosmetics-cat-btn.active {
+  background: #f59e0b;
+  color: #000;
+  border-color: #ffd700;
+  font-weight: 900;
+}
+
+.cosmetics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding-bottom: 24px;
+}
+
+.cosmetic-card {
+  background: linear-gradient(150deg, #1e293b, #0f172a);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  transition: all 0.2s;
+}
+
+.cosmetic-card.equipped {
+  border-color: #22c55e;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.35);
+}
+
+.cosmetic-preview-box {
+  width: 100%;
+  height: 64px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+}
+
+.cosmetic-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.cosmetic-desc {
+  font-size: 8.5px;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.cosmetic-price-tag {
+  font-size: 10px;
+  font-weight: 800;
+  color: #ffd700;
+}
+
+.btn-cosmetic-action {
+  width: 100%;
+  padding: 7px 0;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-cosmetic-action.btn-buy {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #fff;
+  border: 1px solid #38bdf8;
+}
+
+.btn-cosmetic-action.btn-equip {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-weight: 900;
+}
+
+.btn-cosmetic-action.btn-in-use {
+  background: rgba(34, 197, 94, 0.2);
+  border: 1px solid #22c55e;
+  color: #4ade80;
+  cursor: default;
+}
+
+/* ==================== BOARD SKINS APPLIED TO TAB-ARENA ==================== */
+#tab-arena.board-default {
+  background:
+    linear-gradient(180deg, rgba(3, 6, 16, 0.12) 0%, rgba(3, 6, 16, 0.22) 45%, rgba(3, 6, 16, 0.52) 100%),
+    url('assets/backgrounds/bg_arena.jpg') no-repeat center top / cover;
+}
+
+#tab-arena.board-lounge {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.22), transparent 70%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.65) 0%, rgba(45, 21, 11, 0.85) 100%),
+    url('assets/backgrounds/bg_deck.jpg') no-repeat center top / cover;
+}
+
+#tab-arena.board-cockpit {
+  background:
+    radial-gradient(circle at 50% 25%, rgba(16, 185, 129, 0.25), transparent 60%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.75) 0%, rgba(6, 78, 59, 0.85) 100%),
+    url('assets/backgrounds/bg_spire.jpg') no-repeat center top / cover;
+}
+
+#tab-arena.board-copacabana {
+  background:
+    radial-gradient(circle at 50% 35%, rgba(244, 63, 94, 0.25), transparent 65%),
+    linear-gradient(180deg, rgba(30, 27, 75, 0.65) 0%, rgba(136, 19, 55, 0.85) 100%),
+    url('assets/backgrounds/bg_dutyfree.jpg') no-repeat center top / cover;
+}
+
+#tab-arena.board-zen {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(168, 85, 247, 0.25), transparent 65%),
+    linear-gradient(180deg, rgba(15, 23, 42, 0.75) 0%, rgba(88, 28, 135, 0.85) 100%),
+    url('assets/backgrounds/bg_codex.jpg') no-repeat center top / cover;
+}
+
+/* ==================== CARD BACK SKINS ==================== */
+.card-flipper-back.back-default {
+  background: linear-gradient(145deg, #091224 0%, #030712 100%);
+  border: 2px solid #38bdf8;
+}
+.card-flipper-back.back-leather {
+  background: linear-gradient(145deg, #451a03 0%, #290f02 100%);
+  border: 2.5px solid #f59e0b;
+  box-shadow: inset 0 0 15px rgba(245, 158, 11, 0.4);
+}
+.card-flipper-back.back-titanium {
+  background: linear-gradient(145deg, #18181b 0%, #09090b 100%);
+  border: 2.5px solid #a1a1aa;
+  box-shadow: inset 0 0 15px rgba(161, 161, 170, 0.4);
+}
+.card-flipper-back.back-retrowings {
+  background: linear-gradient(145deg, #1e3a8a 0%, #172554 100%);
+  border: 2.5px solid #fbbf24;
+}
+.card-flipper-back.back-aurora {
+  background: linear-gradient(145deg, #042f2e 0%, #1e1b4b 100%);
+  border: 2.5px solid #2dd4bf;
+  box-shadow: 0 0 16px rgba(45, 212, 191, 0.6);
+}
+
+/* ==================== CARD FRAME SKINS ==================== */
+.card-item.frame-gold {
+  border: 2px solid #ffd700 !important;
+  box-shadow: 0 0 14px rgba(255, 215, 0, 0.6), 0 4px 10px rgba(0,0,0,0.5) !important;
+}
+.card-item.frame-neon {
+  border: 2px solid #00f0ff !important;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.7), 0 4px 10px rgba(0,0,0,0.5) !important;
+}
+.card-item.frame-diamond {
+  border: 2px solid #c084fc !important;
+  box-shadow: 0 0 18px rgba(192, 132, 252, 0.8), 0 0 8px #ffffff !important;
+}
+
+/* ==================== LOCKED CARDS IN PASSPORT ==================== */
+.card-item.locked {
+  filter: grayscale(80%) brightness(0.65);
+  opacity: 0.75;
+  position: relative;
+  cursor: pointer;
+}
+
+.card-item.locked::after {
+  content: '🔒 DUTY FREE';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid #f59e0b;
+  color: #fbbf24;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 3px 6px;
+  border-radius: 6px;
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.7);
+  z-index: 10;
+}
+
 
 
 

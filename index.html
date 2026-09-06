@@ -378,6 +378,7 @@
               <span id="pvp-badge-text">VS IA</span>
             </button>
             <button id="btn-audio-toggle" style="background:none; border:none; font-size:15px; cursor:pointer;" title="Mute/Unmute">🔊</button>
+            <button id="btn-open-settings-arena" style="background:none; border:none; font-size:15px; cursor:pointer;" title="Impostazioni">⚙️</button>
             <div class="turn-pill" id="turn-display">Scalo 1/6</div>
             <div class="stakes-pill" id="stakes-display">1x MIGLIA</div>
           </div>
@@ -388,7 +389,7 @@
 
         <!-- Log Tattico Veloce -->
         <div id="combat-log-stream" style="font-size: 9px; color: #94a3b8; background: rgba(0,0,0,0.65); margin: 0 10px; padding: 4px 8px; border-radius: 6px; text-align: center; height: 32px; overflow: hidden; display: flex; flex-direction: column; justify-content: center;">
-          <div>Tocca una carta Paese e poi la Metropoli 3D per atterrare!</div>
+          <div style="color: #fbbf24; font-weight: 800;">✦ TRASCINA E LANCIA LA CARTA VERSO LA METROPOLI! (STILE SNAP) ✦</div>
         </div>
 
         <!-- HUD Giocatore: Miglia Aeree, Visti, First Class Overcharge e Ritiro -->
@@ -535,106 +536,155 @@
       <div class="collection-grid" id="collection-grid"></div>
     </section>
 
-    <!-- ==================== TAB 4: SBUSTAMENTO 3D AIRPORT DUTY FREE ==================== -->
+    <!-- ==================== TAB 4: SBUSTAMENTO 3D AIRPORT DUTY FREE & BOUTIQUE ==================== -->
     <section id="tab-booster" class="tab-view booster-view">
       
       <!-- Badge Superiore Duty Free -->
       <div class="booster-top-badge">
         <span>✈️ AIRPORT DUTY FREE</span>
         <span style="color:#e2e8f0;">•</span>
-        <span style="color:#38bdf8;">VIP ODYSSEY PACK</span>
+        <span style="color:#38bdf8;">VIP TERMINAL & BOUTIQUE</span>
       </div>
 
-      <!-- Viewport per lo Sbustamento 3D Fisico -->
-      <div id="booster-3d-viewport">
-        <!-- 3D FOIL POUCH THEATER STAGE -->
-        <div id="booster-stage" class="booster-stage">
-          
-          <!-- PHYSICAL 3D FOIL PACK POUCH -->
-          <div id="booster-foil-pack" class="booster-foil-pack" data-tier="economy">
-            <!-- Heat-sealed Crimped Ridge Top -->
-            <div class="pack-crimp-top"></div>
+      <!-- Navigazione Sotto-sezioni Duty Free -->
+      <div class="duty-free-nav" id="duty-free-nav">
+        <button class="duty-subtab-btn active" data-subtab="duty-unboxing">🎁 SBUSTAMENTO 3D</button>
+        <button class="duty-subtab-btn" data-subtab="duty-packs">🛒 PACCHETTI & BUNDLE</button>
+        <button class="duty-subtab-btn" data-subtab="duty-miles">🪙 RICARICA MIGLIA</button>
+        <button class="duty-subtab-btn" data-subtab="duty-cosmetics">🎨 PERSONALIZZAZIONE</button>
+      </div>
+
+      <!-- SUBTAB 1: SBUSTAMENTO 3D FISICO -->
+      <div id="subtab-duty-unboxing" class="duty-subview active">
+        <!-- Banner Voucher Omaggio se disponibili -->
+        <div id="free-pack-voucher-pill" class="free-voucher-pill" style="display: none;">
+          🎁 2 Pacchetti Omaggio Disponibili! Tocca per Sbustare Gratis
+        </div>
+
+        <!-- Viewport per lo Sbustamento 3D Fisico -->
+        <div id="booster-3d-viewport">
+          <!-- 3D FOIL POUCH THEATER STAGE -->
+          <div id="booster-stage" class="booster-stage">
             
-            <!-- Main Foil Pouch with Ultra-Res Art -->
-            <div class="pack-body">
-              <img id="pack-cover-img" class="pack-cover-img" src="assets/boosters/pack_economy.jpg" alt="WTO Booster Pack">
-              <!-- Iridescent Holographic Sheen Layer -->
-              <div class="pack-holo-sheen"></div>
-              <!-- Metallic Reflection Sweep -->
-              <div class="pack-specular-sweep"></div>
+            <!-- PHYSICAL 3D FOIL PACK POUCH -->
+            <div id="booster-foil-pack" class="booster-foil-pack" data-tier="economy">
+              <!-- Heat-sealed Crimped Ridge Top -->
+              <div class="pack-crimp-top"></div>
+              
+              <!-- Main Foil Pouch with Ultra-Res Art -->
+              <div class="pack-body">
+                <img id="pack-cover-img" class="pack-cover-img" src="assets/boosters/pack_economy.jpg" alt="WTO Booster Pack">
+                <!-- Iridescent Holographic Sheen Layer -->
+                <div class="pack-holo-sheen"></div>
+                <!-- Metallic Reflection Sweep -->
+                <div class="pack-specular-sweep"></div>
+              </div>
+
+              <!-- Heat-sealed Crimped Ridge Bottom -->
+              <div class="pack-crimp-bottom"></div>
+
+              <!-- INTERACTIVE 3D TEAR STRIP -->
+              <div id="pack-tear-strip" class="pack-tear-strip">
+                <div class="tear-strip-line">
+                  <span>✂</span>
+                  <span>• • • STRAPPA IL SIGILLO D'ORO • • •</span>
+                  <span>✂</span>
+                </div>
+                <div id="pack-pull-tab" class="pack-pull-tab" title="Trascina o tocca per strappare">
+                  <div class="pull-tab-wax-seal">★</div>
+                </div>
+              </div>
+
             </div>
 
-            <!-- Heat-sealed Crimped Ridge Bottom -->
-            <div class="pack-crimp-bottom"></div>
+            <!-- REVEALED CARDS 3D FAN (Hidden until opened) -->
+            <div id="booster-cards-fan" class="booster-cards-fan" style="display: none;"></div>
 
-            <!-- INTERACTIVE 3D TEAR STRIP -->
-            <div id="pack-tear-strip" class="pack-tear-strip">
-              <div class="tear-strip-line">
-                <span>✂</span>
-                <span>• • • STRAPPA IL SIGILLO D'ORO • • •</span>
-                <span>✂</span>
-              </div>
-              <div id="pack-pull-tab" class="pack-pull-tab" title="Trascina o tocca per strappare">
-                <div class="pull-tab-wax-seal">★</div>
-              </div>
+          </div>
+
+          <!-- PIXI FX OVERLAY FOR 60FPS SPARKS & CONFETTI -->
+          <div id="booster-fx-canvas-wrap"></div>
+        </div>
+
+        <!-- HUD Sovrapposto dello Sbustamento -->
+        <div class="booster-hud-overlay">
+          <!-- Selettore dei 3 Tier di Bustine Duty Free -->
+          <div class="booster-tier-selector" id="booster-tier-selector">
+            <div class="pack-tier-card selected" data-tier="economy">
+              <div style="font-size:13px;">🥉</div>
+              <div style="font-size:9px; font-weight:900; color:#cbd5e1;">ECONOMY</div>
+              <div style="font-size:7.5px; color:#38bdf8;">100 M • 3 Carte</div>
             </div>
-
+            <div class="pack-tier-card" data-tier="business">
+              <div style="font-size:13px;">🥈</div>
+              <div style="font-size:9px; font-weight:900; color:#c084fc;">BUSINESS</div>
+              <div style="font-size:7.5px; color:#c084fc;">250 M • 4 Carte</div>
+            </div>
+            <div class="pack-tier-card" data-tier="sovereign">
+              <div style="font-size:13px;">🥇</div>
+              <div style="font-size:9px; font-weight:900; color:#ffd700;">SOVEREIGN</div>
+              <div style="font-size:7.5px; color:#ffd700;">500 M • 5 Carte (Foil)</div>
+            </div>
           </div>
 
-          <!-- REVEALED CARDS 3D FAN (Hidden until opened) -->
-          <div id="booster-cards-fan" class="booster-cards-fan" style="display: none;"></div>
-
-        </div>
-
-        <!-- PIXI FX OVERLAY FOR 60FPS SPARKS & CONFETTI -->
-        <div id="booster-fx-canvas-wrap"></div>
-      </div>
-
-      <!-- HUD Sovrapposto dello Sbustamento -->
-      <div class="booster-hud-overlay">
-        <!-- Selettore dei 3 Tier di Bustine Duty Free -->
-        <div class="booster-tier-selector" id="booster-tier-selector">
-          <div class="pack-tier-card selected" data-tier="economy">
-            <div style="font-size:13px;">🥉</div>
-            <div style="font-size:9px; font-weight:900; color:#cbd5e1;">ECONOMY</div>
-            <div style="font-size:7.5px; color:#38bdf8;">100 M • 3 Carte</div>
+          <!-- Info Card Ispezionata o Appena Rivelata -->
+          <div id="booster-inspect-card" class="booster-inspect-card-info" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span id="b-card-rarity" style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #ffd700;">LEGENDARY</span>
+              <span id="b-card-origin" style="font-size: 10px; color: #cbd5e1;">🇮🇹 ROMA • FCO</span>
+            </div>
+            <div id="b-card-name" style="font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 4px;">Leonardo da Vinci</div>
+            <div id="b-card-desc" style="font-size: 10px; color: #94a3b8; line-height: 1.3;">+2 Prestigio a tutte le destinazioni.</div>
+            <div style="margin-top: 6px; font-size: 9px; color: #facc15; font-style: italic;">Trascina per ruotare in 3D 360°</div>
           </div>
-          <div class="pack-tier-card" data-tier="business">
-            <div style="font-size:13px;">🥈</div>
-            <div style="font-size:9px; font-weight:900; color:#c084fc;">BUSINESS</div>
-            <div style="font-size:7.5px; color:#c084fc;">250 M • 4 Carte</div>
-          </div>
-          <div class="pack-tier-card" data-tier="sovereign">
-            <div style="font-size:13px;">🥇</div>
-            <div style="font-size:9px; font-weight:900; color:#ffd700;">SOVEREIGN</div>
-            <div style="font-size:7.5px; color:#ffd700;">500 M • 5 Carte (Foil)</div>
-          </div>
-        </div>
 
-        <!-- Info Card Ispezionata o Appena Rivelata -->
-        <div id="booster-inspect-card" class="booster-inspect-card-info" style="display: none;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-            <span id="b-card-rarity" style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #ffd700;">LEGENDARY</span>
-            <span id="b-card-origin" style="font-size: 10px; color: #cbd5e1;">🇮🇹 ROMA • FCO</span>
+          <div id="booster-action-text" style="font-size: 12.5px; font-weight: 800; color: #facc15; text-shadow: 0 0 12px rgba(245, 158, 11, 0.8); text-align: center; padding: 0 10px;">
+            ✦ TRASCINA IL SIGILLO O TOCCA PER STRAPPARE LA BUSTINA! ✦
           </div>
-          <div id="b-card-name" style="font-size: 14px; font-weight: 900; color: #fff; margin-bottom: 4px;">Leonardo da Vinci</div>
-          <div id="b-card-desc" style="font-size: 10px; color: #94a3b8; line-height: 1.3;">+2 Prestigio a tutte le destinazioni.</div>
-          <div style="margin-top: 6px; font-size: 9px; color: #facc15; font-style: italic;">Trascina per ruotare in 3D 360°</div>
-        </div>
 
-        <div id="booster-action-text" style="font-size: 12.5px; font-weight: 800; color: #facc15; text-shadow: 0 0 12px rgba(245, 158, 11, 0.8); text-align: center; padding: 0 10px;">
-          ✦ TRASCINA IL SIGILLO O TOCCA PER STRAPPARE LA BUSTINA! ✦
-        </div>
-
-        <div style="display: flex; gap: 8px;">
-          <button id="btn-booster-goto-passport" style="display: none; background: #1e293b; border: 1px solid #38bdf8; color: #38bdf8; font-weight: 800; padding: 9px 16px; border-radius: 12px; font-size: 11px; cursor: pointer;">
-            💼 VAI AL PASSAPORTO
-          </button>
-          <button id="btn-booster-reset" style="display: none; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; font-weight: 900; padding: 10px 22px; border-radius: 12px; font-size: 12px; cursor: pointer; box-shadow: 0 0 25px rgba(245, 158, 11, 0.8);">
-            ✈️ APRI UN'ALTRA BUSTINA 3D
-          </button>
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-booster-goto-passport" style="display: none; background: #1e293b; border: 1px solid #38bdf8; color: #38bdf8; font-weight: 800; padding: 9px 16px; border-radius: 12px; font-size: 11px; cursor: pointer;">
+              💼 VAI AL PASSAPORTO
+            </button>
+            <button id="btn-booster-reset" style="display: none; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; font-weight: 900; padding: 10px 22px; border-radius: 12px; font-size: 12px; cursor: pointer; box-shadow: 0 0 25px rgba(245, 158, 11, 0.8);">
+              ✈️ APRI UN'ALTRA BUSTINA 3D
+            </button>
+          </div>
         </div>
       </div>
+
+      <!-- SUBTAB 2: BOUTIQUE PACCHETTI & BUNDLE VIP -->
+      <div id="subtab-duty-packs" class="duty-subview" style="display: none;">
+        <div style="margin-bottom: 12px;">
+          <h3 style="color:#ffd700; font-size:14px; font-weight:900;">Boutique Pacchetti & Bundle Speciali</h3>
+          <p style="color:#94a3b8; font-size:10.5px;">Sbusta nuove nazioni e sblocca carte leggendarie per scalare i tornei mondiali</p>
+        </div>
+        <div class="store-pack-grid" id="store-packs-container"></div>
+      </div>
+
+      <!-- SUBTAB 3: RICARICA MIGLIA AEREE -->
+      <div id="subtab-duty-miles" class="duty-subview" style="display: none;">
+        <div class="miles-shop-header">
+          <div>
+            <div style="font-size:10px; color:#94a3b8; font-weight:700;">SALDO DISPONIBILE</div>
+            <div style="font-size:16px; font-weight:900; color:#ffd700;" id="miles-store-current-balance">600 Miglia</div>
+          </div>
+          <div style="font-size:24px;">✈️</div>
+        </div>
+        <div class="miles-shop-grid" id="store-miles-container"></div>
+      </div>
+
+      <!-- SUBTAB 4: PERSONALIZZAZIONE DECK, TAVOLI & CORNICI -->
+      <div id="subtab-duty-cosmetics" class="duty-subview" style="display: none;">
+        <div class="cosmetics-filter-bar" id="cosmetics-filter-bar">
+          <button class="cosmetics-cat-btn active" data-cat="all">TUTTI</button>
+          <button class="cosmetics-cat-btn" data-cat="boards">TAVOLI DA GIOCO</button>
+          <button class="cosmetics-cat-btn" data-cat="cardBacks">DORSI CARTE</button>
+          <button class="cosmetics-cat-btn" data-cat="cardFrames">CORNICI</button>
+        </div>
+        <div class="cosmetics-grid" id="store-cosmetics-container"></div>
+      </div>
+
     </section>
 
     <!-- ==================== TAB 5: CODEX DELLE REGOLE & MANUALE D'AVIAZIONE ==================== -->
@@ -1152,6 +1202,35 @@
 
         <button id="btn-skip-pilot-name" class="luggage-tag-skip-btn" type="button">
           Continua come Comandante Ospite
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== STARTER FLIGHT PACK UNBOXING MODAL (12 CARTE DI BENVENUTO) ==================== -->
+    <div id="modal-starter-pack" class="starter-pack-modal-overlay" style="display: none;">
+      <div class="starter-pack-dialog">
+        <div class="starter-pack-badge">🎁 BENVENUTO A BORDO COMANDANTE</div>
+        <h2 class="starter-pack-title" id="starter-pack-title">Kit di Volo Ufficiale</h2>
+        <p class="starter-pack-sub">
+          Il Comando d'Aviazione ti consegna le <b>12 Carte Sinergiche</b> del mazzo <i>Globetrotter Express</i> per dominare i cieli del mondo, insieme al tuo bonus passeggero inaugurale:
+        </p>
+
+        <!-- Giostra orizzontale delle 12 carte dello starter pack -->
+        <div class="starter-cards-carousel" id="starter-cards-carousel"></div>
+
+        <div class="starter-bonus-row">
+          <div class="starter-bonus-chip">
+            <span style="font-size:18px;">🪙</span>
+            <div><strong>+600 Miglia</strong><div style="font-size:9px; color:#94a3b8;">Valuta di Bordo</div></div>
+          </div>
+          <div class="starter-bonus-chip">
+            <span style="font-size:18px;">🎁</span>
+            <div><strong>2x Pack Duty Free</strong><div style="font-size:9px; color:#94a3b8;">Voucher Omaggio</div></div>
+          </div>
+        </div>
+
+        <button id="btn-claim-starter-pack" class="starter-claim-btn" type="button">
+          ✦ RISCATTA KIT & INIZIA IL VOLO ➔ ✦
         </button>
       </div>
     </div>
@@ -1843,8 +1922,65 @@
       }
     });
 
-    const STARTER_DECK_P1 = ['card_italy_champ', 'card_italy_colosseum', 'card_japan_fuji', 'card_usa_wallstreet', 'card_egypt_pyramids', 'trap_visa_denied', 'spell_lastminute'];
-    const STARTER_DECK_P2 = ['card_japan_champ', 'card_japan_fuji', 'card_france_eiffel', 'card_usa_wallstreet', 'card_brazil_samba', 'trap_strike', 'spell_lastminute'];
+    // ==================== STARTER DECK EQUILIBRATO (12 CARTE DI BENVENUTO) ====================
+    const STARTER_DECK_12 = [
+      'card_italy_champ',       // Leonardo da Vinci (Sovereign Leggendario, Cost 3, Power 5)
+      'card_italy_colosseum',   // Colosseo dei Cesari (Destinazione Rara, Cost 2, Power 4)
+      'card_italy_espresso',    // Espresso Napoletano (Evento Comune, Cost 1, Power 2)
+      'card_france_eiffel',     // Torre Eiffel (Destinazione Rara, Cost 3, Power 5)
+      'card_france_champagne',  // Champagne Grand Cru (Evento Raro, Cost 2, Power 3)
+      'card_uk_bigben',         // Big Ben & Westminster (Destinazione Rara, Cost 3, Power 5)
+      'card_germany_autobahn',  // Autobahn Express (Evento Comune, Cost 1, Power 3)
+      'card_swiss_train',       // Glacier Express delle Alpi (Destinazione Rara, Cost 2, Power 4)
+      'card_japan_shinkansen',  // Treno Maglev Shinkansen (Evento Raro, Cost 2, Power 4)
+      'card_usa_wallstreet',    // Borsa di Wall Street (Destinazione Rara, Cost 4, Power 8)
+      'trap_visa_denied',       // Visto Negato alla Dogana (Trappola Imprevisto, Cost 2, Power 3)
+      'spell_lastminute'        // Scalo Last-Minute (Evento Scoperta, Cost 1)
+    ];
+
+    const STARTER_DECK_P1 = [...STARTER_DECK_12];
+    const STARTER_DECK_P2 = ['card_japan_champ', 'card_japan_fuji', 'card_france_eiffel', 'card_usa_wallstreet', 'card_brazil_samba', 'trap_strike', 'spell_lastminute', 'card_uk_bigben', 'card_egypt_pyramids', 'card_australia_sydney', 'card_germany_brandenburg', 'card_mexico_mariachi'];
+
+    // ==================== CATALOGO COSMETICI E PERSONALIZZAZIONE MAZZO ====================
+    const COSMETICS_CATALOG = {
+      boards: [
+        { id: 'board_default', name: 'Pista Notturna Internazionale', icon: '✈️', price: 0, desc: 'Tavolo standard con pista notturna e radar', styleClass: 'board-default' },
+        { id: 'board_lounge', name: 'Lounge First Class in Mogano', icon: '🍷', price: 200, desc: 'Lusso sartoriale in mogano massello, velluto navy e bicchieri di cristallo', styleClass: 'board-lounge' },
+        { id: 'board_cockpit', name: 'Cockpit A380 Olografico', icon: '🕹️', price: 350, desc: 'Cabina di pilotaggio futuristica con display HUD verde smeraldo', styleClass: 'board-cockpit' },
+        { id: 'board_copacabana', name: 'Copacabana Sunset Beach', icon: '🏖️', price: 300, desc: 'Tavolo teak con vista sul tramonto di Rio de Janeiro e onde oceaniche', styleClass: 'board-copacabana' },
+        { id: 'board_zen', name: 'Tempio Zen & Lanterne Tokyo', icon: '⛩️', price: 400, desc: 'Finitura in carta washi e pietra d\'ardesia con petali sakura', styleClass: 'board-zen' }
+      ],
+      cardBacks: [
+        { id: 'back_default', name: 'Passaporto Ufficiale WTO', icon: '📘', price: 0, desc: 'Dorso classico blu notte con timbro dorato della Federazione di Volo', styleClass: 'back-default' },
+        { id: 'back_leather', name: 'Cuoio Toscano & Sigillo 24k', icon: '🧳', price: 150, desc: 'Pelle conciata a mano con stemma reale e ceralacca dorata in rilievo', styleClass: 'back-leather' },
+        { id: 'back_titanium', name: 'Titanio & Fibra di Carbonio', icon: '🛡️', price: 250, desc: 'Lega aeronautica ultraleggera con trama esagonale nera spazzolata', styleClass: 'back-titanium' },
+        { id: 'back_retrowings', name: 'Retro Golden Wings 1960', icon: '✈️', price: 250, desc: 'Grafica vintage anni 60 con ali dorate dell\'aviazione transcontinentale', styleClass: 'back-retrowings' },
+        { id: 'back_aurora', name: 'Aurora Boreale Olografica', icon: '🌌', price: 300, desc: 'Lamina iridescente cangiante che riflette le luci del nord di Reykjavik', styleClass: 'back-aurora' }
+      ],
+      cardFrames: [
+        { id: 'frame_default', name: 'Cornice Standard d\'Aviazione', icon: '✈️', price: 0, desc: 'Bordo pulito in alluminio aeronautico satinato', styleClass: 'frame-default' },
+        { id: 'frame_gold', name: 'Bordo Oro Zecchino 24K', icon: '🏅', price: 200, desc: 'Cornice dorata con riflessi metallici e gemme imperiali ai 4 angoli', styleClass: 'frame-gold' },
+        { id: 'frame_neon', name: 'Bordo Neon Ciano Cyberpunk', icon: '⚡', price: 200, desc: 'Emissione luminosa pulsante a led neon stile Tokyo Shinjuku', styleClass: 'frame-neon' },
+        { id: 'frame_diamond', name: 'Bordo Diamante Olografico', icon: '💎', price: 350, desc: 'Taglio brillante in cristallo sfaccettato con particelle scintillanti', styleClass: 'frame-diamond' }
+      ]
+    };
+
+    // ==================== TAGLI RICARICA VALUTA (MIGLIA AEREE) ====================
+    const MILES_BUNDLES = [
+      { id: 'miles_small', name: 'Tasca del Viaggiatore', miles: 300, priceEur: '1,99 €', icon: '🪙', bonus: 'Bonus Primo Acquisto' },
+      { id: 'miles_medium', name: 'Bagaglio a Mano', miles: 750, priceEur: '4,99 €', icon: '🧳', bonus: '+15% OMAGGIO' },
+      { id: 'miles_large', name: 'Valigia Stiva First Class', miles: 1800, priceEur: '9,99 €', icon: '✈️', bonus: '+25% OMAGGIO' },
+      { id: 'miles_vip', name: 'Cassaforte Consolare VIP', miles: 4500, priceEur: '19,99 €', icon: '👑', bonus: '+40% OMAGGIO' }
+    ];
+
+    // ==================== CATALOGO PACCHETTI & BUNDLE DUTY FREE ====================
+    const PACKS_CATALOG = [
+      { id: 'economy', name: 'Economy Class Pack', icon: '🥉', cardsCount: 3, price: 100, minRarity: 'rare', color: '#38bdf8', desc: '3 Carte del Mondo • 1 Rara garantita' },
+      { id: 'business', name: 'Business Class Pack', icon: '🥈', cardsCount: 4, price: 250, minRarity: 'epic', color: '#c084fc', desc: '4 Carte del Mondo • 1 Epica garantita' },
+      { id: 'sovereign', name: 'Sovereign 24K Pack', icon: '🥇', cardsCount: 5, price: 500, minRarity: 'legendary', color: '#ffd700', desc: '5 Carte del Mondo • 1 Leggendaria Foil garantita' },
+      { id: 'bundle_firstclass', name: 'Bundle First Class VIP', icon: '👑', cardsCount: 15, price: 1200, minRarity: 'legendary', color: '#fbbf24', desc: '3x Sovereign Pack (15 Carte) + Dorso Cuoio & Ceralacca 24K' },
+      { id: 'bundle_consular', name: 'Cassa Diplomatica Globale', icon: '🏛️', cardsCount: 25, price: 2500, minRarity: 'legendary', color: '#f59e0b', desc: '5x Sovereign Pack (25 Carte) + 1.000 Punti Maestria + Cornice Oro Zecchino' }
+    ];
 
     // --- 2. AUDIO PROCEDURALE ---
     class TravelSoundManager {
@@ -2770,15 +2906,19 @@ class PixiBoosterEngine {
   triggerOpen() {
     if (this.isOpened) return;
 
-    // Check and deduct miles if Hub exists
+    // Check and deduct free pack voucher or miles if Hub exists
     if (window.hub && window.hub.saveData) {
       const cost = this.activeTier === 'economy' ? 100 : (this.activeTier === 'business' ? 250 : 500);
-      if (window.hub.saveData.miles < cost) {
-        alert(`Miglia insufficienti! Il pacchetto ${this.activeTier.toUpperCase()} costa ${cost} Miglia (ne possiedi ${window.hub.saveData.miles}). Vinci sfide in Arena o Spire per guadagnare altre miglia!`);
+      if (window.hub.saveData.freePacks > 0) {
+        window.hub.saveData.freePacks--;
+        window.hub.updateGlobalMilesUI();
+      } else if (window.hub.saveData.miles < cost) {
+        alert(`Miglia insufficienti! Il pacchetto ${this.activeTier.toUpperCase()} costa ${cost} Miglia (ne possiedi ${window.hub.saveData.miles}). Ricarica nel Duty Free o vinci sfide in Arena!`);
         this.reset();
         return;
+      } else {
+        window.hub.addMiles(-cost);
       }
-      window.hub.addMiles(-cost);
       window.hub.saveData.stats.packsOpened = (window.hub.saveData.stats.packsOpened || 0) + 1;
       if (this.activeTier !== 'economy') window.hub.checkAchievements('pack_unboxing');
     }
@@ -3258,15 +3398,28 @@ class PixiBoosterEngine {
         }
         if (!this.saveData) {
           this.saveData = {
-            miles: 450,
-            unlockedCards: ALL_CARDS.map(c => c.id),
+            miles: 600,
+            freePacks: 2,
+            starterPackClaimed: false,
+            unlockedCards: [...STARTER_DECK_12],
             cardMastery: { 'card_italy_champ': 2 },
             customDecks: [
-              { name: '1. Globetrotter Express', cards: [...STARTER_DECK_P1] },
-              { name: '2. Euro-Pass Schengen', cards: ['card_italy_champ', 'card_italy_colosseum', 'card_italy_espresso', 'card_france_champ', 'card_france_eiffel', 'card_france_champagne', 'card_uk_agent', 'card_uk_bigben', 'card_swiss_banker', 'card_swiss_train', 'trap_visa_denied', 'spell_diplomatic_pass'] },
-              { name: '3. Tokyo-Shinjuku High-Tech', cards: ['card_japan_champ', 'card_japan_fuji', 'card_japan_shinkansen', 'card_korea_kpop', 'card_korea_tower', 'card_usa_champ', 'card_usa_wallstreet', 'card_brazil_samba', 'card_germany_autobahn', 'trap_strike', 'spell_lastminute', 'card_australia_sydney'] }
+            { name: '1. Globetrotter Express', cards: [...STARTER_DECK_12] },
+              { name: '2. Euro-Pass Schengen', cards: ['card_italy_champ', 'card_italy_colosseum', 'card_italy_espresso', 'card_france_eiffel', 'card_france_champagne', 'card_uk_bigben', 'card_swiss_train', 'card_germany_autobahn', 'trap_visa_denied', 'spell_lastminute'] },
+              { name: '3. Tokyo-Shinjuku High-Tech', cards: ['card_japan_shinkansen', 'card_usa_wallstreet', 'card_italy_champ', 'card_italy_espresso', 'spell_lastminute'] }
             ],
             activeDeckIdx: 0,
+            ownedCosmetics: {
+              boards: ['board_default'],
+              cardBacks: ['back_default'],
+              cardFrames: ['frame_default']
+            },
+            cosmeticsOwned: ['board_default', 'back_default', 'frame_default'],
+            equippedCosmetics: {
+              board: 'board_default',
+              cardBack: 'back_default',
+              cardFrame: 'frame_default'
+            },
             spireRun: {
               hp: 30,
               maxHp: 30,
@@ -3288,6 +3441,29 @@ class PixiBoosterEngine {
           if (!this.saveData.pilotName) this.saveData.pilotName = 'Comandante';
           if (!this.saveData.pilotCountry) this.saveData.pilotCountry = 'ITA';
           if (this.saveData.introVideoWatched === undefined) this.saveData.introVideoWatched = false;
+          if (this.saveData.freePacks === undefined) this.saveData.freePacks = 2;
+          if (this.saveData.starterPackClaimed === undefined) this.saveData.starterPackClaimed = true;
+          if (!this.saveData.ownedCosmetics) {
+            this.saveData.ownedCosmetics = {
+              boards: ['board_default'],
+              cardBacks: ['back_default'],
+              cardFrames: ['frame_default']
+            };
+            if (Array.isArray(this.saveData.cosmeticsOwned)) {
+              this.saveData.cosmeticsOwned.forEach(id => {
+                if (id.startsWith('board_') && !this.saveData.ownedCosmetics.boards.includes(id)) this.saveData.ownedCosmetics.boards.push(id);
+                if (id.startsWith('back_') && !this.saveData.ownedCosmetics.cardBacks.includes(id)) this.saveData.ownedCosmetics.cardBacks.push(id);
+                if (id.startsWith('frame_') && !this.saveData.ownedCosmetics.cardFrames.includes(id)) this.saveData.ownedCosmetics.cardFrames.push(id);
+              });
+            }
+          }
+          if (!this.saveData.cosmeticsOwned) this.saveData.cosmeticsOwned = ['board_default', 'back_default', 'frame_default'];
+          if (!this.saveData.equippedCosmetics) {
+            this.saveData.equippedCosmetics = { board: 'board_default', cardBack: 'back_default', cardFrame: 'frame_default' };
+          }
+          if (!this.saveData.unlockedCards || this.saveData.unlockedCards.length === 0) {
+            this.saveData.unlockedCards = [...STARTER_DECK_12];
+          }
         }
 
         // Applica nome pilota nell'HUD
@@ -3296,10 +3472,38 @@ class PixiBoosterEngine {
           hudCallsign.textContent = '✈ ' + this.saveData.pilotName;
         }
 
+        // Applica cosmetici equipaggiati (tavolo, dorso, cornice)
+        this.applyEquippedCosmetics();
+
         // Applica le maestrie salvate alle carte in memoria
         ALL_CARDS.forEach(c => {
           c.mastery = this.saveData.cardMastery[c.id] || 1;
         });
+      }
+
+      applyEquippedCosmetics() {
+        if (!this.saveData || !this.saveData.equippedCosmetics) return;
+        const { board, cardBack, cardFrame } = this.saveData.equippedCosmetics;
+
+        // 1. Tavolo / Board Skin
+        const arenaTab = document.getElementById('tab-arena');
+        if (arenaTab) {
+          arenaTab.classList.remove('board-default', 'board-lounge', 'board-cockpit', 'board-copacabana', 'board-zen');
+          const boardDef = (typeof COSMETICS_CATALOG !== 'undefined' && COSMETICS_CATALOG.boards)
+            ? (COSMETICS_CATALOG.boards.find(b => b.id === board) || COSMETICS_CATALOG.boards[0])
+            : { styleClass: 'board-default' };
+          arenaTab.classList.add(boardDef.styleClass || 'board-default');
+        }
+
+        // 2. Dorso Carte
+        const inspectBack = document.getElementById('inspect-card-back');
+        if (inspectBack) {
+          inspectBack.classList.remove('back-default', 'back-leather', 'back-titanium', 'back-retrowings', 'back-aurora');
+          const backDef = (typeof COSMETICS_CATALOG !== 'undefined' && COSMETICS_CATALOG.cardBacks)
+            ? (COSMETICS_CATALOG.cardBacks.find(b => b.id === cardBack) || COSMETICS_CATALOG.cardBacks[0])
+            : { styleClass: 'back-default' };
+          inspectBack.classList.add(backDef.styleClass || 'back-default');
+        }
       }
 
       saveState() {
@@ -3311,13 +3515,26 @@ class PixiBoosterEngine {
       }
 
       updateGlobalMilesUI() {
-        const milesVal = this.saveData ? this.saveData.miles : 450;
+        const milesVal = this.saveData ? this.saveData.miles : 600;
         const globEl = document.getElementById('global-miles-num');
         if (globEl) globEl.textContent = milesVal.toLocaleString();
         const spireGoldEl = document.getElementById('spire-gold');
-        if (spireGoldEl) spireGoldEl.textContent = this.saveData.spireRun.miles.toLocaleString();
+        if (spireGoldEl) spireGoldEl.textContent = (this.saveData.spireRun ? this.saveData.spireRun.miles : 0).toLocaleString();
         const spireShopBal = document.getElementById('spire-shop-balance');
-        if (spireShopBal) spireShopBal.textContent = `${this.saveData.spireRun.miles} Miglia`;
+        if (spireShopBal) spireShopBal.textContent = `${this.saveData.spireRun ? this.saveData.spireRun.miles : 0} Miglia`;
+        const storeBalEl = document.getElementById('miles-store-current-balance');
+        if (storeBalEl) storeBalEl.textContent = `${milesVal.toLocaleString()} Miglia`;
+
+        const voucherPill = document.getElementById('free-pack-voucher-pill');
+        if (voucherPill && this.saveData) {
+          const freeCount = this.saveData.freePacks || 0;
+          if (freeCount > 0) {
+            voucherPill.style.display = 'block';
+            voucherPill.textContent = `🎁 ${freeCount} Pacchett${freeCount === 1 ? 'o' : 'i'} Omaggio Disponibil${freeCount === 1 ? 'e' : 'i'}! Tocca per Sbustare Gratis`;
+          } else {
+            voucherPill.style.display = 'none';
+          }
+        }
       }
 
       addMiles(amt) {
@@ -3455,6 +3672,11 @@ class PixiBoosterEngine {
           }
         });
 
+        const globBar = document.querySelector('.global-app-bar');
+        if (globBar) {
+          globBar.style.display = (target === 'tab-arena' || target === 'tab-booster') ? 'none' : 'flex';
+        }
+
         try {
           if (target === 'tab-arena' && pixiArena && typeof pixiArena.onResize === 'function') {
             pixiArena.onResize();
@@ -3475,6 +3697,10 @@ class PixiBoosterEngine {
             this.switchTab(target);
           });
         });
+
+        // Nascondi global-app-bar all'avvio su Arena
+        const globBar = document.querySelector('.global-app-bar');
+        if (globBar) globBar.style.display = 'none';
       }
 
       setupPvPModal() {
@@ -3634,23 +3860,196 @@ class PixiBoosterEngine {
           const masteryClass = card.mastery === 2 ? 'mastery-silver' : (card.mastery === 3 ? 'mastery-gold' : (card.mastery === 4 ? 'mastery-diamond' : ''));
           el.className = `card-item ${card.material} ${masteryClass} ${this.selectedCardId === card.instanceId ? 'selected' : ''}`;
           if (card.image) el.style.backgroundImage = `url('${card.image}')`;
-          const angle = (i - (this.playerHand.length - 1) / 2) * 5;
-          el.style.transform = `rotate(${angle}deg) translateY(${Math.abs(angle) * 0.8}px)`;
+          const baseAngle = (i - (this.playerHand.length - 1) / 2) * 5;
+          const baseTranslateY = Math.abs(baseAngle) * 0.8;
+          const originalTransform = `rotate(${baseAngle}deg) translateY(${baseTranslateY}px)`;
+          el.style.transform = originalTransform;
           el.innerHTML = renderIntegratedCardInner(card);
-          el.onclick = (e) => {
+
+          // Marvel Snap Drag-and-Throw Controller
+          let isDragging = false;
+          let startX = 0, startY = 0;
+          let lastX = 0, lastY = 0, lastTime = 0;
+          let vx = 0, vy = 0;
+          let activePointerId = null;
+
+          const onPointerDown = (e) => {
+            if (this.phase !== 'PLANNING') return;
+            e.preventDefault();
             e.stopPropagation();
-            if (this.selectedCardId === card.instanceId) {
-              this.showInspect(card);
-            } else {
-              this.selectedCardId = card.instanceId;
-              sound.triggerHaptic(15);
+            activePointerId = e.pointerId;
+            if (typeof el.setPointerCapture === 'function') {
+              try { el.setPointerCapture(e.pointerId); } catch(err) {}
+            }
+            isDragging = false;
+            startX = e.clientX;
+            startY = e.clientY;
+            lastX = e.clientX;
+            lastY = e.clientY;
+            lastTime = performance.now();
+            vx = 0;
+            vy = 0;
+          };
+
+          const onPointerMove = (e) => {
+            if (activePointerId !== e.pointerId) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            if (!isDragging && Math.hypot(dx, dy) > 8) {
+              isDragging = true;
+              el.classList.add('dragging');
+              sound.triggerHaptic(18);
               if (card.soundType === 'espresso') sound.playEspresso();
               else if (card.soundType === 'cash') sound.playCash();
               else if (card.soundType === 'tokyo') sound.playTokyo();
               else sound.playStamp();
-              this.renderArena();
+            }
+
+            if (isDragging) {
+              const now = performance.now();
+              const dt = Math.max(1, now - lastTime);
+              vx = (e.clientX - lastX) / dt;
+              vy = (e.clientY - lastY) / dt;
+              lastX = e.clientX;
+              lastY = e.clientY;
+              lastTime = now;
+
+              const tilt = Math.max(-20, Math.min(20, dx * 0.12));
+              el.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(1.18) rotate(${tilt}deg)`;
+
+              // Rilevamento della corsia di destinazione (Tokyo, Roma, New York)
+              const altarCards = document.querySelectorAll('.altar-score-card');
+              const handRect = hand.getBoundingClientRect();
+              
+              if (e.clientY < handRect.top + 20 && altarCards.length === 3) {
+                let closestIdx = 0;
+                let minDist = Infinity;
+                altarCards.forEach((aEl, aIdx) => {
+                  const r = aEl.getBoundingClientRect();
+                  const cx = r.left + r.width / 2;
+                  const dist = Math.abs(cx - e.clientX);
+                  if (dist < minDist) {
+                    minDist = dist;
+                    closestIdx = aIdx;
+                  }
+                });
+                altarCards.forEach((aEl, aIdx) => {
+                  if (aIdx === closestIdx) aEl.classList.add('drag-targeted');
+                  else aEl.classList.remove('drag-targeted');
+                });
+              } else {
+                altarCards.forEach(aEl => aEl.classList.remove('drag-targeted'));
+              }
             }
           };
+
+          const onPointerUp = (e) => {
+            if (activePointerId !== e.pointerId) return;
+            activePointerId = null;
+            if (typeof el.releasePointerCapture === 'function') {
+              try { el.releasePointerCapture(e.pointerId); } catch(err) {}
+            }
+
+            const altarCards = document.querySelectorAll('.altar-score-card');
+            altarCards.forEach(aEl => aEl.classList.remove('drag-targeted'));
+
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+
+            // Se non ha trascinato (semplice tocco / tap)
+            if (!isDragging) {
+              if (this.selectedCardId === card.instanceId) {
+                this.showInspect(card);
+              } else {
+                this.selectedCardId = card.instanceId;
+                sound.triggerHaptic(15);
+                this.renderArena();
+              }
+              return;
+            }
+
+            // Lancio Marvel Snap: rilevamento lancio (rilasciato in alto o flick rapido verso l'alto)
+            const handRect = hand.getBoundingClientRect();
+            const isFlickUp = (vy < -0.32 && dy < -30);
+            const isDropInArena = (e.clientY < handRect.top + 30);
+
+            if (isFlickUp || isDropInArena) {
+              let targetDestIdx = 0;
+              if (altarCards.length === 3) {
+                let minDist = Infinity;
+                altarCards.forEach((aEl, aIdx) => {
+                  const r = aEl.getBoundingClientRect();
+                  const cx = r.left + r.width / 2;
+                  const dist = Math.abs(cx - e.clientX);
+                  if (dist < minDist) {
+                    minDist = dist;
+                    targetDestIdx = aIdx;
+                  }
+                });
+              } else {
+                const pct = e.clientX / window.innerWidth;
+                targetDestIdx = pct < 0.35 ? 0 : (pct < 0.65 ? 1 : 2);
+              }
+
+              const targetDest = this.destinations[targetDestIdx];
+              const cost = Math.max(0, card.cost - (targetDest.config.energyDiscount || 0));
+
+              if (this.playerMiles < cost) {
+                alert('Miglia Aeree insufficienti per questo volo!');
+                snapBack();
+                return;
+              }
+              if (targetDest.playerCards.length >= 4) {
+                alert('Terminal al completo! Massimo 4 carte per metropoli.');
+                snapBack();
+                return;
+              }
+
+              // Animazione di Volo verso la corsia (Flight Arc Swoop)
+              el.classList.remove('dragging');
+              el.classList.add('drag-flight');
+              const targetRect = altarCards[targetDestIdx] ? altarCards[targetDestIdx].getBoundingClientRect() : { left: e.clientX - 40, top: 120, width: 80, height: 80 };
+              const cardRect = el.getBoundingClientRect();
+              const flyDx = (targetRect.left + targetRect.width / 2) - (cardRect.left + cardRect.width / 2) + dx;
+              const flyDy = (targetRect.top + targetRect.height / 2) - (cardRect.top + cardRect.height / 2) + dy;
+
+              el.style.transform = `translate3d(${flyDx}px, ${flyDy}px, 0) scale(0.35) rotate(0deg)`;
+              el.style.opacity = '0.2';
+              sound.playChime();
+
+              setTimeout(() => {
+                this.landCard(card.instanceId, targetDestIdx);
+              }, 260);
+              return;
+            }
+
+            // Ritorno morbido a molla nella mano
+            snapBack();
+          };
+
+          const snapBack = () => {
+            el.classList.remove('dragging');
+            el.classList.add('returning');
+            el.style.transform = originalTransform;
+            setTimeout(() => {
+              el.classList.remove('returning');
+              el.style.transform = originalTransform;
+            }, 300);
+          };
+
+          const onPointerCancel = (e) => {
+            if (activePointerId !== e.pointerId) return;
+            activePointerId = null;
+            document.querySelectorAll('.altar-score-card').forEach(aEl => aEl.classList.remove('drag-targeted'));
+            snapBack();
+          };
+
+          el.addEventListener('pointerdown', onPointerDown);
+          el.addEventListener('pointermove', onPointerMove);
+          el.addEventListener('pointerup', onPointerUp);
+          el.addEventListener('pointercancel', onPointerCancel);
+
           hand.appendChild(el);
         });
 
@@ -3864,10 +4263,19 @@ class PixiBoosterEngine {
 
         setTimeout(() => {
           if (this.pvpMode === 'ai') {
+            const isFirstMatch = (this.saveData && (!this.saveData.stats || this.saveData.stats.matchesWon === 0));
             const playable = this.aiHand.filter(c => c.cost <= this.aiMiles);
             if (playable.length > 0) {
-              const card = playable[0];
-              const target = this.destinations.slice().sort((a, b) => a.aiCards.length - b.aiCards.length)[0];
+              let card = playable[0];
+              let target = this.destinations.slice().sort((a, b) => a.aiCards.length - b.aiCards.length)[0];
+
+              if (isFirstMatch) {
+                playable.sort((a, b) => a.power - b.power);
+                card = playable[0];
+                const gentleDest = this.destinations.find(d => d.playerCards.length === 0 && d.aiCards.length < 2) || target;
+                if (gentleDest) target = gentleDest;
+              }
+
               if (target && target.aiCards.length < 4) {
                 this.aiMiles -= card.cost;
                 this.aiHand.splice(this.aiHand.indexOf(card), 1);
@@ -4014,33 +4422,47 @@ class PixiBoosterEngine {
         const quoteEl = document.getElementById('inspect-quote');
         if (quoteEl) quoteEl.textContent = card.voiceLine ? `«${card.voiceLine}»` : '';
 
-        // Tasto Upgrade Maestria Foil
+        // Tasto Upgrade Maestria Foil o Sblocco Duty Free
+        const isOwned = this.saveData.unlockedCards && this.saveData.unlockedCards.includes(card.id);
         const btnUpgrade = document.getElementById('btn-upgrade-mastery');
         if (btnUpgrade) {
-          const m = card.mastery || 1;
-          const nextName = m === 1 ? 'FOIL ARGENTO' : (m === 2 ? 'ORO PRISMATICO' : (m === 3 ? 'DIAMANTE CELESTE' : 'MAX GRADO'));
-          btnUpgrade.textContent = m >= 4 ? '👑 MAESTRIA MASSIMA (DIAMANTE)' : `✨ POTENZIA A ${nextName} (-150 MIGLIA)`;
-          btnUpgrade.disabled = m >= 4;
-          btnUpgrade.onclick = () => {
-            if (m >= 4) return;
-            if (this.saveData.miles < 150) {
-              alert('Miglia insufficienti per l\'upgrade! Guadagna miglia vincendo partite in Arena o risolvendo i puzzle.');
-              return;
-            }
-            this.addMiles(-150);
-            card.mastery = m + 1;
-            this.saveData.cardMastery[card.id] = card.mastery;
-            this.saveState();
+          if (!isOwned) {
+            btnUpgrade.textContent = '🔒 NON POSSEDUTA • TROVALA NEL DUTY FREE ➔';
+            btnUpgrade.disabled = false;
+            btnUpgrade.style.background = 'linear-gradient(135deg, #334155, #1e293b)';
+            btnUpgrade.style.color = '#fbbf24';
+            btnUpgrade.onclick = () => {
+              modal.style.display = 'none';
+              this.switchTab('tab-booster');
+            };
+          } else {
+            btnUpgrade.style.background = '';
+            btnUpgrade.style.color = '';
+            const m = card.mastery || 1;
+            const nextName = m === 1 ? 'FOIL ARGENTO' : (m === 2 ? 'ORO PRISMATICO' : (m === 3 ? 'DIAMANTE CELESTE' : 'MAX GRADO'));
+            btnUpgrade.textContent = m >= 4 ? '👑 MAESTRIA MASSIMA (DIAMANTE)' : `✨ POTENZIA A ${nextName} (-150 MIGLIA)`;
+            btnUpgrade.disabled = m >= 4;
+            btnUpgrade.onclick = () => {
+              if (m >= 4) return;
+              if (this.saveData.miles < 150) {
+                alert('Miglia insufficienti per l\'upgrade! Guadagna miglia vincendo partite in Arena o ricaricando nel Duty Free.');
+                return;
+              }
+              this.addMiles(-150);
+              card.mastery = m + 1;
+              this.saveData.cardMastery[card.id] = card.mastery;
+              this.saveState();
 
-            sound.playFanfare();
-            fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#ffd700', 80);
-            this.showInspect(card);
-            this.setupCollection();
-            this.setupDeckbuilder();
+              sound.playFanfare();
+              fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#ffd700', 80);
+              this.showInspect(card);
+              this.setupCollection();
+              this.setupDeckbuilder();
 
-            this.checkAchievements('foil_master');
-            if (card.mastery >= 4) this.checkAchievements('diamond_master');
-          };
+              this.checkAchievements('foil_master');
+              if (card.mastery >= 4) this.checkAchievements('diamond_master');
+            };
+          }
         }
 
         sound.playStamp();
@@ -4304,11 +4726,17 @@ class PixiBoosterEngine {
           filtered.forEach(c => {
             const item = document.createElement('div');
             const masteryClass = c.mastery === 2 ? 'mastery-silver' : (c.mastery === 3 ? 'mastery-gold' : (c.mastery === 4 ? 'mastery-diamond' : ''));
-            item.className = `card-item ${c.material} ${masteryClass}`;
+            const isOwned = Boolean(this.saveData && this.saveData.unlockedCards && this.saveData.unlockedCards.includes(c.id));
+            const frameClass = (this.saveData && this.saveData.equippedCosmetics && this.saveData.equippedCosmetics.cardFrame) ? this.saveData.equippedCosmetics.cardFrame : 'frame-default';
+            item.className = `card-item ${c.material} ${masteryClass} ${isOwned ? 'owned' : 'locked'} ${frameClass}`;
             item.style.width = '100%'; item.style.height = '148px';
             if (c.image) item.style.backgroundImage = `url('${c.image}')`;
             item.innerHTML = renderIntegratedCardInner(c);
             item.onclick = () => {
+              if (!isOwned) {
+                this.showInspect(c);
+                return;
+              }
               // Se il mazzo ha meno di 12 carte, chiedi se aggiungere
               const curDeck = this.saveData.customDecks[this.saveData.activeDeckIdx];
               if (curDeck && curDeck.cards.length < 12 && !curDeck.cards.includes(c.id)) {
@@ -4630,8 +5058,64 @@ class PixiBoosterEngine {
         return resultCards;
       }
 
-      // ==================== DUTY FREE 3-TIER PACK CONTROLS ====================
+      // ==================== DUTY FREE & BOUTIQUE CONTROLS ====================
       setupBoosterControls() {
+        // 1. Sub-navigazione Duty Free (Sbustamento 3D, Pacchetti, Ricarica Miglia, Personalizzazione)
+        const subtabBtns = document.querySelectorAll('.duty-subtab-btn');
+        const subviews = document.querySelectorAll('.duty-subview');
+
+        const switchDutySubtab = (targetId) => {
+          subtabBtns.forEach(b => {
+            if (b.getAttribute('data-subtab') === targetId) {
+              b.classList.add('active');
+            } else {
+              b.classList.remove('active');
+            }
+          });
+
+          subviews.forEach(v => {
+            if (v.id === `subtab-${targetId}`) {
+              v.style.display = targetId === 'duty-unboxing' ? 'flex' : 'block';
+              v.classList.add('active');
+            } else {
+              v.style.display = 'none';
+              v.classList.remove('active');
+            }
+          });
+
+          if (targetId === 'duty-packs') {
+            this.renderStorePacks();
+          } else if (targetId === 'duty-miles') {
+            this.renderStoreMiles();
+          } else if (targetId === 'duty-cosmetics') {
+            this.renderCosmeticsShop('all');
+          } else if (targetId === 'duty-unboxing') {
+            if (pixiBooster && typeof pixiBooster.onResize === 'function') {
+              setTimeout(() => pixiBooster.onResize(), 60);
+            }
+          }
+          sound.playChime();
+        };
+
+        subtabBtns.forEach(btn => {
+          btn.onclick = () => {
+            const target = btn.getAttribute('data-subtab');
+            switchDutySubtab(target);
+          };
+        });
+
+        // Banner Voucher Omaggio
+        const voucherPill = document.getElementById('free-pack-voucher-pill');
+        if (voucherPill) {
+          voucherPill.onclick = () => {
+            switchDutySubtab('duty-unboxing');
+            const sovereignCard = document.querySelector('.pack-tier-card[data-tier="sovereign"]');
+            if (sovereignCard) sovereignCard.click();
+            sound.playChime();
+          };
+        }
+
+        // Selettore Tier Bustina 3D
         const tierCards = document.querySelectorAll('.pack-tier-card');
         tierCards.forEach(card => {
           card.onclick = () => {
@@ -4669,12 +5153,217 @@ class PixiBoosterEngine {
             }
           };
         }
+
+        // Render Iniziale dei cataloghi negozio
+        this.renderStorePacks();
+        this.renderStoreMiles();
+        this.renderCosmeticsShop('all');
+      }
+
+      // ==================== RENDERING BOUTIQUE PACCHETTI ====================
+      renderStorePacks() {
+        const container = document.getElementById('store-packs-container');
+        if (!container || typeof PACKS_CATALOG === 'undefined') return;
+        container.innerHTML = '';
+
+        PACKS_CATALOG.forEach(pack => {
+          const card = document.createElement('div');
+          const isVipBundle = pack.id.startsWith('bundle_');
+          card.className = `store-pack-card ${isVipBundle ? 'vip-bundle' : ''}`;
+          card.innerHTML = `
+            <div class="store-pack-icon">${pack.icon}</div>
+            <div class="store-pack-info">
+              <div class="store-pack-name" style="color: ${pack.color}">${pack.name}</div>
+              <div class="store-pack-desc">${pack.desc}</div>
+              <div class="store-pack-meta" style="margin-top: 4px; font-size: 11px; font-weight: 800; color: #facc15;">
+                💰 ${pack.price.toLocaleString()} Miglia
+              </div>
+            </div>
+            <button class="store-pack-btn">
+              ${isVipBundle ? 'ACQUISTA BUNDLE ➔' : 'SBUSTA ORA ➔'}
+            </button>
+          `;
+
+          const btn = card.querySelector('.store-pack-btn');
+          btn.onclick = () => {
+            if (this.saveData.miles < pack.price && (isVipBundle || this.saveData.freePacks <= 0)) {
+              alert(`Miglia insufficienti per acquistare "${pack.name}"! Ricarica il tuo saldo nella sezione RICARICA MIGLIA.`);
+              return;
+            }
+
+            if (isVipBundle) {
+              this.addMiles(-pack.price);
+              if (pack.id === 'bundle_firstclass') {
+                if (!this.saveData.ownedCosmetics.cardBacks.includes('back_leather')) {
+                  this.saveData.ownedCosmetics.cardBacks.push('back_leather');
+                }
+                this.saveData.equippedCosmetics.cardBack = 'back_leather';
+                this.saveData.freePacks = (this.saveData.freePacks || 0) + 3;
+                alert('🎁 BUNDLE FIRST CLASS SBLOCCATO!\n- Ottenuto Dorso Cuoio & Ceralacca 24K (Equipaggiato)\n- Accreditati 3 Pacchetti Sovereign Omaggio!');
+              } else if (pack.id === 'bundle_consular') {
+                if (!this.saveData.ownedCosmetics.cardFrames.includes('frame_gold')) {
+                  this.saveData.ownedCosmetics.cardFrames.push('frame_gold');
+                }
+                this.saveData.equippedCosmetics.cardFrame = 'frame_gold';
+                this.saveData.freePacks = (this.saveData.freePacks || 0) + 5;
+                alert('👑 CASSA DIPLOMATICA GLOBALE SBLOCCATA!\n- Ottenuta Cornice Oro Zecchino 24K (Equipaggiata)\n- Accreditati 5 Pacchetti Sovereign Omaggio!');
+              }
+              this.applyEquippedCosmetics();
+              this.saveState();
+              this.updateGlobalMilesUI();
+              sound.playFanfare();
+              if (typeof fx !== 'undefined' && fx && fx.spawnExplosion) fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#ffd700', 80);
+              
+              const btnUnbox = document.querySelector('.duty-subtab-btn[data-subtab="duty-unboxing"]');
+              if (btnUnbox) btnUnbox.click();
+            } else {
+              const btnUnbox = document.querySelector('.duty-subtab-btn[data-subtab="duty-unboxing"]');
+              if (btnUnbox) btnUnbox.click();
+              const tierCard = document.querySelector(`.pack-tier-card[data-tier="${pack.id}"]`);
+              if (tierCard) tierCard.click();
+            }
+          };
+
+          container.appendChild(card);
+        });
+      }
+
+      // ==================== RENDERING RICARICA MIGLIA ====================
+      renderStoreMiles() {
+        const container = document.getElementById('store-miles-container');
+        const balEl = document.getElementById('miles-store-current-balance');
+        if (balEl && this.saveData) balEl.textContent = `${this.saveData.miles.toLocaleString()} Miglia`;
+        if (!container || typeof MILES_BUNDLES === 'undefined') return;
+        container.innerHTML = '';
+
+        MILES_BUNDLES.forEach(bundle => {
+          const card = document.createElement('div');
+          card.className = 'miles-shop-card';
+          card.innerHTML = `
+            ${bundle.bonus ? `<div class="miles-bonus-tag">${bundle.bonus}</div>` : ''}
+            <div class="miles-shop-icon">${bundle.icon}</div>
+            <div class="miles-shop-amount">+${bundle.miles.toLocaleString()} M</div>
+            <div class="miles-shop-name">${bundle.name}</div>
+            <button class="miles-buy-btn">RICARICA ${bundle.priceEur}</button>
+          `;
+
+          const btn = card.querySelector('.miles-buy-btn');
+          btn.onclick = () => {
+            this.addMiles(bundle.miles);
+            sound.playFanfare();
+            if (typeof fx !== 'undefined' && fx && fx.spawnExplosion) {
+              const rect = btn.getBoundingClientRect();
+              fx.spawnExplosion(rect.left + rect.width / 2, rect.top + rect.height / 2, '#ffd700', 60);
+            }
+            if (balEl) balEl.textContent = `${this.saveData.miles.toLocaleString()} Miglia`;
+            alert(`✨ Ricarica di ${bundle.miles.toLocaleString()} Miglia completata con successo! Saldo attuale: ${this.saveData.miles.toLocaleString()} Miglia.`);
+          };
+
+          container.appendChild(card);
+        });
+      }
+
+      // ==================== RENDERING PERSONALIZZAZIONE COSMETICI ====================
+      renderCosmeticsShop(filterCat = 'all') {
+        const container = document.getElementById('store-cosmetics-container');
+        if (!container || typeof COSMETICS_CATALOG === 'undefined') return;
+        container.innerHTML = '';
+
+        // Pulsanti Filtro Categoria
+        document.querySelectorAll('.cosmetics-cat-btn').forEach(btn => {
+          if (btn.getAttribute('data-cat') === filterCat) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+          btn.onclick = () => this.renderCosmeticsShop(btn.getAttribute('data-cat'));
+        });
+
+        const categories = filterCat === 'all' 
+          ? ['boards', 'cardBacks', 'cardFrames'] 
+          : [filterCat];
+
+        categories.forEach(catKey => {
+          const items = COSMETICS_CATALOG[catKey] || [];
+          const equippedId = this.saveData.equippedCosmetics 
+            ? (catKey === 'boards' ? this.saveData.equippedCosmetics.board : (catKey === 'cardBacks' ? this.saveData.equippedCosmetics.cardBack : this.saveData.equippedCosmetics.cardFrame))
+            : null;
+          const ownedList = (this.saveData.ownedCosmetics && this.saveData.ownedCosmetics[catKey]) || [];
+
+          items.forEach(item => {
+            const isOwned = item.price === 0 || ownedList.includes(item.id);
+            const isEquipped = equippedId === item.id;
+
+            const card = document.createElement('div');
+            card.className = `cosmetic-card ${isEquipped ? 'equipped' : ''}`;
+            
+            let previewStyle = '';
+            if (catKey === 'boards') {
+              const bgMap = {
+                board_default: 'url("assets/backgrounds/bg_arena.jpg")',
+                board_lounge: 'url("assets/backgrounds/bg_deck.jpg")',
+                board_cockpit: 'url("assets/backgrounds/bg_spire.jpg")',
+                board_copacabana: 'url("assets/backgrounds/bg_dutyfree.jpg")',
+                board_zen: 'url("assets/backgrounds/bg_codex.jpg")'
+              };
+              previewStyle = `background-image: ${bgMap[item.id] || 'none'};`;
+            }
+
+            card.innerHTML = `
+              <div class="cosmetic-preview-box ${catKey === 'cardBacks' ? item.styleClass : ''} ${catKey === 'cardFrames' ? item.styleClass : ''}" style="${previewStyle}">
+                ${catKey !== 'boards' ? item.icon : ''}
+              </div>
+              <div class="cosmetic-name">${item.name}</div>
+              <div class="cosmetic-desc">${item.desc}</div>
+              <div class="cosmetic-price-tag">${isOwned ? (isEquipped ? '✓ In Uso' : 'Posseduto') : `🪙 ${item.price} M`}</div>
+              <button class="btn-cosmetic-action ${isEquipped ? 'btn-in-use' : (isOwned ? 'btn-equip' : 'btn-buy')}">
+                ${isEquipped ? '✓ EQUIPAGGIATO' : (isOwned ? 'EQUIPAGGIA' : `SBLOCCA (${item.price} M)`)}
+              </button>
+            `;
+
+            const btn = card.querySelector('.btn-cosmetic-action');
+            if (isEquipped) {
+              btn.disabled = true;
+            } else if (isOwned) {
+              btn.onclick = () => {
+                const targetProp = catKey === 'boards' ? 'board' : (catKey === 'cardBacks' ? 'cardBack' : 'cardFrame');
+                this.saveData.equippedCosmetics[targetProp] = item.id;
+                this.applyEquippedCosmetics();
+                this.saveState();
+                sound.playStamp();
+                this.renderCosmeticsShop(filterCat);
+                if (typeof this.setupCollection === 'function') this.setupCollection();
+              };
+            } else {
+              btn.onclick = () => {
+                if (this.saveData.miles < item.price) {
+                  alert(`Miglia insufficienti per sbloccare "${item.name}" (${item.price} Miglia richieste). Ricarica il tuo saldo nella sezione Ricarica!`);
+                  return;
+                }
+                this.addMiles(-item.price);
+                if (!this.saveData.ownedCosmetics[catKey]) this.saveData.ownedCosmetics[catKey] = [];
+                this.saveData.ownedCosmetics[catKey].push(item.id);
+                const targetProp = catKey === 'boards' ? 'board' : (catKey === 'cardBacks' ? 'cardBack' : 'cardFrame');
+                this.saveData.equippedCosmetics[targetProp] = item.id;
+                this.applyEquippedCosmetics();
+                this.saveState();
+                sound.playFanfare();
+                if (typeof fx !== 'undefined' && fx && fx.spawnExplosion) fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#ffd700', 70);
+                this.renderCosmeticsShop(filterCat);
+                if (typeof this.setupCollection === 'function') this.setupCollection();
+              };
+            }
+
+            container.appendChild(card);
+          });
+        });
       }
 
       // ==================== IMPOSTAZIONI MODALE ====================
       setupSettingsModal() {
         const modal = document.getElementById('modal-settings');
         const btnOpen = document.getElementById('btn-open-settings');
+        const btnOpenArena = document.getElementById('btn-open-settings-arena');
         const btnClose = document.getElementById('btn-close-settings');
         const volSlider = document.getElementById('setting-vol-slider');
         const volText = document.getElementById('setting-vol-text');
@@ -4682,6 +5371,7 @@ class PixiBoosterEngine {
         const btnReset = document.getElementById('btn-reset-data');
 
         if (btnOpen) btnOpen.onclick = () => modal.style.display = 'flex';
+        if (btnOpenArena) btnOpenArena.onclick = () => modal.style.display = 'flex';
         if (btnClose) btnClose.onclick = () => modal.style.display = 'none';
 
         if (volSlider) {
@@ -4947,7 +5637,9 @@ class PixiBoosterEngine {
           } catch(e) {}
 
           setTimeout(() => {
-            if (this.saveData && !this.saveData.tutorialCompleted && window.tutorial) {
+            if (this.saveData && !this.saveData.starterPackClaimed) {
+              this.openStarterPackModal();
+            } else if (this.saveData && !this.saveData.tutorialCompleted && window.tutorial) {
               window.tutorial.start();
             }
           }, 400);
@@ -4974,6 +5666,78 @@ class PixiBoosterEngine {
               e.preventDefault();
               if (btnConfirm) btnConfirm.click();
             }
+          };
+        }
+      }
+
+      openStarterPackModal() {
+        const modal = document.getElementById('modal-starter-pack');
+        const carousel = document.getElementById('starter-cards-carousel');
+        const btnClaim = document.getElementById('btn-claim-starter-pack');
+        const titleEl = document.getElementById('starter-pack-title');
+
+        if (!modal) return;
+
+        if (titleEl && this.saveData && this.saveData.pilotName) {
+          titleEl.textContent = `Kit di Volo Comandante ${this.saveData.pilotName}`;
+        }
+
+        if (carousel) {
+          carousel.innerHTML = '';
+          STARTER_DECK_12.forEach((cardId) => {
+            const card = ALL_CARDS.find(c => c.id === cardId);
+            if (!card) return;
+            const item = document.createElement('div');
+            item.className = `starter-card-mini ${card.rarity === RARITY.LEGENDARY ? 'featured' : ''}`;
+            if (card.image) item.style.backgroundImage = `url('${card.image}')`;
+            item.innerHTML = `
+              <div class="starter-card-cost">✈${card.cost}</div>
+              <div class="starter-card-power">⚡${card.power}</div>
+              <div class="starter-card-name">${card.name.split(',')[0]}</div>
+            `;
+            carousel.appendChild(item);
+          });
+        }
+
+        modal.style.display = 'flex';
+
+        if (btnClaim) {
+          btnClaim.onclick = () => {
+            modal.style.display = 'none';
+
+            if (this.saveData) {
+              this.saveData.starterPackClaimed = true;
+              this.saveData.unlockedCards = [...new Set([...(this.saveData.unlockedCards || []), ...STARTER_DECK_12])];
+              this.saveData.freePacks = Math.max(this.saveData.freePacks || 0, 2);
+              this.saveData.miles = Math.max(this.saveData.miles || 0, 600);
+              if (this.saveData.customDecks && this.saveData.customDecks[0]) {
+                this.saveData.customDecks[0].cards = [...STARTER_DECK_12];
+              }
+              this.saveState();
+              this.updateGlobalMilesUI();
+              if (typeof this.setupDeckbuilder === 'function') this.setupDeckbuilder();
+              if (typeof this.setupCollection === 'function') this.setupCollection();
+              if (typeof this.setupBoosterControls === 'function') this.setupBoosterControls();
+            }
+
+            try {
+              if (typeof sound !== 'undefined') {
+                sound.playFanfare();
+                setTimeout(() => sound.playCoins(), 300);
+              }
+              if (typeof fx !== 'undefined' && fx && fx.spawnExplosion) {
+                const cx = window.innerWidth / 2;
+                const cy = window.innerHeight / 2;
+                fx.spawnExplosion(cx, cy, '#ffd700', 90);
+                setTimeout(() => fx.spawnExplosion(cx, cy, '#38bdf8', 60), 200);
+              }
+            } catch (e) {}
+
+            setTimeout(() => {
+              if (this.saveData && !this.saveData.tutorialCompleted && window.tutorial) {
+                window.tutorial.start();
+              }
+            }, 500);
           };
         }
       }

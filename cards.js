@@ -311,3 +311,61 @@ export const ALL_CARDS = [
     text: 'Immunità Totale: Protegge tutte le tue carte dagli imprevisti avversari per il turno.', soundType: 'stamp'
   }
 ];
+
+// ==================== STARTER DECK EQUILIBRATO (12 CARTE DI BENVENUTO) ====================
+export const STARTER_DECK_12 = [
+  'card_italy_champ',       // Leonardo da Vinci (Sovereign Leggendario, Cost 3, Power 5)
+  'card_italy_colosseum',   // Colosseo dei Cesari (Destinazione Rara, Cost 2, Power 4)
+  'card_italy_espresso',    // Espresso Napoletano (Evento Comune, Cost 1, Power 2)
+  'card_france_eiffel',     // Torre Eiffel (Destinazione Rara, Cost 3, Power 5)
+  'card_france_champagne',  // Champagne Grand Cru (Evento Raro, Cost 2, Power 3)
+  'card_uk_bigben',         // Big Ben & Westminster (Destinazione Rara, Cost 3, Power 5)
+  'card_germany_autobahn',  // Autobahn Express (Evento Comune, Cost 1, Power 3)
+  'card_swiss_train',       // Glacier Express delle Alpi (Destinazione Rara, Cost 2, Power 4)
+  'card_japan_shinkansen',  // Treno Maglev Shinkansen (Evento Raro, Cost 2, Power 4)
+  'card_usa_wallstreet',    // Borsa di Wall Street (Destinazione Rara, Cost 4, Power 8)
+  'trap_visa_denied',       // Visto Negato alla Dogana (Trappola Imprevisto, Cost 2, Power 3)
+  'spell_lastminute'        // Scalo Last-Minute (Evento Scoperta, Cost 1)
+];
+
+// ==================== CATALOGO COSMETICI E PERSONALIZZAZIONE MAZZO ====================
+export const COSMETICS_CATALOG = {
+  boards: [
+    { id: 'board_default', name: 'Pista Notturna Internazionale', icon: '✈️', price: 0, desc: 'Tavolo standard con pista aeroportuale notturna e radar', styleClass: 'board-default' },
+    { id: 'board_lounge', name: 'Lounge First Class in Mogano', icon: '🍷', price: 200, desc: 'Lusso sartoriale in mogano massello, velluto navy e bicchieri di cristallo', styleClass: 'board-lounge' },
+    { id: 'board_cockpit', name: 'Cockpit A380 Olografico', icon: '🕹️', price: 350, desc: 'Cabina di pilotaggio futuristica con display HUD verde smeraldo', styleClass: 'board-cockpit' },
+    { id: 'board_copacabana', name: 'Copacabana Sunset Beach', icon: '🏖️', price: 300, desc: 'Tavolo teak con vista sul tramonto di Rio de Janeiro e onde oceaniche', styleClass: 'board-copacabana' },
+    { id: 'board_zen', name: 'Tempio Zen & Lanterne Tokyo', icon: '⛩️', price: 400, desc: 'Finitura in carta washi e pietra d\'ardesia scura con petali sakura', styleClass: 'board-zen' }
+  ],
+  cardBacks: [
+    { id: 'back_default', name: 'Passaporto Ufficiale WTO', icon: '📘', price: 0, desc: 'Dorso classico blu notte con timbro dorato della Federazione di Volo', styleClass: 'back-default' },
+    { id: 'back_leather', name: 'Cuoio Toscano & Sigillo 24k', icon: '🧳', price: 150, desc: 'Pelle conciata a mano con stemma reale e ceralacca dorata in rilievo', styleClass: 'back-leather' },
+    { id: 'back_titanium', name: 'Titanio & Fibra di Carbonio', icon: '🛡️', price: 250, desc: 'Lega aeronautica ultraleggera con trama esagonale nera spazzolata', styleClass: 'back-titanium' },
+    { id: 'back_retrowings', name: 'Retro Golden Wings 1960', icon: '✈️', price: 250, desc: 'Grafica vintage anni 60 con ali dorate dell\'aviazione transcontinentale', styleClass: 'back-retrowings' },
+    { id: 'back_aurora', name: 'Aurora Boreale Olografica', icon: '🌌', price: 300, desc: 'Lamina iridescente cangiante che riflette le luci del nord di Reykjavik', styleClass: 'back-aurora' }
+  ],
+  cardFrames: [
+    { id: 'frame_default', name: 'Cornice Standard d\'Aviazione', icon: '✈️', price: 0, desc: 'Bordo pulito in alluminio aeronautico satinato', styleClass: 'frame-default' },
+    { id: 'frame_gold', name: 'Bordo Oro Zecchino 24K', icon: '🏅', price: 200, desc: 'Cornice dorata con riflessi metallici e gemme imperiali ai 4 angoli', styleClass: 'frame-gold' },
+    { id: 'frame_neon', name: 'Bordo Neon Ciano Cyberpunk', icon: '⚡', price: 200, desc: 'Emissione luminosa pulsante a led neon stile Tokyo Shinjuku', styleClass: 'frame-neon' },
+    { id: 'frame_diamond', name: 'Bordo Diamante Olografico', icon: '💎', price: 350, desc: 'Taglio brillante in cristallo sfaccettato con particelle scintillanti', styleClass: 'frame-diamond' }
+  ]
+};
+
+// ==================== TAGLI RICARICA VALUTA (MIGLIA AEREE) ====================
+export const MILES_BUNDLES = [
+  { id: 'miles_small', name: 'Tasca del Viaggiatore', miles: 300, priceEur: '1,99 €', icon: '🪙', bonus: 'Bonus Primo Acquisto' },
+  { id: 'miles_medium', name: 'Bagaglio a Mano', miles: 750, priceEur: '4,99 €', icon: '🧳', bonus: '+15% OMAGGIO' },
+  { id: 'miles_large', name: 'Valigia Stiva First Class', miles: 1800, priceEur: '9,99 €', icon: '✈️', bonus: '+25% OMAGGIO' },
+  { id: 'miles_vip', name: 'Cassaforte Consolare VIP', miles: 4500, priceEur: '19,99 €', icon: '👑', bonus: '+40% OMAGGIO' }
+];
+
+// ==================== CATALOGO PACCHETTI & BUNDLE DUTY FREE ====================
+export const PACKS_CATALOG = [
+  { id: 'economy', name: 'Economy Class Pack', icon: '🥉', cardsCount: 3, price: 100, minRarity: 'rare', color: '#38bdf8', desc: '3 Carte del Mondo • 1 Rara garantita' },
+  { id: 'business', name: 'Business Class Pack', icon: '🥈', cardsCount: 4, price: 250, minRarity: 'epic', color: '#c084fc', desc: '4 Carte del Mondo • 1 Epica garantita' },
+  { id: 'sovereign', name: 'Sovereign 24K Pack', icon: '🥇', cardsCount: 5, price: 500, minRarity: 'legendary', color: '#ffd700', desc: '5 Carte del Mondo • 1 Leggendaria Foil garantita' },
+  { id: 'bundle_firstclass', name: 'Bundle First Class VIP', icon: '👑', cardsCount: 15, price: 1200, minRarity: 'legendary', color: '#fbbf24', desc: '3x Sovereign Pack (15 Carte) + Dorso Cuoio & Ceralacca 24K' },
+  { id: 'bundle_consular', name: 'Cassa Diplomatica Globale', icon: '🏛️', cardsCount: 25, price: 2500, minRarity: 'legendary', color: '#f59e0b', desc: '5x Sovereign Pack (25 Carte) + 1.000 Punti Maestria + Cornice Oro Zecchino' }
+];
+
