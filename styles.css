@@ -510,17 +510,16 @@ body {
 /* TAB 1: ARENA COCKPIT & FIRST CLASS VISTA */
 #tab-arena {
   background: 
-    radial-gradient(circle at 50% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 60%),
-    radial-gradient(circle at 50% 85%, rgba(245, 158, 11, 0.1) 0%, transparent 60%),
-    linear-gradient(180deg, #050711 0%, #070a16 50%, #020306 100%);
+    linear-gradient(180deg, rgba(7, 10, 22, 0.45) 0%, rgba(3, 5, 12, 0.6) 50%, rgba(2, 3, 6, 0.82) 100%),
+    url('assets/backgrounds/bg_arena.jpg') no-repeat center center / cover;
+  position: relative;
 }
 
 /* TAB 2: IL GIRO DEL MONDO (ROTTE CELESTI & ASTROLABIO) */
 .spire-view {
   background: 
-    radial-gradient(circle at 50% 15%, rgba(99, 102, 241, 0.22) 0%, transparent 60%),
-    radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.15) 0%, transparent 60%),
-    linear-gradient(180deg, #09091d 0%, #05060e 50%, #020307 100%);
+    linear-gradient(180deg, rgba(9, 9, 29, 0.55) 0%, rgba(5, 6, 14, 0.68) 50%, rgba(2, 3, 7, 0.88) 100%),
+    url('assets/backgrounds/bg_spire.jpg') no-repeat center center / cover;
   background-attachment: fixed;
   position: relative;
   padding: 16px 14px 80px;
@@ -532,7 +531,7 @@ body {
   position: absolute;
   inset: 0;
   background-image: 
-    repeating-radial-gradient(circle at 50% 40%, transparent 0, transparent 40px, rgba(245, 158, 11, 0.03) 41px, transparent 42px),
+    repeating-radial-gradient(circle at 50% 40%, transparent 0, transparent 40px, rgba(245, 158, 11, 0.04) 41px, transparent 42px),
     repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(56, 189, 248, 0.03) 50px);
   pointer-events: none;
 }
@@ -558,7 +557,7 @@ body {
   width: 66px;
   height: 66px;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #1e1b4b, #090a14);
+  background: radial-gradient(circle at 35% 35%, rgba(30, 27, 75, 0.85), rgba(9, 10, 20, 0.95));
   border: 2px solid #a855f7;
   display: flex;
   flex-direction: column;
@@ -567,6 +566,7 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 6px 16px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.4);
+  backdrop-filter: blur(8px);
 }
 
 .spire-node:hover, .spire-node.available {
@@ -583,8 +583,9 @@ body {
 /* TAB 3: PASSAPORTO & SCRIVANIA CONSOLARE */
 .collection-view {
   background: 
-    radial-gradient(circle at 50% 5%, rgba(245, 158, 11, 0.2) 0%, transparent 55%),
-    linear-gradient(180deg, #1c1008 0%, #120904 40%, #070402 100%);
+    linear-gradient(180deg, rgba(28, 16, 8, 0.5) 0%, rgba(18, 9, 4, 0.68) 40%, rgba(7, 4, 2, 0.88) 100%),
+    url('assets/backgrounds/bg_deck.jpg') no-repeat center center / cover;
+  background-attachment: fixed;
   position: relative;
   padding: 16px 14px 80px;
   overflow-y: auto;
@@ -594,7 +595,7 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.025) 0, rgba(245, 158, 11, 0.025) 2px, transparent 2px, transparent 16px);
+  background-image: repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.02) 0, rgba(245, 158, 11, 0.02) 2px, transparent 2px, transparent 16px);
   pointer-events: none;
 }
 
@@ -607,24 +608,25 @@ body {
   z-index: 2;
 }
 
-/* TAB 4: SBUSTAMENTO 3D (VETRINA VIP DUTY FREE) */
+/* TAB 4: SBUSTAMENTO 2.5D (VETRINA VIP DUTY FREE) */
 .booster-view {
   background: 
-    radial-gradient(circle at 50% 30%, rgba(254, 240, 138, 0.18) 0%, rgba(245, 158, 11, 0.08) 40%, transparent 70%),
-    radial-gradient(circle at 50% 90%, rgba(0, 240, 255, 0.12) 0%, transparent 60%),
-    linear-gradient(180deg, #180d04 0%, #0d0601 50%, #040201 100%);
+    radial-gradient(circle at 50% 30%, rgba(254, 240, 138, 0.15) 0%, rgba(0, 0, 0, 0.6) 60%),
+    url('assets/backgrounds/bg_dutyfree.jpg') no-repeat center center / cover;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 0;
   overflow: hidden;
+  position: relative;
 }
 
 /* TAB 5: CODEX UFFICIALE (STUDIO DELL'ANTIQUARIO & GRANDE ATLANTE) */
 .codex-view {
   background: 
-    radial-gradient(circle at 50% 10%, rgba(0, 240, 255, 0.14) 0%, transparent 55%),
-    linear-gradient(180deg, #090e1a 0%, #060912 50%, #020306 100%);
+    linear-gradient(180deg, rgba(9, 14, 26, 0.55) 0%, rgba(6, 9, 18, 0.7) 50%, rgba(2, 3, 6, 0.9) 100%),
+    url('assets/backgrounds/bg_codex.jpg') no-repeat center center / cover;
+  background-attachment: fixed;
   position: relative;
   padding: 16px 14px 80px;
   overflow-y: auto;

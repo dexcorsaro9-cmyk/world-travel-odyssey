@@ -1,5 +1,5 @@
 // World Travel Odyssey (WTO) - Service Worker PWA
-const CACHE_NAME = 'wto-cache-v11';
+const CACHE_NAME = 'wto-cache-v12';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -11,6 +11,11 @@ const ASSETS_TO_CACHE = [
   './assets/logo.png',
   './assets/logo.svg',
   './assets/pixi.min.js',
+  './assets/backgrounds/bg_arena.jpg',
+  './assets/backgrounds/bg_spire.jpg',
+  './assets/backgrounds/bg_deck.jpg',
+  './assets/backgrounds/bg_dutyfree.jpg',
+  './assets/backgrounds/bg_codex.jpg',
   './assets/cards/brazil.jpg',
   './assets/cards/card_argentina_tango.jpg',
   './assets/cards/card_australia_reef.jpg',
