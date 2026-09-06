@@ -396,6 +396,7 @@
           <div style="display: flex; align-items: center; gap: 8px;">
             <div class="energy-orb" id="energy-value" title="Miglia Aeree Disponibili">1/1</div>
             <div class="souls-badge" id="souls-value" title="Visti & Diritti di Scalo">0 Visti</div>
+            <div class="pilot-callsign-pill" id="hud-pilot-callsign" title="Nome Comandante di Bordo">✈ Comandante</div>
           </div>
 
           <div style="display: flex; gap: 6px; align-items: center;">
@@ -1091,8 +1092,70 @@
       </button>
     </nav>
 
-    <!-- ==================== MODALI ==================== -->
-    
+    <!-- ==================== INTRO VIDEO CINEMATICA (VALIGIA ORBITANTE ATTORNO AL GLOBO) ==================== -->
+    <div id="intro-video-overlay" class="intro-video-overlay" style="display: none;">
+      <div class="intro-video-controls">
+        <button id="btn-intro-mute" class="intro-mute-btn" title="Audio">🔊</button>
+        <button id="btn-intro-skip" class="intro-skip-btn">SALTA INTRO ✕</button>
+      </div>
+      <video id="intro-video-player" class="intro-video-element" playsinline webkit-playsinline preload="auto">
+        <source src="assets/videos/intro_travel_case.mp4" type="video/mp4">
+        <source src="assets/videos/intro_travel_case.webm" type="video/webm">
+      </video>
+    </div>
+
+    <!-- ==================== 3D LUGGAGE TAG MODAL (TAG VALIGIA • INSERIMENTO NOME) ==================== -->
+    <div id="luggage-tag-modal" class="luggage-tag-modal-overlay">
+      <div class="luggage-tag-card">
+        <div class="luggage-tag-strap">
+          <div class="luggage-tag-eyelet"></div>
+        </div>
+
+        <div class="luggage-tag-header">
+          <div class="luggage-tag-airline">WORLD TRAVEL ODYSSEY • BOARDING PASS</div>
+          <h2 class="luggage-tag-title">Etichetta di Volo Comandante</h2>
+          <p class="luggage-tag-sub">Personalizza il tuo bagaglio per iniziare il viaggio globale</p>
+        </div>
+
+        <div class="luggage-tag-field">
+          <label class="luggage-tag-label" for="input-pilot-name">
+            <span>✈️</span> NOME COMANDANTE / PASSENGER
+          </label>
+          <input type="text" id="input-pilot-name" class="luggage-tag-input" placeholder="Es. Marco, Alex, SkyCaptain..." maxlength="16" autocomplete="off" />
+        </div>
+
+        <div class="luggage-tag-field">
+          <label class="luggage-tag-label" for="select-pilot-country">
+            <span>🌍</span> HUB DI PARTENZA / BANDIERA
+          </label>
+          <select id="select-pilot-country" class="luggage-tag-country-select">
+            <option value="ITA">🇮🇹 Italia (Roma FCO / Milano MXP)</option>
+            <option value="USA">🇺🇸 Stati Uniti (New York JFK)</option>
+            <option value="FRA">🇫🇷 Francia (Parigi CDG)</option>
+            <option value="JPN">🇯🇵 Giappone (Tokyo HND)</option>
+            <option value="BRA">🇧🇷 Brasile (Rio GIG / San Paolo)</option>
+            <option value="EGY">🇪🇬 Egitto (Il Cairo CAI)</option>
+            <option value="AUS">🇦🇺 Australia (Sydney SYD)</option>
+            <option value="GBR">🇬🇧 Regno Unito (Londra LHR)</option>
+          </select>
+        </div>
+
+        <div class="luggage-tag-meta-row">
+          <div class="luggage-tag-meta-item">VOLO: <strong>WTO-2026</strong></div>
+          <div class="luggage-tag-meta-item">GATE: <strong>01 • WORLD</strong></div>
+          <div class="luggage-tag-meta-item">CLASSE: <strong>FIRST VIP</strong></div>
+        </div>
+
+        <button id="btn-confirm-pilot-name" class="luggage-tag-confirm-btn" type="button">
+          <span>✦ CONFERMA IMBARCO & DECOLLA ✦</span>
+        </button>
+
+        <button id="btn-skip-pilot-name" class="luggage-tag-skip-btn" type="button">
+          Continua come Comandante Ospite
+        </button>
+      </div>
+    </div>
+
     <!-- ==================== ASSISTENTE DI VOLO 2D (TUTORIAL VISIVO ONBOARDING) ==================== -->
     <div id="tutorial-overlay" class="tutorial-overlay" style="display: none;">
       <!-- Maschera SVG per Riflettore / Spotlight -->
@@ -1370,6 +1433,9 @@
           </div>
 
           <div style="border-top:1px solid #334155; padding-top:10px; margin-top:4px; display:flex; flex-direction:column; gap:8px;">
+            <button id="btn-replay-intro-video" style="width:100%; background:linear-gradient(135deg, #0c1c38, #1e3a8a); border:1.5px solid #38bdf8; color:#e0f2fe; font-size:11px; font-weight:900; padding:9px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <span>🎬 Rivedi Video di Volo (Valigia 3D)</span>
+            </button>
             <button id="btn-replay-tutorial" style="width:100%; background:linear-gradient(135deg, #1e1b4b, #312e81); border:1.5px solid #a855f7; color:#f5d0fe; font-size:11px; font-weight:900; padding:9px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
               <img src="assets/characters/flight_attendant.jpg" style="width:18px; height:18px; border-radius:50%; object-fit:cover;" alt="Elena">
               <span>Rivedi Tutorial con Elena</span>
@@ -3021,6 +3087,15 @@ class PixiBoosterEngine {
           };
         }
 
+        const btnReplayVideo = document.getElementById('btn-replay-intro-video');
+        if (btnReplayVideo) {
+          btnReplayVideo.onclick = () => {
+            const modalSet = document.getElementById('modal-settings');
+            if (modalSet) modalSet.style.display = 'none';
+            if (this.hub) this.hub.playIntroVideoSequence(true);
+          };
+        }
+
         window.addEventListener('resize', () => {
           if (this.isActive && this.steps[this.currentStep]) {
             this.updateSpotlight(this.steps[this.currentStep].targetSelector);
@@ -3096,7 +3171,14 @@ class PixiBoosterEngine {
 
         if (this.badgeEl) this.badgeEl.textContent = step.badge;
         if (this.counterEl) this.counterEl.textContent = `Passo ${index + 1}/${this.steps.length}`;
-        if (this.titleEl) this.titleEl.innerHTML = step.title;
+        const pName = (this.hub && this.hub.saveData && this.hub.saveData.pilotName) ? this.hub.saveData.pilotName : '';
+        if (this.titleEl) {
+          if (index === 0 && pName && pName !== 'Comandante') {
+            this.titleEl.innerHTML = `Benvenuto a Bordo, Comandante ${pName}! ✈️`;
+          } else {
+            this.titleEl.innerHTML = step.title;
+          }
+        }
         if (this.textEl) this.textEl.innerHTML = step.text;
         if (this.btnNext) this.btnNext.innerHTML = step.btnText || (index === this.steps.length - 1 ? 'INIZIA IL VOLO ✈️' : 'Avanti ▶');
         if (this.btnPrev) this.btnPrev.style.display = index > 0 ? 'inline-block' : 'none';
@@ -3195,10 +3277,23 @@ class PixiBoosterEngine {
             },
             puzzlesSolved: [false, false, false],
             achievementsClaimed: {},
+            pilotName: 'Comandante',
+            pilotCountry: 'ITA',
+            introVideoWatched: false,
             tutorialCompleted: false,
             stats: { matchesPlayed: 0, matchesWon: 0, packsOpened: 0 }
           };
           this.saveState();
+        } else {
+          if (!this.saveData.pilotName) this.saveData.pilotName = 'Comandante';
+          if (!this.saveData.pilotCountry) this.saveData.pilotCountry = 'ITA';
+          if (this.saveData.introVideoWatched === undefined) this.saveData.introVideoWatched = false;
+        }
+
+        // Applica nome pilota nell'HUD
+        const hudCallsign = document.getElementById('hud-pilot-callsign');
+        if (hudCallsign && this.saveData && this.saveData.pilotName) {
+          hudCallsign.textContent = '✈ ' + this.saveData.pilotName;
         }
 
         // Applica le maestrie salvate alle carte in memoria
@@ -4705,7 +4800,9 @@ class PixiBoosterEngine {
           splash.classList.add('hidden');
           setTimeout(() => {
             splash.style.display = 'none';
-            if (this.saveData && !this.saveData.tutorialCompleted) {
+            if (this.saveData && !this.saveData.introVideoWatched) {
+              this.playIntroVideoSequence();
+            } else if (this.saveData && !this.saveData.tutorialCompleted) {
               if (window.tutorial) window.tutorial.start();
             }
           }, 700);
@@ -4726,6 +4823,159 @@ class PixiBoosterEngine {
             dismissSplash();
           }
         });
+      }
+
+      playIntroVideoSequence(forceReplay = false) {
+        const overlay = document.getElementById('intro-video-overlay');
+        const video = document.getElementById('intro-video-player');
+        const muteBtn = document.getElementById('btn-intro-mute');
+        const skipBtn = document.getElementById('btn-intro-skip');
+
+        if (!overlay || !video) {
+          this.openLuggageTagModal(forceReplay);
+          return;
+        }
+
+        overlay.style.display = 'flex';
+        overlay.classList.remove('hidden');
+
+        video.muted = false;
+        if (muteBtn) {
+          muteBtn.textContent = '🔊';
+          muteBtn.onclick = (e) => {
+            e.stopPropagation();
+            video.muted = !video.muted;
+            muteBtn.textContent = video.muted ? '🔇' : '🔊';
+          };
+        }
+
+        let isFinished = false;
+        const endSequence = () => {
+          if (isFinished) return;
+          isFinished = true;
+          video.pause();
+          overlay.classList.add('hidden');
+          setTimeout(() => {
+            overlay.style.display = 'none';
+            this.openLuggageTagModal(forceReplay);
+          }, 450);
+        };
+
+        if (skipBtn) {
+          skipBtn.onclick = (e) => {
+            e.stopPropagation();
+            endSequence();
+          };
+        }
+
+        video.onended = () => {
+          endSequence();
+        };
+
+        video.currentTime = 0;
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch((err) => {
+            console.warn('[WTO] Unmuted autoplay blocked, retrying muted:', err);
+            video.muted = true;
+            if (muteBtn) muteBtn.textContent = '🔇';
+            video.play().catch(e => {
+              console.warn('[WTO] Video play failed, skipping to modal:', e);
+              endSequence();
+            });
+          });
+        }
+      }
+
+      openLuggageTagModal(forceReplay = false) {
+        const modal = document.getElementById('luggage-tag-modal');
+        const inputName = document.getElementById('input-pilot-name');
+        const selectCountry = document.getElementById('select-pilot-country');
+        const btnConfirm = document.getElementById('btn-confirm-pilot-name');
+        const btnSkip = document.getElementById('btn-skip-pilot-name');
+
+        if (!modal) {
+          if (this.saveData && !this.saveData.tutorialCompleted && window.tutorial) {
+            window.tutorial.start();
+          }
+          return;
+        }
+
+        if (this.saveData) {
+          if (inputName && this.saveData.pilotName && this.saveData.pilotName !== 'Comandante') {
+            inputName.value = this.saveData.pilotName;
+          } else if (inputName) {
+            inputName.value = '';
+          }
+          if (selectCountry && this.saveData.pilotCountry) {
+            selectCountry.value = this.saveData.pilotCountry;
+          }
+        }
+
+        modal.classList.add('active');
+
+        setTimeout(() => {
+          if (inputName) inputName.focus();
+        }, 300);
+
+        const closeModalAndProceed = (name, country) => {
+          modal.classList.remove('active');
+
+          if (this.saveData) {
+            this.saveData.pilotName = name || 'Comandante';
+            this.saveData.pilotCountry = country || 'ITA';
+            this.saveData.introVideoWatched = true;
+            this.saveState();
+          }
+
+          const hudCallsign = document.getElementById('hud-pilot-callsign');
+          if (hudCallsign && this.saveData && this.saveData.pilotName) {
+            hudCallsign.textContent = '✈ ' + this.saveData.pilotName;
+          }
+
+          try {
+            if (typeof sound !== 'undefined') {
+              sound.playTakeoff();
+              setTimeout(() => sound.playChime(), 200);
+            }
+          } catch(e) {}
+
+          try {
+            if (typeof fx !== 'undefined' && fx && fx.spawnExplosion) {
+              fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#38bdf8', 70);
+            }
+          } catch(e) {}
+
+          setTimeout(() => {
+            if (this.saveData && !this.saveData.tutorialCompleted && window.tutorial) {
+              window.tutorial.start();
+            }
+          }, 400);
+        };
+
+        if (btnConfirm) {
+          btnConfirm.onclick = () => {
+            const rawName = inputName ? inputName.value.trim() : '';
+            const chosenName = rawName.length > 0 ? rawName : 'Comandante';
+            const chosenCountry = selectCountry ? selectCountry.value : 'ITA';
+            closeModalAndProceed(chosenName, chosenCountry);
+          };
+        }
+
+        if (btnSkip) {
+          btnSkip.onclick = () => {
+            closeModalAndProceed('Comandante', 'ITA');
+          };
+        }
+
+        if (inputName) {
+          inputName.onkeydown = (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              if (btnConfirm) btnConfirm.click();
+            }
+          };
+        }
       }
     }
 
