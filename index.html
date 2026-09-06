@@ -2084,6 +2084,18 @@
           osc.connect(g); g.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.25);
         });
       }
+      playSwoosh() {
+        if (this.isMuted) return; this.init();
+        const now = this.ctx.currentTime, osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(260, now);
+        osc.frequency.exponentialRampToValueAtTime(740, now + 0.09);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.22);
+        g.gain.setValueAtTime(0.22, now);
+        g.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+        osc.connect(g); g.connect(this.ctx.destination);
+        osc.start(now); osc.stop(now + 0.22);
+      }
       playTakeoff() {
         if (this.isMuted) return; this.init();
         const now = this.ctx.currentTime, osc = this.ctx.createOscillator(), g = this.ctx.createGain();
@@ -3652,7 +3664,10 @@ class PixiBoosterEngine {
         const targetEl = document.getElementById(target);
         if (!targetEl) return;
 
-        try { sound.playStamp(); } catch (e) {}
+        try { 
+          sound.playStamp(); 
+          sound.triggerHaptic(12);
+        } catch (e) {}
 
         document.querySelectorAll('.nav-tab-btn').forEach(btn => {
           if (btn.getAttribute('data-tab') === target) {
@@ -3794,12 +3809,16 @@ class PixiBoosterEngine {
       }
 
       triggerSynergyToast(title, desc) {
+        this.showToast(title, desc, '⚡');
+      }
+
+      showToast(title, desc, icon = '⚡') {
         const container = document.getElementById('synergy-toast-container');
         if (!container) return;
         const toast = document.createElement('div');
         toast.className = 'synergy-toast';
         toast.innerHTML = `
-          <span style="font-size:14px;">⚡</span>
+          <span style="font-size:15px;">${icon}</span>
           <div>
             <div style="font-size:10.5px; font-weight:900; color:#fde047;">${title}</div>
             <div style="font-size:8.5px; color:#cbd5e1;">${desc}</div>
@@ -3826,12 +3845,51 @@ class PixiBoosterEngine {
             `<svg viewBox="0 0 20 20" width="13" height="13" fill="none" style="vertical-align:middle; margin-right:3px;"><path d="M11 2 L4 11 L10 11 L9 18 L16 9 L10 9 Z" fill="#fef08a" stroke="#f59e0b" stroke-width="1.2"/></svg> 1st CLASS`;
         }
 
+        // Calcolo e animazione dinamica del pulsante Decollo (Ready Pulse)
+        const btnEndTurn = document.getElementById('btn-end-turn');
+        if (btnEndTurn) {
+          const playableCards = this.playerHand.filter(c => {
+            const minCost = Math.min(...this.destinations.map(d => Math.max(0, c.cost - (d.config.energyDiscount || 0))));
+            return minCost <= this.playerMiles;
+          });
+          const hasEmptySlots = this.destinations.some(d => d.playerCards.length < 4);
+          const isTurnReady = (playableCards.length === 0 || this.playerMiles === 0 || !hasEmptySlots) && this.phase === 'PLANNING';
+
+          if (isTurnReady) {
+            btnEndTurn.classList.add('ready-pulse');
+            btnEndTurn.innerHTML = `
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+                <path d="M10 2 L17 12 L13 12 L13 17 L7 17 L7 12 L3 12 Z" fill="#ffffff" stroke="#93c5fd" stroke-width="1.2"/>
+              </svg>
+              <span>DECOLLO ➔</span>
+            `;
+          } else {
+            btnEndTurn.classList.remove('ready-pulse');
+            btnEndTurn.innerHTML = `
+              <svg viewBox="0 0 20 20" width="14" height="14" fill="none">
+                <path d="M10 2 L17 12 L13 12 L13 17 L7 17 L7 12 L3 12 Z" fill="#ffffff" stroke="#93c5fd" stroke-width="1.2"/>
+              </svg>
+              <span>DECOLLO</span>
+            `;
+          }
+        }
+
         const container = document.getElementById('altars-score-container');
         container.innerHTML = '';
         this.destinations.forEach((dest, idx) => {
           const el = document.createElement('div');
-          el.className = 'altar-score-card';
-          el.style.borderColor = dest.winner === 'player' ? '#00f0ff' : (dest.winner === 'ai' ? '#ef4444' : 'rgba(255,255,255,0.15)');
+          const isPlayerWinning = dest.winner === 'player';
+          const isAiWinning = dest.winner === 'ai';
+          const winClass = isPlayerWinning ? 'winning-player' : (isAiWinning ? 'winning-ai' : '');
+          el.className = `altar-score-card ${winClass}`;
+
+          let perkBadge = '';
+          if (dest.config.energyDiscount > 0) {
+            perkBadge = `<span class="altar-perk-badge discount">⚡-${dest.config.energyDiscount}M</span>`;
+          } else if (dest.config.multBonus && dest.config.multBonus > 1) {
+            perkBadge = `<span class="altar-perk-badge mult">x${dest.config.multBonus}</span>`;
+          }
+
           let chipsHtml = '<div class="altar-mini-cards">';
           for (let s = 0; s < 4; s++) {
             const pCard = dest.playerCards[s];
@@ -3844,9 +3902,25 @@ class PixiBoosterEngine {
           }
           chipsHtml += '</div>';
 
+          const matchIndicator = isPlayerWinning ? '👑' : (isAiWinning ? '💀' : '⚔️');
+          const cityName = dest.config.city.replace(/\s*\(.*?\)/, '');
+
           el.innerHTML = `
-            <div class="altar-name">${dest.config.icon} ${dest.config.city}</div>
-            <div class="altar-scores"><span style="color:#f87171;">${dest.aiScore}</span><span style="color:#64748b;">vs</span><span style="color:#00f0ff;">${dest.playerScore}</span></div>
+            <div class="altar-header">
+              <div class="altar-name">${dest.config.icon} ${cityName}</div>
+              ${perkBadge}
+            </div>
+            <div class="altar-scores">
+              <div class="score-capsule rival ${isAiWinning ? 'leading' : ''}">
+                <span class="capsule-tag">RIV</span>
+                <span class="capsule-val">${dest.aiScore}</span>
+              </div>
+              <div class="altar-status-badge">${matchIndicator}</div>
+              <div class="score-capsule player ${isPlayerWinning ? 'leading' : ''}">
+                <span class="capsule-tag">TU</span>
+                <span class="capsule-val">${dest.playerScore}</span>
+              </div>
+            </div>
             ${chipsHtml}
           `;
           el.onclick = () => { if (this.selectedCardId) this.landCard(this.selectedCardId, idx); };
@@ -3996,12 +4070,12 @@ class PixiBoosterEngine {
               const cost = Math.max(0, card.cost - (targetDest.config.energyDiscount || 0));
 
               if (this.playerMiles < cost) {
-                alert('Miglia Aeree insufficienti per questo volo!');
+                this.showToast('MIGLIA INSUFFICIENTI', `Richieste ${cost} Miglia (disponibili: ${this.playerMiles})`, '⚡');
                 snapBack();
                 return;
               }
               if (targetDest.playerCards.length >= 4) {
-                alert('Terminal al completo! Massimo 4 carte per metropoli.');
+                this.showToast('TERMINAL AL COMPLETO', 'Massimo 4 carte per metropoli mondiale', '🚫');
                 snapBack();
                 return;
               }
@@ -4016,7 +4090,9 @@ class PixiBoosterEngine {
 
               el.style.transform = `translate3d(${flyDx}px, ${flyDy}px, 0) scale(0.35) rotate(0deg)`;
               el.style.opacity = '0.2';
+              sound.playSwoosh();
               sound.playChime();
+              sound.triggerHaptic(30);
 
               setTimeout(() => {
                 this.landCard(card.instanceId, targetDestIdx);
@@ -4066,8 +4142,14 @@ class PixiBoosterEngine {
         const dest = this.destinations[destIdx];
         const cost = Math.max(0, card.cost - (dest.config.energyDiscount || 0));
 
-        if (this.playerMiles < cost) { alert('Miglia Aeree insufficienti!'); return; }
-        if (dest.playerCards.length >= 4) { alert('Terminal al completo!'); return; }
+        if (this.playerMiles < cost) { 
+          this.showToast('MIGLIA INSUFFICIENTI', `Richieste ${cost} Miglia (disponibili: ${this.playerMiles})`, '⚡'); 
+          return; 
+        }
+        if (dest.playerCards.length >= 4) { 
+          this.showToast('TERMINAL AL COMPLETO', 'Massimo 4 carte per metropoli mondiale', '🚫'); 
+          return; 
+        }
 
         this.playerMiles -= cost;
         this.playerHand.splice(hIdx, 1);
