@@ -232,6 +232,52 @@
   <!-- Contenitore Mobile Portrait Ergonomico (9:16) -->
   <main id="app-container">
     
+    <!-- ==================== SPLASH SCREEN CINEMATICA CON MASTER LOGO ==================== -->
+    <div id="splash-screen" class="splash-screen-overlay">
+      <!-- Sfondi Dinamici Celesti & Bussola Rotante -->
+      <div class="splash-bg-aura"></div>
+      <div class="splash-compass-ring"></div>
+
+      <!-- Barra Superiore di Stato Volo -->
+      <div class="splash-top-bar">
+        <div class="splash-flight-tag">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none">
+            <path d="M12 2 L14.5 9 L22 11 L14.5 13 L12 22 L9.5 13 L2 11 L9.5 9 Z" fill="#fbbf24"/>
+          </svg>
+          <span>FLIGHT WTO-2026 • GATE 1</span>
+        </div>
+        <div class="splash-version-tag">3D EDITION v2.4</div>
+      </div>
+
+      <!-- Master Logo Centrato Spettacolare -->
+      <div class="splash-logo-container">
+        <img src="assets/logo.svg" alt="World Travel Odyssey Master Logo" class="splash-logo-img">
+        <div class="splash-subtitle">
+          IL CARD GAME DEI <span>PAESI DEL MONDO</span>
+        </div>
+      </div>
+
+      <!-- Box di Imbarco, Checklist e Decollo -->
+      <div class="splash-loader-box">
+        <div class="splash-status-row">
+          <div id="splash-status-text" class="splash-status-text">
+            <span>✈️ Controllo passaporti e visti consolari...</span>
+          </div>
+          <div id="splash-progress-num" class="splash-progress-num">0%</div>
+        </div>
+
+        <div class="splash-progress-track">
+          <div id="splash-progress-fill" class="splash-progress-fill"></div>
+        </div>
+
+        <button id="btn-splash-enter" class="btn-splash-enter" type="button">
+          <span>✦ ENTRA NEL TERMINAL • DECOLLO IMMEDIATO ✦</span>
+        </button>
+
+        <div id="splash-skip-hint" class="splash-skip-hint">Tocca lo schermo per accelerare l'imbarco</div>
+      </div>
+    </div>
+
     <!-- Canvas Particellare Sovrapposto -->
     <canvas id="fx-canvas"></canvas>
 
@@ -2201,6 +2247,7 @@
         this.setupSpireTour();
         this.setupCollection();
         this.setupBoosterControls();
+        this.setupSplashScreen();
       }
 
       setupP2PChannel() {
@@ -2758,6 +2805,103 @@
             if (threeBooster) threeBooster.closeInspect();
           };
         }
+      }
+
+      setupSplashScreen() {
+        const splash = document.getElementById('splash-screen');
+        if (!splash) return;
+
+        const progressBar = document.getElementById('splash-progress-fill');
+        const progressNum = document.getElementById('splash-progress-num');
+        const statusText = document.getElementById('splash-status-text');
+        const btnEnter = document.getElementById('btn-splash-enter');
+        const skipHint = document.getElementById('splash-skip-hint');
+
+        const stages = [
+          { threshold: 25, text: '✈️ Controllo visti e passaporti...' },
+          { threshold: 55, text: '🌍 Tracciamento rotte aeree mondiali...' },
+          { threshold: 85, text: '🏛️ Generazione terminali 3D e Duty Free...' },
+          { threshold: 100, text: '✨ Decollo autorizzato! Pronto all\'imbarco.' }
+        ];
+
+        let currentProgress = 0;
+        let isDone = false;
+
+        const updateUI = (val) => {
+          currentProgress = Math.min(100, val);
+          if (progressBar) progressBar.style.width = `${currentProgress}%`;
+          if (progressNum) progressNum.textContent = `${Math.round(currentProgress)}%`;
+
+          const curStage = stages.find(s => currentProgress <= s.threshold) || stages[stages.length - 1];
+          if (statusText) statusText.innerHTML = `<span>${curStage.text}</span>`;
+
+          if (currentProgress >= 100 && !isDone) {
+            isDone = true;
+            if (btnEnter) {
+              btnEnter.classList.add('ready');
+            }
+            if (skipHint) {
+              skipHint.textContent = '✦ Tocca per iniziare il volo ✦';
+            }
+          }
+        };
+
+        const stepInterval = setInterval(() => {
+          if (isDone) {
+            clearInterval(stepInterval);
+            return;
+          }
+          const increment = Math.random() * 8 + 4;
+          const nextVal = currentProgress + increment;
+          if (nextVal >= 100) {
+            updateUI(100);
+            clearInterval(stepInterval);
+          } else {
+            updateUI(nextVal);
+          }
+        }, 60);
+
+        const dismissSplash = () => {
+          if (!splash || splash.classList.contains('hidden')) return;
+
+          // Sound effects & celebration particles
+          try {
+            if (typeof sound !== 'undefined') {
+              sound.playTakeoff();
+              setTimeout(() => sound.playChime(), 180);
+            }
+          } catch (e) {}
+
+          try {
+            if (typeof fx !== 'undefined' && fx && fx.spawnExplosion) {
+              const cx = window.innerWidth / 2;
+              const cy = window.innerHeight / 2;
+              fx.spawnExplosion(cx, cy, '#ffd700', 90);
+              setTimeout(() => fx.spawnExplosion(cx, cy, '#38bdf8', 60), 120);
+            }
+          } catch (e) {}
+
+          splash.classList.add('hidden');
+          setTimeout(() => {
+            splash.style.display = 'none';
+          }, 650);
+        };
+
+        if (btnEnter) {
+          btnEnter.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dismissSplash();
+          });
+        }
+
+        splash.addEventListener('click', () => {
+          if (!isDone) {
+            clearInterval(stepInterval);
+            updateUI(100);
+          } else {
+            dismissSplash();
+          }
+        });
       }
     }
 

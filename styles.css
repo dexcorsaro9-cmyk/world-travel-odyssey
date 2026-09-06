@@ -666,3 +666,281 @@ body {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+/* ==================== CINEMATIC SPLASH SCREEN & MASTER LOGO ==================== */
+.splash-screen-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10000;
+  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0c0a20 50%, #03040b 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 36px 20px 28px;
+  overflow: hidden;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.splash-screen-overlay.hidden {
+  opacity: 0;
+  transform: scale(1.08);
+  pointer-events: none;
+}
+
+/* Background animated rings / cosmos aura */
+.splash-bg-aura {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(99, 102, 241, 0.12) 40%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: splash-aura-pulse 4s ease-in-out infinite alternate;
+}
+
+.splash-compass-ring {
+  position: absolute;
+  top: 32%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  border: 1px dashed rgba(245, 158, 11, 0.25);
+  pointer-events: none;
+  animation: spin-slow 60s linear infinite;
+}
+
+.splash-compass-ring::after {
+  content: '';
+  position: absolute;
+  inset: 24px;
+  border-radius: 50%;
+  border: 1px solid rgba(56, 189, 248, 0.15);
+}
+
+/* Header flight status tag */
+.splash-top-bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 380px;
+}
+
+.splash-flight-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #fbbf24;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+.splash-version-tag {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+/* Logo Center Container */
+.splash-logo-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  margin-top: -10px;
+  animation: splash-logo-enter 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.splash-logo-img {
+  width: 100%;
+  max-width: 370px;
+  height: auto;
+  filter: drop-shadow(0 18px 40px rgba(245, 158, 11, 0.45)) drop-shadow(0 0 25px rgba(0, 240, 255, 0.3));
+  animation: splash-logo-float 4s ease-in-out infinite alternate;
+}
+
+.splash-subtitle {
+  margin-top: 10px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #94a3b8;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.splash-subtitle span {
+  color: #f59e0b;
+}
+
+/* Boarding Controls & Checklist Box */
+.splash-loader-box {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 380px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 18px;
+  padding: 16px 18px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.85), 0 0 20px rgba(245, 158, 11, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.splash-status-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  gap: 10px;
+}
+
+.splash-status-text {
+  color: #e2e8f0;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.splash-progress-num {
+  font-weight: 900;
+  color: #fbbf24;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Runway Progress Bar */
+.splash-progress-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.splash-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24 60%, #38bdf8 100%);
+  border-radius: 6px;
+  transition: width 0.15s ease-out;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.8);
+  position: relative;
+}
+
+.splash-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+/* CTA Enter Runway Button */
+.btn-splash-enter {
+  width: 100%;
+  padding: 13px 18px;
+  border-radius: 14px;
+  border: 2px solid #fde047;
+  background: linear-gradient(135deg, #f59e0b, #d97706 60%, #b45309);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+  pointer-events: none;
+  touch-action: manipulation;
+}
+
+.btn-splash-enter.ready {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  animation: splash-btn-glow 2s ease-in-out infinite alternate;
+}
+
+.btn-splash-enter:hover, .btn-splash-enter:active {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(245, 158, 11, 0.8), 0 0 25px #facc15;
+}
+
+.splash-skip-hint {
+  font-size: 10px;
+  color: #64748b;
+  text-align: center;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: color 0.2s;
+  padding: 4px;
+}
+
+.splash-skip-hint:hover {
+  color: #94a3b8;
+}
+
+@keyframes splash-aura-pulse {
+  0% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.95; }
+}
+
+@keyframes splash-logo-enter {
+  0% { opacity: 0; transform: translateY(24px) scale(0.92); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes splash-logo-float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  100% { transform: translateY(-7px) rotate(0.4deg); }
+}
+
+@keyframes splash-btn-glow {
+  0% { box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
+  100% { box-shadow: 0 8px 32px rgba(245, 158, 11, 0.9), 0 0 22px rgba(254, 240, 138, 0.7); }
+}
+

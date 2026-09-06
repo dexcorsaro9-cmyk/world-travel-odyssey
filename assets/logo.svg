@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360" fill="none">
+  <defs>
+    <!-- Oro Solido Reale 24k e Platino Metallico -->
+    <linearGradient id="logoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="12%" stop-color="#fffbeb"/>
+      <stop offset="28%" stop-color="#fef08a"/>
+      <stop offset="55%" stop-color="#f59e0b"/>
+      <stop offset="80%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+
+    <linearGradient id="goldPlate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fffbeb"/>
+      <stop offset="35%" stop-color="#fef08a"/>
+      <stop offset="70%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+
+    <linearGradient id="bevelGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#fde047"/>
+    </linearGradient>
+
+    <!-- Ciano Elettrico Iper-Volo -->
+    <linearGradient id="cyanWings" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="20%" stop-color="#bae6fd"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="85%" stop-color="#0369a1"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+
+    <!-- Scia Afterburner al Plasma Iper-Sonico -->
+    <linearGradient id="plasmaTrail" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="20%" stop-color="#38bdf8"/>
+      <stop offset="55%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </linearGradient>
+
+    <radialGradient id="globeSphere" cx="40%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="45%" stop-color="#0f172a"/>
+      <stop offset="80%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+
+    <radialGradient id="sunBurst" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="rgba(254, 240, 138, 0.4)"/>
+      <stop offset="40%" stop-color="rgba(245, 158, 11, 0.2)"/>
+      <stop offset="100%" stop-color="transparent"/>
+    </radialGradient>
+
+    <!-- Filtri Bagliore Gioiello & Ombre 3D -->
+    <filter id="badgeShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.85"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="16" flood-color="#f59e0b" flood-opacity="0.4"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="24" flood-color="#00f0ff" flood-opacity="0.25"/>
+    </filter>
+
+    <filter id="titleShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000000" flood-opacity="0.95"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#f59e0b" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <!-- ==================== AURA / SOLE POSTERIORE ==================== -->
+  <circle cx="300" cy="100" r="95" fill="url(#sunBurst)"/>
+
+  <!-- ==================== EMBLEMA CENTRALE: SFERA ARMITTARE, BUSSOLA E JET ==================== -->
+  <g id="master-emblem" transform="translate(300, 102)" filter="url(#badgeShadow)">
+    
+    <!-- Anelli Astronomici Oro Esterni -->
+    <circle cx="0" cy="0" r="76" stroke="url(#logoGold)" stroke-width="3"/>
+    <circle cx="0" cy="0" r="71" stroke="#fef08a" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.8"/>
+    <circle cx="0" cy="0" r="66" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+
+    <!-- Tacche Bussola Circolari a 360° -->
+    <g stroke="url(#goldPlate)" stroke-width="1.5">
+      <line x1="0" y1="-76" x2="0" y2="-69"/>
+      <line x1="0" y1="76" x2="0" y2="69"/>
+      <line x1="-76" y1="0" x2="-69" y2="0"/>
+      <line x1="76" y1="0" x2="69" y2="0"/>
+      <!-- Tacche a 45° -->
+      <line x1="53.7" y1="-53.7" x2="48.8" y2="-48.8"/>
+      <line x1="-53.7" y1="-53.7" x2="-48.8" y2="-48.8"/>
+      <line x1="53.7" y1="53.7" x2="48.8" y2="48.8"/>
+      <line x1="-53.7" y1="53.7" x2="-48.8" y2="48.8"/>
+    </g>
+
+    <!-- Globo Sferico con Gradient Notte & Paralleli Ciano -->
+    <circle cx="0" cy="0" r="56" fill="url(#globeSphere)" stroke="url(#logoGold)" stroke-width="2.5"/>
+    <ellipse cx="0" cy="0" rx="56" ry="24" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1.4" fill="none"/>
+    <ellipse cx="0" cy="0" rx="24" ry="56" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1.4" fill="none"/>
+    <ellipse cx="0" cy="0" rx="56" ry="42" stroke="rgba(56, 189, 248, 0.25)" stroke-width="1" fill="none"/>
+    <line x1="-56" y1="0" x2="56" y2="0" stroke="rgba(56, 189, 248, 0.5)" stroke-width="1.5"/>
+
+    <!-- Rotte Aeree Tratteggiate che Avvolgono il Globo -->
+    <path d="M-52,18 C-30,48 30,48 52,18" stroke="#fbbf24" stroke-width="1.2" stroke-dasharray="4 3" fill="none" opacity="0.8"/>
+    <path d="M-48,-24 C-10,-50 20,-50 48,-24" stroke="#38bdf8" stroke-width="1.2" stroke-dasharray="3 3" fill="none" opacity="0.8"/>
+
+    <!-- Rosa dei Venti / Stella Polare a 8 Punte Oro 24k Sculturata -->
+    <g>
+      <!-- Nord (Punta Principale) -->
+      <polygon points="0,-76 7,-20 0,0" fill="url(#goldPlate)"/>
+      <polygon points="0,-76 -7,-20 0,0" fill="url(#logoGold)"/>
+      <!-- Sud -->
+      <polygon points="0,76 7,20 0,0" fill="url(#goldPlate)"/>
+      <polygon points="0,76 -7,20 0,0" fill="url(#logoGold)"/>
+      <!-- Est -->
+      <polygon points="76,0 20,7 0,0" fill="url(#goldPlate)"/>
+      <polygon points="76,0 20,-7 0,0" fill="url(#logoGold)"/>
+      <!-- Ovest -->
+      <polygon points="-76,0 -20,7 0,0" fill="url(#goldPlate)"/>
+      <polygon points="-76,0 -20,-7 0,0" fill="url(#logoGold)"/>
+      
+      <!-- Punte Diagonali Intermedie -->
+      <polygon points="53,-53 14,-14 0,0" fill="url(#goldPlate)"/>
+      <polygon points="53,-53 4,-20 0,0" fill="url(#logoGold)"/>
+      <polygon points="53,53 14,14 0,0" fill="url(#goldPlate)"/>
+      <polygon points="53,53 20,4 0,0" fill="url(#logoGold)"/>
+      <polygon points="-53,53 -14,14 0,0" fill="url(#goldPlate)"/>
+      <polygon points="-53,53 -4,20 0,0" fill="url(#logoGold)"/>
+      <polygon points="-53,-53 -14,-14 0,0" fill="url(#goldPlate)"/>
+      <polygon points="-53,-53 -20,-4 0,0" fill="url(#logoGold)"/>
+    </g>
+
+    <!-- Jet Supersonico Iper-Volo in Decollo Diagonale (45 Gradi) -->
+    <g transform="rotate(45)">
+      <!-- Scia di Propulsione al Plasma & Particelle -->
+      <polygon points="-4,22 4,22 6,68 -6,68" fill="url(#plasmaTrail)"/>
+      <ellipse cx="0" cy="24" rx="5" ry="3" fill="#00f0ff"/>
+      <circle cx="0" cy="24" r="2" fill="#ffffff"/>
+
+      <!-- Ali a Delta Titanio e Ciano -->
+      <path d="M0,-34 L34,14 L23,19 L6,16 L6,30 L14,35 L6,35 L0,31 L-6,35 L-14,35 L-6,30 L-6,16 L-23,19 L-34,14 Z" 
+            fill="url(#cyanWings)" stroke="url(#logoGold)" stroke-width="2"/>
+
+      <!-- Fasce Alari Oro di Prestigio -->
+      <line x1="8" y1="2" x2="28" y2="12" stroke="url(#goldPlate)" stroke-width="1.5"/>
+      <line x1="-8" y1="2" x2="-28" y2="12" stroke="url(#goldPlate)" stroke-width="1.5"/>
+
+      <!-- Fusoliera Centrale Oro Goffrato -->
+      <path d="M0,-38 L5,11 L0,30 L-5,11 Z" fill="url(#goldPlate)" stroke="url(#logoGold)" stroke-width="1.2"/>
+      <line x1="0" y1="-37" x2="0" y2="28" stroke="#ffffff" stroke-width="1.2"/>
+
+      <!-- Cockpit Vetrato Cristallino in Zaffiro Stellare -->
+      <ellipse cx="0" cy="-9" rx="2.5" ry="7" fill="#0284c7" stroke="#38bdf8" stroke-width="1"/>
+      <circle cx="-0.8" cy="-11" r="1.2" fill="#ffffff"/>
+
+      <!-- Luci di Navigazione Aerea (Rosso Sinistra / Verde Destra) -->
+      <circle cx="33" cy="14" r="2.2" fill="#ef4444" filter="drop-shadow(0 0 4px #ef4444)"/>
+      <circle cx="-33" cy="14" r="2.2" fill="#22c55e" filter="drop-shadow(0 0 4px #22c55e)"/>
+    </g>
+
+    <!-- Stelle & Diamanti Brillanti Scintillanti -->
+    <polygon points="86,-30 89,-21 98,-18 89,-15 86,-6 83,-15 74,-18 83,-21" fill="#ffffff" filter="drop-shadow(0 0 6px #fff)"/>
+    <polygon points="-86,30 -83,21 -74,18 -83,15 -86,6 -89,15 -98,18 -89,21" fill="#fef08a" filter="drop-shadow(0 0 5px #fde047)"/>
+  </g>
+
+  <!-- ==================== TIPOGRAFIA MAESTOSA: WORLD TRAVEL ==================== -->
+  <g filter="url(#titleShadow)">
+    <text x="300" y="222" 
+          font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" 
+          font-size="34" 
+          font-weight="900" 
+          letter-spacing="10" 
+          text-anchor="middle" 
+          fill="url(#logoGold)" 
+          stroke="#451a03" 
+          stroke-width="1.2">
+      WORLD TRAVEL
+    </text>
+  </g>
+
+  <!-- Linee Divisorie Ornamentali con Stella Polare Centrale -->
+  <g transform="translate(300, 237)">
+    <line x1="-240" y1="0" x2="-45" y2="0" stroke="url(#bevelGold)" stroke-width="1.8"/>
+    <polygon points="-45,0 -35,3 -25,0 -35,-3" fill="url(#logoGold)"/>
+    <polygon points="0,-7 3,-2 8,0 3,2 0,7 -3,2 -8,0 -3,-2" fill="#fef08a"/>
+    <polygon points="25,0 35,3 45,0 35,-3" fill="url(#logoGold)"/>
+    <line x1="45" y1="0" x2="240" y2="0" stroke="url(#bevelGold)" stroke-width="1.8"/>
+  </g>
+
+  <!-- ==================== TIPOGRAFIA ICONICA: ODYSSEY ==================== -->
+  <g filter="url(#titleShadow)">
+    <text x="300" y="294" 
+          font-family="'Montserrat', 'Arial Black', system-ui, sans-serif" 
+          font-size="52" 
+          font-weight="900" 
+          letter-spacing="16" 
+          text-anchor="middle" 
+          fill="url(#logoGold)" 
+          stroke="#78350f" 
+          stroke-width="2">
+      ODYSSEY
+    </text>
+  </g>
+
+  <!-- Riflessi di Luce Diamante sulle Lettere O e Y -->
+  <polygon points="86,270 89,279 98,281 89,283 86,292 83,283 74,281 83,279" fill="#ffffff" filter="drop-shadow(0 0 5px #fff)"/>
+  <polygon points="514,270 517,279 526,281 517,283 514,292 511,283 502,281 511,279" fill="#ffffff" filter="drop-shadow(0 0 5px #fff)"/>
+
+  <!-- ==================== TARGHETTA ROTTE INTERNAZIONALI AIRWAYS ==================== -->
+  <g transform="translate(300, 332)">
+    <!-- Targhetta Metallica in Titanio Ossidato con Bordo Oro -->
+    <rect x="-240" y="-14" width="480" height="26" rx="8" fill="#080c1a" stroke="url(#logoGold)" stroke-width="1.8"/>
+    <!-- Viti Aeronautiche Angolari -->
+    <circle cx="-230" cy="-1" r="2.2" fill="#94a3b8" stroke="#334155" stroke-width="0.8"/>
+    <circle cx="230" cy="-1" r="2.2" fill="#94a3b8" stroke="#334155" stroke-width="0.8"/>
+    
+    <text x="0" y="3.5" 
+          font-family="system-ui, -apple-system, 'SF Pro Display', sans-serif" 
+          font-size="10.5" 
+          font-weight="800" 
+          letter-spacing="4" 
+          text-anchor="middle" 
+          fill="#fef08a">
+      ✦ THE WORLD DESTINATIONS TCG • FCO • HND • JFK • CDG ✦
+    </text>
+  </g>
+</svg>
