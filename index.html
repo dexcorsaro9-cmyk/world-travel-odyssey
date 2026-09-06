@@ -537,8 +537,50 @@
         <span style="color:#38bdf8;">VIP ODYSSEY PACK</span>
       </div>
 
-      <!-- Canvas Three.js per lo Sbustamento 3D Fisico -->
-      <div id="booster-3d-viewport"></div>
+      <!-- Viewport per lo Sbustamento 3D Fisico -->
+      <div id="booster-3d-viewport">
+        <!-- 3D FOIL POUCH THEATER STAGE -->
+        <div id="booster-stage" class="booster-stage">
+          
+          <!-- PHYSICAL 3D FOIL PACK POUCH -->
+          <div id="booster-foil-pack" class="booster-foil-pack" data-tier="economy">
+            <!-- Heat-sealed Crimped Ridge Top -->
+            <div class="pack-crimp-top"></div>
+            
+            <!-- Main Foil Pouch with Ultra-Res Art -->
+            <div class="pack-body">
+              <img id="pack-cover-img" class="pack-cover-img" src="assets/boosters/pack_economy.jpg" alt="WTO Booster Pack">
+              <!-- Iridescent Holographic Sheen Layer -->
+              <div class="pack-holo-sheen"></div>
+              <!-- Metallic Reflection Sweep -->
+              <div class="pack-specular-sweep"></div>
+            </div>
+
+            <!-- Heat-sealed Crimped Ridge Bottom -->
+            <div class="pack-crimp-bottom"></div>
+
+            <!-- INTERACTIVE 3D TEAR STRIP -->
+            <div id="pack-tear-strip" class="pack-tear-strip">
+              <div class="tear-strip-line">
+                <span>✂</span>
+                <span>• • • STRAPPA IL SIGILLO D'ORO • • •</span>
+                <span>✂</span>
+              </div>
+              <div id="pack-pull-tab" class="pack-pull-tab" title="Trascina o tocca per strappare">
+                <div class="pull-tab-wax-seal">★</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- REVEALED CARDS 3D FAN (Hidden until opened) -->
+          <div id="booster-cards-fan" class="booster-cards-fan" style="display: none;"></div>
+
+        </div>
+
+        <!-- PIXI FX OVERLAY FOR 60FPS SPARKS & CONFETTI -->
+        <div id="booster-fx-canvas-wrap"></div>
+      </div>
 
       <!-- HUD Sovrapposto dello Sbustamento -->
       <div class="booster-hud-overlay">
@@ -572,13 +614,13 @@
           <div style="margin-top: 6px; font-size: 9px; color: #facc15; font-style: italic;">Trascina per ruotare in 3D 360°</div>
         </div>
 
-        <div id="booster-action-text" style="font-size: 13px; font-weight: 800; color: #facc15; text-shadow: 0 0 12px rgba(245, 158, 11, 0.8); text-align: center; padding: 0 10px;">
-          ✦ SCORRI O TOCCA IL SIGILLO D'ORO PER STRAPPARE LA BUSTINA! ✦
+        <div id="booster-action-text" style="font-size: 12.5px; font-weight: 800; color: #facc15; text-shadow: 0 0 12px rgba(245, 158, 11, 0.8); text-align: center; padding: 0 10px;">
+          ✦ TRASCINA IL SIGILLO O TOCCA PER STRAPPARE LA BUSTINA! ✦
         </div>
 
         <div style="display: flex; gap: 8px;">
-          <button id="btn-booster-close-inspect" style="display: none; background: #334155; border: 1px solid #64748b; color: #fff; font-weight: 700; padding: 8px 16px; border-radius: 10px; font-size: 11px; cursor: pointer;">
-            ✕ TORNA AL VENTAGLIO
+          <button id="btn-booster-goto-passport" style="display: none; background: #1e293b; border: 1px solid #38bdf8; color: #38bdf8; font-weight: 800; padding: 9px 16px; border-radius: 12px; font-size: 11px; cursor: pointer;">
+            💼 VAI AL PASSAPORTO
           </button>
           <button id="btn-booster-reset" style="display: none; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; font-weight: 900; padding: 10px 22px; border-radius: 12px; font-size: 12px; cursor: pointer; box-shadow: 0 0 25px rgba(245, 158, 11, 0.8);">
             ✈️ APRI UN'ALTRA BUSTINA 3D
@@ -2357,51 +2399,84 @@ class PixiBoosterEngine {
     this.particles = [];
     this.time = 0;
 
+    // DOM Elements
+    this.packEl = document.getElementById('booster-foil-pack');
+    this.coverImg = document.getElementById('pack-cover-img');
+    this.tearStrip = document.getElementById('pack-tear-strip');
+    this.pullTab = document.getElementById('pack-pull-tab');
+    this.fanEl = document.getElementById('booster-cards-fan');
+    this.actionText = document.getElementById('booster-action-text');
+    this.btnReset = document.getElementById('btn-booster-reset');
+    this.btnGotoPass = document.getElementById('btn-booster-goto-passport');
+
     this.init();
   }
 
   async init() {
-    if (typeof PIXI === 'undefined') return;
+    // 1. Initialize PixiJS FX Overlay for 60fps Golden Sparks & Confetti
+    if (typeof PIXI !== 'undefined') {
+      try {
+        const fxWrap = document.getElementById('booster-fx-canvas-wrap') || this.container;
+        this.width = this.container.clientWidth || 390;
+        this.height = this.container.clientHeight || 500;
 
-    this.width = this.container.clientWidth || 390;
-    this.height = this.container.clientHeight || 500;
+        this.app = new PIXI.Application();
+        await this.app.init({
+          width: this.width,
+          height: this.height,
+          backgroundAlpha: 0,
+          antialias: true,
+          resolution: Math.min(window.devicePixelRatio || 2, 2),
+          autoDensity: true
+        });
 
-    this.app = new PIXI.Application();
-    await this.app.init({
-      width: this.width,
-      height: this.height,
-      backgroundAlpha: 0,
-      antialias: true,
-      resolution: Math.min(window.devicePixelRatio || 2, 2),
-      autoDensity: true
-    });
+        fxWrap.innerHTML = '';
+        fxWrap.appendChild(this.app.canvas);
+        this.app.canvas.style.width = '100%';
+        this.app.canvas.style.height = '100%';
+        this.app.canvas.style.position = 'absolute';
+        this.app.canvas.style.top = '0';
+        this.app.canvas.style.left = '0';
+        this.app.canvas.style.pointerEvents = 'none';
 
-    this.container.innerHTML = '';
-    this.container.appendChild(this.app.canvas);
-    this.app.canvas.style.width = '100%';
-    this.app.canvas.style.height = '100%';
-    this.app.canvas.style.position = 'absolute';
-    this.app.canvas.style.top = '0';
-    this.app.canvas.style.left = '0';
+        this.fxGraphics = new PIXI.Graphics();
+        this.app.stage.addChild(this.fxGraphics);
 
-    this.mainGraphics = new PIXI.Graphics();
-    this.fxGraphics = new PIXI.Graphics();
-    this.app.stage.addChild(this.mainGraphics);
-    this.app.stage.addChild(this.fxGraphics);
+        this.app.ticker.add((ticker) => {
+          this.update(ticker.deltaTime);
+        });
+      } catch (e) {
+        console.warn('[WTO PixiBooster] Particle engine fallback:', e);
+      }
+    }
 
+    // 2. Setup 3D Gyro & Pointer Interactions
     this.setupInteractions();
 
-    this.app.ticker.add((ticker) => {
-      this.update(ticker.deltaTime);
-    });
-
     this.isReady = true;
-    console.log('[WTO PixiBooster] AAA Luxury Foil Pack Engine Initialized!');
+    console.log('[WTO PixiBooster] AAA Physical 3D Foil Pack Engine Initialized!');
   }
 
   setTier(tier) {
     this.activeTier = tier;
-    this.reset();
+    const packImages = {
+      economy: 'assets/boosters/pack_economy.jpg',
+      business: 'assets/boosters/pack_business.jpg',
+      sovereign: 'assets/boosters/pack_sovereign.jpg'
+    };
+
+    if (this.packEl) {
+      this.packEl.style.transition = 'transform 0.24s cubic-bezier(0.4, 0, 0.2, 1)';
+      this.packEl.style.transform = 'perspective(1000px) rotateY(90deg) scale(0.92)';
+      setTimeout(() => {
+        if (this.coverImg) this.coverImg.src = packImages[tier] || packImages.economy;
+        this.packEl.setAttribute('data-tier', tier);
+        this.packEl.style.transform = 'perspective(1000px) rotateY(0deg) scale(1)';
+        setTimeout(() => { if (this.packEl) this.packEl.style.transition = ''; }, 260);
+      }, 200);
+    }
+
+    if (this.isOpened) this.reset();
   }
 
   reset() {
@@ -2411,288 +2486,291 @@ class PixiBoosterEngine {
     this.revealedCards = [];
     this.particles = [];
 
-    const actionText = document.getElementById('booster-action-text');
-    if (actionText) {
-      actionText.textContent = "✦ SCORRI O TOCCA IL SIGILLO D'ORO PER STRAPPARE LA BUSTINA! ✦";
-      actionText.style.display = 'block';
+    if (this.fanEl) {
+      this.fanEl.innerHTML = '';
+      this.fanEl.style.display = 'none';
     }
-    const btnReset = document.getElementById('btn-booster-reset');
-    if (btnReset) btnReset.style.display = 'none';
-    const btnCloseInspect = document.getElementById('btn-booster-close-inspect');
-    if (btnCloseInspect) btnCloseInspect.style.display = 'none';
-    const cardInfo = document.getElementById('booster-inspect-card');
-    if (cardInfo) cardInfo.style.display = 'none';
+
+    if (this.packEl) {
+      this.packEl.style.transition = 'all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+      this.packEl.style.transform = 'perspective(1000px) translateY(0) scale(1)';
+      this.packEl.style.opacity = '1';
+      this.packEl.style.pointerEvents = 'auto';
+      setTimeout(() => { if (this.packEl) this.packEl.style.transition = ''; }, 420);
+    }
+
+    if (this.pullTab) {
+      this.pullTab.style.left = '2px';
+    }
+
+    if (this.actionText) {
+      this.actionText.textContent = "✦ TRASCINA IL SIGILLO O TOCCA PER STRAPPARE LA BUSTINA! ✦";
+      this.actionText.style.display = 'block';
+    }
+
+    if (this.btnReset) this.btnReset.style.display = 'none';
+    if (this.btnGotoPass) this.btnGotoPass.style.display = 'none';
   }
 
   setupInteractions() {
-    const canvas = this.app.canvas;
+    const stage = document.getElementById('booster-stage') || this.container;
+    const pack = this.packEl;
+    const tab = this.pullTab;
+    const strip = this.tearStrip;
+
+    if (!pack || !tab || !strip) return;
+
+    // 1. Fluid 3D Perspective Tilt on Pointer Move
+    const handleTilt = (clientX, clientY) => {
+      if (this.isOpened || !this.packEl) return;
+      const rect = this.packEl.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (clientX - cx) / (rect.width / 2);
+      const dy = (clientY - cy) / (rect.height / 2);
+      const rotY = Math.max(-16, Math.min(16, dx * 16));
+      const rotX = Math.max(-14, Math.min(14, -dy * 14));
+      this.packEl.style.transform = `perspective(1000px) rotateX(${rotX.toFixed(1)}deg) rotateY(${rotY.toFixed(1)}deg) scale(1.02)`;
+    };
+
+    stage.addEventListener('mousemove', (e) => handleTilt(e.clientX, e.clientY));
+    stage.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0] && !isDragging) {
+        handleTilt(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    stage.addEventListener('mouseleave', () => {
+      if (this.isOpened || !this.packEl) return;
+      this.packEl.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+    });
+
+    // 2. Interactive Golden Tear Strip Dragging
     let isDragging = false;
     let startX = 0;
+    let stripWidth = 240;
 
-    const handleStart = (clientX) => {
+    const onDragStart = (clientX) => {
       if (this.isOpened) return;
       isDragging = true;
       startX = clientX;
+      const rect = strip.getBoundingClientRect();
+      stripWidth = rect.width || 240;
     };
 
-    const handleMove = (clientX) => {
+    const onDragMove = (clientX) => {
       if (!isDragging || this.isOpened) return;
-      const dx = clientX - startX;
-      if (dx > 10) {
-        this.tearProgress = Math.min(1.0, dx / (this.width * 0.55));
-        // Spawn sparks along tear line
-        const cx = this.width / 2;
-        const cy = this.height * 0.42;
-        const tearX = cx - 90 + this.tearProgress * 180;
-        this.spawnTearSparks(tearX, cy);
+      const deltaX = clientX - startX;
+      if (deltaX > 4) {
+        this.tearProgress = Math.max(0, Math.min(1.0, deltaX / (stripWidth * 0.75)));
+        tab.style.left = `calc(${Math.min(78, this.tearProgress * 78)}% + 2px)`;
 
-        if (this.tearProgress >= 0.95 && !this.isOpened) {
+        // Spawn sparks at the tear tab position
+        const rect = tab.getBoundingClientRect();
+        const stageRect = stage.getBoundingClientRect();
+        const sparkX = rect.left - stageRect.left + rect.width / 2;
+        const sparkY = rect.top - stageRect.top + rect.height / 2;
+        this.spawnTearSparks(sparkX, sparkY);
+
+        try {
+          if (navigator.vibrate) navigator.vibrate(15);
+        } catch(e) {}
+
+        if (this.tearProgress >= 0.85) {
+          isDragging = false;
           this.triggerOpen();
         }
       }
     };
 
-    const handleEnd = () => {
-      if (!this.isOpened && isDragging) {
-        // If pulled more than 40%, complete opening!
-        if (this.tearProgress > 0.4) {
+    const onDragEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      if (!this.isOpened) {
+        if (this.tearProgress > 0.45) {
           this.triggerOpen();
         } else {
-          // Snap back
+          // Snap pull-tab back
+          tab.style.transition = 'left 0.25s ease';
+          tab.style.left = '2px';
           this.tearProgress = 0;
+          setTimeout(() => { tab.style.transition = ''; }, 260);
         }
       }
-      isDragging = false;
     };
 
-    canvas.addEventListener('mousedown', (e) => handleStart(e.clientX));
-    window.addEventListener('mousemove', (e) => handleMove(e.clientX));
-    window.addEventListener('mouseup', handleEnd);
+    // Mouse events
+    tab.addEventListener('mousedown', (e) => { e.stopPropagation(); onDragStart(e.clientX); });
+    strip.addEventListener('mousedown', (e) => onDragStart(e.clientX));
+    window.addEventListener('mousemove', (e) => onDragMove(e.clientX));
+    window.addEventListener('mouseup', onDragEnd);
 
-    canvas.addEventListener('touchstart', (e) => handleStart(e.touches[0].clientX), { passive: true });
-    window.addEventListener('touchmove', (e) => handleMove(e.touches[0].clientX), { passive: true });
-    window.addEventListener('touchend', handleEnd);
+    // Touch events
+    tab.addEventListener('touchstart', (e) => { e.stopPropagation(); onDragStart(e.touches[0].clientX); }, { passive: true });
+    strip.addEventListener('touchstart', (e) => onDragStart(e.touches[0].clientX), { passive: true });
+    window.addEventListener('touchmove', (e) => {
+      if (isDragging && e.touches && e.touches[0]) {
+        onDragMove(e.touches[0].clientX);
+      }
+    }, { passive: true });
+    window.addEventListener('touchend', onDragEnd);
 
-    // Tap fallback on tear strip
-    canvas.addEventListener('click', (e) => {
-      if (!this.isOpened) {
+    // Fallback tap/click anywhere on pack
+    pack.addEventListener('click', (e) => {
+      if (!this.isOpened && !isDragging && this.tearProgress < 0.2) {
         this.triggerOpen();
       }
     });
   }
 
   spawnTearSparks(x, y) {
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < 5; i++) {
       this.particles.push({
         x: x,
         y: y,
-        vx: (Math.random() - 0.5) * 5,
-        vy: (Math.random() - 0.5) * 5,
+        vx: (Math.random() - 0.5) * 6,
+        vy: (Math.random() - 0.5) * 6 - 1,
         alpha: 1.0,
         decay: 0.04 + Math.random() * 0.04,
-        color: 0xffd700,
-        size: 1.5 + Math.random() * 2.5
+        color: [0xffd700, 0xfacc15, 0xffffff, 0x38bdf8][Math.floor(Math.random() * 4)],
+        size: 2 + Math.random() * 3
       });
     }
   }
 
   triggerOpen() {
     if (this.isOpened) return;
+
+    // Check and deduct miles if Hub exists
+    if (window.hub && window.hub.saveData) {
+      const cost = this.activeTier === 'economy' ? 100 : (this.activeTier === 'business' ? 250 : 500);
+      if (window.hub.saveData.miles < cost) {
+        alert(`Miglia insufficienti! Il pacchetto ${this.activeTier.toUpperCase()} costa ${cost} Miglia (ne possiedi ${window.hub.saveData.miles}). Vinci sfide in Arena o Spire per guadagnare altre miglia!`);
+        this.reset();
+        return;
+      }
+      window.hub.addMiles(-cost);
+      window.hub.saveData.stats.packsOpened = (window.hub.saveData.stats.packsOpened || 0) + 1;
+      if (this.activeTier !== 'economy') window.hub.checkAchievements('pack_unboxing');
+    }
+
     this.isOpened = true;
     this.tearProgress = 1.0;
 
-    // Explosive gold leaf confetti
+    // 1. Explosive Confetti & Spark Burst in PixiJS
     const cx = this.width / 2;
-    const cy = this.height * 0.42;
-    for (let i = 0; i < 60; i++) {
+    const cy = this.height * 0.44;
+    for (let i = 0; i < 75; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = 3 + Math.random() * 8;
+      const speed = 4 + Math.random() * 10;
       this.particles.push({
         x: cx,
         y: cy,
         vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed - 2,
+        vy: Math.sin(angle) * speed - 3,
         alpha: 1.0,
-        decay: 0.015 + Math.random() * 0.02,
-        color: [0xffd700, 0xf59e0b, 0x38bdf8, 0xffffff, 0xc084fc][Math.floor(Math.random() * 5)],
-        size: 2 + Math.random() * 4
+        decay: 0.012 + Math.random() * 0.02,
+        color: [0xffd700, 0xf59e0b, 0x38bdf8, 0xffffff, 0xc084fc, 0xef4444][Math.floor(Math.random() * 6)],
+        size: 2.5 + Math.random() * 4.5
       });
     }
 
+    // 2. Audio & Haptics
     try {
       if (typeof sound !== 'undefined') {
         sound.playFanfare();
         sound.playCoins();
       }
-      if (typeof fx !== 'undefined' && fx.shake) fx.shake(14, 400);
-      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([40, 60, 100]);
+      if (typeof fx !== 'undefined' && fx.shake) fx.shake(16, 450);
+      if (navigator.vibrate) navigator.vibrate([50, 70, 150]);
     } catch (e) {}
 
-    // Pull cards from global hub
+    // 3. Physical Pack Opening Animation
+    if (this.packEl) {
+      this.packEl.style.transition = 'all 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2)';
+      this.packEl.style.transform = 'perspective(1000px) translateY(80px) scale(0.8)';
+      this.packEl.style.opacity = '0.2';
+      this.packEl.style.pointerEvents = 'none';
+    }
+
+    // 4. Generate Cards & Populate 3D Fan
     if (window.hub && typeof window.hub.generatePackCards === 'function') {
       this.revealedCards = window.hub.generatePackCards(this.activeTier);
     } else {
       this.revealedCards = (typeof ALL_CARDS !== 'undefined') ? ALL_CARDS.slice(0, 4) : [];
     }
 
-    const actionText = document.getElementById('booster-action-text');
-    if (actionText) {
-      actionText.textContent = "✦ BUSTINA SBOCCIATA! TOCCA LE CARTE PER ISPEZIONARLE ✦";
+    this.renderCardsFan();
+
+    // 5. Update Action Text & Controls
+    if (this.actionText) {
+      this.actionText.textContent = "✦ BUSTINA SBOCCIATA! TOCCA UNA CARTA PER AMMIRARLA ✦";
     }
-    const btnReset = document.getElementById('btn-booster-reset');
-    if (btnReset) btnReset.style.display = 'inline-block';
+    if (this.btnReset) this.btnReset.style.display = 'inline-block';
+    if (this.btnGotoPass) this.btnGotoPass.style.display = 'inline-block';
+  }
+
+  renderCardsFan() {
+    if (!this.fanEl) return;
+    this.fanEl.innerHTML = '';
+    this.fanEl.style.display = 'flex';
+
+    const n = this.revealedCards.length;
+    const spread = Math.min(320, window.innerWidth * 0.88);
+    const stepX = (spread - 96) / Math.max(1, n - 1);
+    const startX = -spread / 2 + 48;
+
+    this.revealedCards.forEach((card, idx) => {
+      const cardEl = document.createElement('div');
+      cardEl.className = `card-item fan-card-item ${card.material || 'leather'}`;
+      if (card.image) {
+        cardEl.style.backgroundImage = `url('${card.image}')`;
+      }
+      cardEl.innerHTML = renderIntegratedCardInner(card);
+
+      const x = startX + idx * stepX;
+      const norm = (idx - (n - 1) / 2) / Math.max(1, (n - 1) / 2); // -1 to +1
+      const rot = norm * 14; // -14deg to +14deg
+      const y = Math.abs(norm) * 16 - 15;
+
+      cardEl.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(0.4)`;
+      cardEl.style.opacity = '0';
+      cardEl.style.zIndex = 10 + idx;
+      cardEl.style.transition = `all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 0.08}s`;
+
+      setTimeout(() => {
+        cardEl.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(1)`;
+        cardEl.style.opacity = '1';
+      }, 40);
+
+      cardEl.onclick = (e) => {
+        e.stopPropagation();
+        if (window.hub && typeof window.hub.showInspect === 'function') {
+          window.hub.showInspect(card);
+        }
+      };
+
+      this.fanEl.appendChild(cardEl);
+    });
   }
 
   update(dt) {
-    if (!this.isReady) return;
+    if (!this.isReady || !this.fxGraphics) return;
     this.time += dt * 0.03;
 
-    this.renderPack();
-    this.renderFX();
-  }
-
-  renderPack() {
-    const g = this.mainGraphics;
-    g.clear();
-
-    const w = this.width;
-    const h = this.height;
-    const cx = w / 2;
-    const cy = h * 0.44;
-
-    const packW = Math.min(w * 0.65, 230);
-    const packH = packW * 1.5;
-    const halfW = packW / 2;
-    const halfH = packH / 2;
-
-    const tierColors = {
-      economy: { bg: 0x1e293b, rim: 0x38bdf8, gold: 0x94a3b8, label: 'ECONOMY CLASS' },
-      business: { bg: 0x2e1065, rim: 0xc084fc, gold: 0xa855f7, label: 'BUSINESS SUITE' },
-      sovereign: { bg: 0x1c1917, rim: 0xfacc15, gold: 0xffd700, label: 'SOVEREIGN DIPLOMATIC' }
-    };
-    const tier = tierColors[this.activeTier] || tierColors.economy;
-
-    if (!this.isOpened) {
-      // 1. Pack Body Shadow & Outer Aura
-      g.roundRect(cx - halfW - 4, cy - halfH - 4, packW + 8, packH + 8, 20).stroke({
-        width: 3,
-        color: tier.rim,
-        alpha: 0.6 + Math.sin(this.time * 3) * 0.25
-      });
-
-      // 2. Foil Envelope Texture
-      g.roundRect(cx - halfW, cy - halfH, packW, packH, 16).fill({
-        color: tier.bg,
-        alpha: 0.95
-      });
-
-      // 3. Gold Metallic Specular Sweep Line
-      const sweepPos = ((this.time * 0.5) % 2) - 0.5; // -0.5 to 1.5
-      const sweepX = cx - halfW + sweepPos * packW;
-      g.rect(Math.max(cx - halfW, sweepX - 20), cy - halfH, 40, packH).fill({
-        color: 0xffffff,
-        alpha: 0.12
-      });
-
-      // 4. Gold Border Emboss
-      g.roundRect(cx - halfW + 6, cy - halfH + 6, packW - 12, packH - 12, 12).stroke({
-        width: 1.5,
-        color: tier.gold,
-        alpha: 0.8
-      });
-
-      // 5. Globe Emblem / Coat of Arms in center
-      const globeY = cy - 25;
-      g.circle(cx, globeY, 32).stroke({ width: 1.5, color: tier.gold, alpha: 0.7 });
-      g.ellipse(cx, globeY, 32, 14).stroke({ width: 1.2, color: tier.gold, alpha: 0.5 });
-      g.moveTo(cx - 32, globeY).lineTo(cx + 32, globeY).stroke({ width: 1.2, color: tier.gold, alpha: 0.6 });
-
-      // 6. Tear-Strip Bar (Interactive Pull-Tab)
-      const stripY = cy + 45;
-      const stripH = 34;
-      const pullOffset = this.tearProgress * (packW + 40);
-
-      // Perforated Tear Line
-      for (let x = cx - halfW + 10; x < cx + halfW - 10; x += 10) {
-        g.moveTo(x, stripY).lineTo(x + 5, stripY).stroke({ width: 2, color: 0xffd700, alpha: 0.85 });
-      }
-
-      // Golden Pull Tab Ribbon
-      g.roundRect(cx - halfW - 4 + pullOffset * 0.4, stripY - 14, packW + 8 - pullOffset, stripH, 8).fill({
-        color: 0xd97706,
-        alpha: 0.9
-      });
-      g.roundRect(cx - halfW - 4 + pullOffset * 0.4, stripY - 14, packW + 8 - pullOffset, stripH, 8).stroke({
-        width: 1.5,
-        color: 0xfef08a,
-        alpha: 1.0
-      });
-
-      // Subtle Barcode at bottom
-      const barY = cy + halfH - 24;
-      for (let b = 0; b < 16; b++) {
-        const bx = cx - 50 + b * 6.5;
-        const bw = (b % 3 === 0) ? 2.5 : 1.2;
-        g.rect(bx, barY, bw, 14).fill({ color: tier.gold, alpha: 0.6 });
-      }
-
-    } else {
-      // BUSTINA APERTA: Mostra le carte in ventaglio 2.5D
-      const numCards = this.revealedCards.length || 3;
-      const cardW = 76;
-      const cardH = 114;
-      const totalSpread = Math.min(w * 0.85, 310);
-      const stepX = (totalSpread - cardW) / Math.max(1, numCards - 1);
-
-      this.revealedCards.forEach((c, i) => {
-        const targetX = (w - totalSpread) / 2 + i * stepX + cardW / 2;
-        const angle = (i - (numCards - 1) / 2) * 0.08;
-        const targetY = cy + Math.abs(i - (numCards - 1) / 2) * 8 - 10;
-
-        // Card Glow Backdrop
-        const rColor = c.rarity === 'legendary' ? 0xffd700 : (c.rarity === 'epic' ? 0xc084fc : 0x38bdf8);
-        g.roundRect(targetX - cardW / 2 - 3, targetY - cardH / 2 - 3, cardW + 6, cardH + 6, 10).stroke({
-          width: 2.5,
-          color: rColor,
-          alpha: 0.85 + Math.sin(this.time * 4 + i) * 0.15
-        });
-
-        // Card Base
-        g.roundRect(targetX - cardW / 2, targetY - cardH / 2, cardW, cardH, 8).fill({
-          color: 0x0f172a,
-          alpha: 0.95
-        });
-
-        // Golden Card Rim
-        g.roundRect(targetX - cardW / 2 + 3, targetY - cardH / 2 + 3, cardW - 6, cardH - 6, 6).stroke({
-          width: 1,
-          color: 0xfacc15,
-          alpha: 0.8
-        });
-
-        // Card Star/Crown Emblem
-        g.circle(targetX, targetY - 12, 14).stroke({ width: 1.2, color: rColor, alpha: 0.9 });
-        g.circle(targetX, targetY - 12, 4).fill({ color: 0xffffff, alpha: 0.9 });
-      });
-    }
-  }
-
-  renderFX() {
-    const g = this.fxGraphics;
-    g.clear();
-
+    this.fxGraphics.clear();
     for (let i = this.particles.length - 1; i >= 0; i--) {
       const p = this.particles[i];
       p.x += p.vx;
       p.y += p.vy;
-      p.vy += 0.12; // Gravity
+      p.vy += 0.15; // Gravity
       p.vx *= 0.97;
       p.alpha -= p.decay;
 
       if (p.alpha <= 0) {
         this.particles.splice(i, 1);
       } else {
-        g.circle(p.x, p.y, p.size).fill({
+        this.fxGraphics.circle(p.x, p.y, p.size).fill({
           color: p.color,
           alpha: p.alpha
         });
@@ -4034,6 +4112,71 @@ class PixiBoosterEngine {
         }
       }
 
+      // ==================== GENERATORE CARTE BUSTINE VIP ====================
+      generatePackCards(tier = 'economy') {
+        const count = tier === 'sovereign' ? 5 : (tier === 'business' ? 4 : 3);
+        const pool = [...ALL_CARDS];
+        const drawn = [];
+
+        // Riconoscimento rarità garantita per categoria di lusso
+        if (tier === 'sovereign') {
+          const legendaries = pool.filter(c => c.rarity === RARITY.LEGENDARY);
+          if (legendaries.length > 0) {
+            drawn.push(legendaries[Math.floor(Math.random() * legendaries.length)]);
+          }
+        } else if (tier === 'business') {
+          const epics = pool.filter(c => c.rarity === RARITY.EPIC || c.rarity === RARITY.LEGENDARY);
+          if (epics.length > 0) {
+            drawn.push(epics[Math.floor(Math.random() * epics.length)]);
+          }
+        }
+
+        // Completa con carte casuali senza duplicati istantanei se possibile
+        while (drawn.length < count) {
+          const remainingPool = pool.filter(c => !drawn.some(d => d.id === c.id));
+          const list = remainingPool.length > 0 ? remainingPool : pool;
+          drawn.push(list[Math.floor(Math.random() * list.length)]);
+        }
+
+        // Calcolo maestria olografica/foil e sblocco nel passaporto
+        const resultCards = drawn.map(card => {
+          const clone = { ...card };
+          let rollMastery = 1;
+          const rand = Math.random();
+
+          if (tier === 'sovereign') {
+            if (rand < 0.25) rollMastery = 4; // Diamante Celeste
+            else if (rand < 0.65) rollMastery = 3; // Oro Prismatico
+            else rollMastery = 2; // Argento Foil
+          } else if (tier === 'business') {
+            if (rand < 0.15) rollMastery = 3;
+            else if (rand < 0.55) rollMastery = 2;
+            else rollMastery = 1;
+          } else {
+            if (rand < 0.15) rollMastery = 2;
+            else rollMastery = 1;
+          }
+
+          const curMastery = this.saveData.cardMastery[card.id] || 1;
+          if (rollMastery > curMastery) {
+            this.saveData.cardMastery[card.id] = rollMastery;
+            card.mastery = rollMastery;
+          }
+          clone.mastery = Math.max(curMastery, rollMastery);
+
+          if (!this.saveData.unlockedCards.includes(card.id)) {
+            this.saveData.unlockedCards.push(card.id);
+          }
+          return clone;
+        });
+
+        this.saveState();
+        if (typeof this.setupCollection === 'function') {
+          try { this.setupCollection(); } catch (e) {}
+        }
+        return resultCards;
+      }
+
       // ==================== DUTY FREE 3-TIER PACK CONTROLS ====================
       setupBoosterControls() {
         const tierCards = document.querySelectorAll('.pack-tier-card');
@@ -4042,6 +4185,9 @@ class PixiBoosterEngine {
             tierCards.forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             this.activePackTier = card.getAttribute('data-tier');
+            if (pixiBooster && typeof pixiBooster.setTier === 'function') {
+              pixiBooster.setTier(this.activePackTier);
+            }
             sound.playChime();
           };
         });
@@ -4049,22 +4195,25 @@ class PixiBoosterEngine {
         const btnReset = document.getElementById('btn-booster-reset');
         if (btnReset) {
           btnReset.onclick = () => {
-            const cost = this.activePackTier === 'economy' ? 100 : (this.activePackTier === 'business' ? 250 : 500);
-            if (this.saveData.miles < cost) {
-              alert(`Miglia insufficienti! Il pacchetto ${this.activePackTier.toUpperCase()} costa ${cost} Miglia.`);
-              return;
+            if (pixiBooster && typeof pixiBooster.reset === 'function') {
+              pixiBooster.reset();
             }
-            this.addMiles(-cost);
-            this.saveData.stats.packsOpened = (this.saveData.stats.packsOpened || 0) + 1;
-            if (this.activePackTier !== 'economy') this.checkAchievements('pack_unboxing');
-            if (pixiBooster) pixiBooster.reset();
+          };
+        }
+
+        const btnGotoPass = document.getElementById('btn-booster-goto-passport');
+        if (btnGotoPass) {
+          btnGotoPass.onclick = () => {
+            this.switchTab('tab-collection');
           };
         }
 
         const btnClose = document.getElementById('btn-booster-close-inspect');
         if (btnClose) {
           btnClose.onclick = () => {
-            if (pixiBooster) pixiBooster.reset();
+            if (pixiBooster && typeof pixiBooster.reset === 'function') {
+              pixiBooster.reset();
+            }
           };
         }
       }
@@ -4267,7 +4416,7 @@ class PixiBoosterEngine {
     // Registrazione Service Worker per Installazione PWA & Gioco Offline
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2.5.1')
+        navigator.serviceWorker.register('./sw.js?v=2.6.0')
           .then((reg) => {
             console.log('[WTO PWA] Service Worker attivo! Scope:', reg.scope);
             try { reg.update(); } catch(e) {}
