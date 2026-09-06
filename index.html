@@ -363,6 +363,10 @@
           </div>
 
           <div class="game-meta-badge">
+            <button id="btn-call-assistant" class="assistant-call-btn" title="Chiedi aiuto a Elena (Tutorial)">
+              <img src="assets/characters/flight_attendant.jpg" class="assistant-call-thumb" alt="Elena">
+              <span>TUTORIAL</span>
+            </button>
             <button id="btn-pvp-switch" class="pvp-mode-pill" title="Seleziona modalità PvP o Solo vs IA" style="display:inline-flex; align-items:center; gap:4px;">
               <svg viewBox="0 0 20 20" width="13" height="13" fill="none">
                 <path d="M4 16 L16 4 M16 4 L11 4 M16 4 L16 9" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
@@ -1086,6 +1090,50 @@
 
     <!-- ==================== MODALI ==================== -->
     
+    <!-- ==================== ASSISTENTE DI VOLO 2D (TUTORIAL VISIVO ONBOARDING) ==================== -->
+    <div id="tutorial-overlay" class="tutorial-overlay" style="display: none;">
+      <!-- Maschera SVG per Riflettore / Spotlight -->
+      <svg class="tutorial-spotlight-svg" id="tutorial-spotlight-svg">
+        <defs>
+          <mask id="tutorial-mask">
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <rect id="spotlight-cutout" x="0" y="0" width="0" height="0" rx="16" fill="black" />
+          </mask>
+        </defs>
+        <rect x="0" y="0" width="100%" height="100%" fill="rgba(4, 7, 18, 0.85)" mask="url(#tutorial-mask)" />
+      </svg>
+
+      <!-- Cornice Pulsante Intorno all'Elemento Evidenziato -->
+      <div id="spotlight-frame" class="spotlight-frame" style="display: none;"></div>
+
+      <!-- Scheda Dialogo Assistente Elena -->
+      <div class="assistant-dialog-card pos-bottom" id="assistant-dialog-card">
+        <div class="assistant-header-row">
+          <div class="assistant-avatar-badge">
+            <img src="assets/characters/flight_attendant.jpg" class="assistant-avatar-img" alt="Elena">
+            <div class="assistant-badge-info">
+              <span class="assistant-role-pill" id="assistant-step-badge">ASSISTENTE DI BORDO</span>
+              <div class="assistant-name">Elena • WTO Concierge</div>
+            </div>
+          </div>
+          <div class="assistant-step-counter" id="assistant-step-counter">Passo 1/7</div>
+        </div>
+
+        <div class="assistant-body">
+          <h4 class="assistant-step-title" id="assistant-step-title">Benvenuto a Bordo!</h4>
+          <p class="assistant-step-text" id="assistant-step-text">...</p>
+        </div>
+
+        <div class="assistant-actions-row">
+          <button class="assistant-btn assistant-btn-skip" id="assistant-btn-skip">Salta Tutorial</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="assistant-btn assistant-btn-prev" id="assistant-btn-prev" style="display:none;">◀ Indietro</button>
+            <button class="assistant-btn assistant-btn-next" id="assistant-btn-next">Iniziamo! ➔</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Modale PvP Lobby -->
     <div id="modal-pvp-lobby" class="modal-overlay" style="display: none;">
       <div class="modal-content" style="max-width: 340px;">
@@ -1319,6 +1367,10 @@
           </div>
 
           <div style="border-top:1px solid #334155; padding-top:10px; margin-top:4px; display:flex; flex-direction:column; gap:8px;">
+            <button id="btn-replay-tutorial" style="width:100%; background:linear-gradient(135deg, #1e1b4b, #312e81); border:1.5px solid #a855f7; color:#f5d0fe; font-size:11px; font-weight:900; padding:9px; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+              <img src="assets/characters/flight_attendant.jpg" style="width:18px; height:18px; border-radius:50%; object-fit:cover;" alt="Elena">
+              <span>Rivedi Tutorial con Elena</span>
+            </button>
             <button id="btn-force-refresh-cache" style="width:100%; background:linear-gradient(135deg, #0284c7, #0ea5e9); border:none; color:#fff; font-size:11px; font-weight:800; padding:9px; border-radius:8px; cursor:pointer; box-shadow:0 0 10px rgba(14,165,233,0.5);">
               🔄 Sincronizza & Ricarica Sfondi 8K
             </button>
@@ -2833,6 +2885,253 @@ class PixiBoosterEngine {
       `;
     }
 
+    // ==================== ASSISTENTE DI VOLO 2D (ELENA) TUTORIAL ====================
+    class FlightAssistantTutorial {
+      constructor(hub) {
+        this.hub = hub;
+        this.currentStep = 0;
+        this.isActive = false;
+
+        this.steps = [
+          {
+            id: 'welcome',
+            badge: 'BENVENUTO A BORDO',
+            title: 'Benvenuto a Bordo, Comandante! ✈️',
+            text: 'Sono <b>Elena</b>, la tua assistente di volo personale in <i>World Travel Odyssey</i>. Lascia che ti mostri ogni funzione e segreto per conquistare i terminal del mondo e dominare i cieli!',
+            targetSelector: null,
+            position: 'bottom',
+            btnText: 'Iniziamo! ➔'
+          },
+          {
+            id: 'energy',
+            badge: 'CARBURANTE DI VOLO',
+            title: 'Miglia Aeree & Energia ✈️',
+            text: 'Questo indicatore (<b>1/1</b>) rappresenta le tue Miglia Aeree disponibili. Inizi con 1 Miglia al turno 1 e ne ricevi +1 a ogni scalo (fino a 6 al turno 6). Servono per decollare ed imbarcare le carte sui terminal!',
+            targetSelector: '.player-hud div:first-child',
+            position: 'top',
+            btnText: 'Chiaro! ➔'
+          },
+          {
+            id: 'destinations',
+            badge: 'ROTTE MONDIALI',
+            title: 'I 3 Terminal di Destinazione 🗺️',
+            text: 'Ogni duello aereo si gioca su <b>3 metropoli mondiali</b> (Tokyo, Roma, New York). Ogni terminal può ospitare fino a 4 carte. Per vincere la partita, devi conquistare il maggior punteggio in <b>almeno 2 terminal su 3</b>!',
+            targetSelector: '#altars-score-container',
+            position: 'bottom',
+            btnText: 'Prosegui ➔'
+          },
+          {
+            id: 'hand_synergy',
+            badge: 'CARTE & SINERGIE',
+            title: 'Carte & Sinergie di Bandiera 🇮🇹🇯🇵',
+            text: 'In basso trovi le tue carte. Ognuna ha Costo in Miglia ✈, Potere ⚡, Moltiplicatore ✖ e Nazione. Giocare carte della <b>stessa nazione o continente</b> nello stesso terminal sblocca Sinergie che raddoppiano il tuo punteggio!',
+            targetSelector: '#hand-container',
+            position: 'top',
+            btnText: 'Magnifico! ➔'
+          },
+          {
+            id: 'decollo_overcharge',
+            badge: 'STRATEGIA DI VOLO',
+            title: 'Decollo, First Class & Ritiro 🚀',
+            text: 'Quando hai posizionato le tue carte, tocca <b>DECOLLO</b> per dare inizio al turno. Se sei certo di vincere, tocca <b>1ST CLASS</b> per raddoppiare le Miglia in palio! Se la situazione volge al peggio, usa <b>RITIRO</b> per limitare i danni.',
+            targetSelector: '.player-hud div:last-child',
+            position: 'top',
+            btnText: 'Perfetto ➔'
+          },
+          {
+            id: 'navigation_tabs',
+            badge: 'UNIVERSO DI GIOCO',
+            title: 'Le 5 Sezioni del Tuo Passaporto 🌐',
+            text: 'Nella barra in basso puoi viaggiare ovunque: <b>Volo</b> (Arena duelli), <b>Mondo</b> (scalata roguelike ed enigmi), <b>Passaporto</b> (collezione e mazzi), <b>Duty Free</b> (bustine 3D metalliche) e <b>Codex</b> con tutte le regole ufficiali!',
+            targetSelector: '.bottom-thumb-nav',
+            position: 'top',
+            btnText: 'Ultimo Passo ➔'
+          },
+          {
+            id: 'finish',
+            badge: 'VOLO AUTORIZZATO',
+            title: 'Decollo Autorizzato! 🌟',
+            text: 'Allaccia le cinture di sicurezza: i cieli del mondo ti attendono! Se avrai dubbi durante il viaggio, tocca in qualsiasi momento il pulsante <b>TUTORIAL</b> in alto per richiamarmi. Buon volo!',
+            targetSelector: null,
+            position: 'bottom',
+            btnText: 'INIZIA IL VOLO ✈️'
+          }
+        ];
+
+        this.overlayEl = document.getElementById('tutorial-overlay');
+        this.cutoutEl = document.getElementById('spotlight-cutout');
+        this.frameEl = document.getElementById('spotlight-frame');
+        this.cardEl = document.getElementById('assistant-dialog-card');
+        this.badgeEl = document.getElementById('assistant-step-badge');
+        this.counterEl = document.getElementById('assistant-step-counter');
+        this.titleEl = document.getElementById('assistant-step-title');
+        this.textEl = document.getElementById('assistant-step-text');
+        this.btnNext = document.getElementById('assistant-btn-next');
+        this.btnPrev = document.getElementById('assistant-btn-prev');
+        this.btnSkip = document.getElementById('assistant-btn-skip');
+
+        this.initEvents();
+      }
+
+      initEvents() {
+        if (this.btnNext) {
+          this.btnNext.onclick = () => {
+            if (this.currentStep < this.steps.length - 1) {
+              this.renderStep(this.currentStep + 1);
+            } else {
+              this.finish();
+            }
+          };
+        }
+
+        if (this.btnPrev) {
+          this.btnPrev.onclick = () => {
+            if (this.currentStep > 0) {
+              this.renderStep(this.currentStep - 1);
+            }
+          };
+        }
+
+        if (this.btnSkip) {
+          this.btnSkip.onclick = () => {
+            this.finish();
+          };
+        }
+
+        // Tasto rapido Elena nell'header
+        const btnCall = document.getElementById('btn-call-assistant');
+        if (btnCall) {
+          btnCall.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            this.start();
+          };
+        }
+
+        // Tasto riavvio nelle impostazioni
+        const btnReplay = document.getElementById('btn-replay-tutorial');
+        if (btnReplay) {
+          btnReplay.onclick = () => {
+            const modalSet = document.getElementById('modal-settings');
+            if (modalSet) modalSet.style.display = 'none';
+            this.start();
+          };
+        }
+
+        window.addEventListener('resize', () => {
+          if (this.isActive && this.steps[this.currentStep]) {
+            this.updateSpotlight(this.steps[this.currentStep].targetSelector);
+          }
+        });
+      }
+
+      start() {
+        if (!this.overlayEl) return;
+        this.isActive = true;
+        this.overlayEl.style.display = 'block';
+        this.overlayEl.style.opacity = '1';
+
+        // Assicurati che siamo nella tab Arena per vedere gli elementi
+        if (this.hub && typeof this.hub.switchTab === 'function') {
+          this.hub.switchTab('tab-arena');
+        }
+
+        this.renderStep(0);
+        try { if (typeof sound !== 'undefined') sound.playChime(); } catch(e) {}
+      }
+
+      updateSpotlight(targetSelector) {
+        if (!targetSelector) {
+          if (this.cutoutEl) {
+            this.cutoutEl.setAttribute('width', '0');
+            this.cutoutEl.setAttribute('height', '0');
+          }
+          if (this.frameEl) {
+            this.frameEl.style.display = 'none';
+          }
+          return;
+        }
+
+        const target = document.querySelector(targetSelector);
+        if (!target) {
+          this.updateSpotlight(null);
+          return;
+        }
+
+        const rect = target.getBoundingClientRect();
+        const pad = 6;
+        const x = Math.max(0, rect.left - pad);
+        const y = Math.max(0, rect.top - pad);
+        const w = Math.min(window.innerWidth, rect.width + pad * 2);
+        const h = Math.min(window.innerHeight, rect.height + pad * 2);
+
+        if (this.cutoutEl) {
+          this.cutoutEl.setAttribute('x', x);
+          this.cutoutEl.setAttribute('y', y);
+          this.cutoutEl.setAttribute('width', w);
+          this.cutoutEl.setAttribute('height', h);
+          this.cutoutEl.setAttribute('rx', '16');
+        }
+
+        if (this.frameEl) {
+          this.frameEl.style.display = 'block';
+          this.frameEl.style.left = `${x}px`;
+          this.frameEl.style.top = `${y}px`;
+          this.frameEl.style.width = `${w}px`;
+          this.frameEl.style.height = `${h}px`;
+        }
+      }
+
+      renderStep(index) {
+        if (index < 0 || index >= this.steps.length) {
+          this.finish();
+          return;
+        }
+
+        this.currentStep = index;
+        const step = this.steps[index];
+
+        if (this.badgeEl) this.badgeEl.textContent = step.badge;
+        if (this.counterEl) this.counterEl.textContent = `Passo ${index + 1}/${this.steps.length}`;
+        if (this.titleEl) this.titleEl.innerHTML = step.title;
+        if (this.textEl) this.textEl.innerHTML = step.text;
+        if (this.btnNext) this.btnNext.innerHTML = step.btnText || (index === this.steps.length - 1 ? 'INIZIA IL VOLO ✈️' : 'Avanti ▶');
+        if (this.btnPrev) this.btnPrev.style.display = index > 0 ? 'inline-block' : 'none';
+
+        if (this.cardEl) {
+          this.cardEl.classList.remove('pos-top', 'pos-bottom');
+          this.cardEl.classList.add(step.position === 'top' ? 'pos-top' : 'pos-bottom');
+        }
+
+        this.updateSpotlight(step.targetSelector);
+        try { if (typeof sound !== 'undefined') sound.playStamp(); } catch(e) {}
+      }
+
+      finish() {
+        this.isActive = false;
+        if (this.overlayEl) {
+          this.overlayEl.style.opacity = '0';
+          setTimeout(() => {
+            if (this.overlayEl) this.overlayEl.style.display = 'none';
+          }, 300);
+        }
+
+        if (this.hub && this.hub.saveData) {
+          this.hub.saveData.tutorialCompleted = true;
+          this.hub.saveState();
+        }
+
+        try {
+          if (typeof sound !== 'undefined') sound.playTakeoff();
+          if (typeof fx !== 'undefined' && fx && fx.spawnExplosion) {
+            fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#ffd700', 80);
+          }
+        } catch(e) {}
+      }
+    }
+
+    let tutorial = null;
+
     // --- 6. HUB & CONTROLLER GLOBALE ---
     class WorldTravelHub {
       constructor() {
@@ -2893,6 +3192,7 @@ class PixiBoosterEngine {
             },
             puzzlesSolved: [false, false, false],
             achievementsClaimed: {},
+            tutorialCompleted: false,
             stats: { matchesPlayed: 0, matchesWon: 0, packsOpened: 0 }
           };
           this.saveState();
@@ -4402,7 +4702,10 @@ class PixiBoosterEngine {
           splash.classList.add('hidden');
           setTimeout(() => {
             splash.style.display = 'none';
-          }, 650);
+            if (this.saveData && !this.saveData.tutorialCompleted) {
+              if (window.tutorial) window.tutorial.start();
+            }
+          }, 700);
         };
 
         if (btnEnter) {
@@ -4456,6 +4759,11 @@ class PixiBoosterEngine {
       try {
         window.hub = new WorldTravelHub();
         console.log('[WTO] WorldTravelHub avviato con successo!');
+
+        if (typeof FlightAssistantTutorial !== 'undefined') {
+          tutorial = new FlightAssistantTutorial(window.hub);
+          window.tutorial = tutorial;
+        }
       } catch (err) {
         console.error('[WTO] Errore critico avvio WorldTravelHub:', err);
       }
@@ -4471,7 +4779,7 @@ class PixiBoosterEngine {
     // Registrazione Service Worker per Installazione PWA & Gioco Offline
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2.6.1')
+        navigator.serviceWorker.register('./sw.js?v=2.7.0')
           .then((reg) => {
             console.log('[WTO PWA] Service Worker attivo! Scope:', reg.scope);
             try { reg.update(); } catch(e) {}
