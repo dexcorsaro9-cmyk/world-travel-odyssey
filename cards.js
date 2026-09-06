@@ -31,10 +31,10 @@ export const RARITY = {
 };
 
 export const WORLD_DESTINATIONS = [
-  { id: 'dest_tokyo', country: 'Giappone', city: 'Tokyo (HND)', desc: 'Puntualità Shinkansen: Costo -1 Miglia e x1.5 Hype.', multBonus: 1.5, energyDiscount: 1, lightColor: 0x00f0ff, icon: '🗼' },
+  { id: 'dest_tokyo', country: 'Giappone', city: 'Tokyo (HND)', desc: 'Alta Velocità Maglev: Costo -1 Miglia e x1.5 Hype.', multBonus: 1.5, energyDiscount: 1, lightColor: 0x00f0ff, icon: '🗼' },
   { id: 'dest_rome', country: 'Italia', city: 'Roma (FCO)', desc: 'Patrimonio UNESCO: I monumenti raddoppiano il Prestigio x2.0.', multBonus: 2.0, sacrificeBonus: 4, lightColor: 0xf59e0b, icon: '🏛️' },
   { id: 'dest_ny', country: 'USA', city: 'New York (JFK)', desc: 'Wall Street: L\'Upgrade raddoppia i guadagni.', multBonus: 1.3, championBuff: true, lightColor: 0x10b981, icon: '🗽' },
-  { id: 'dest_paris', country: 'Francia', city: 'Parigi (CDG)', desc: 'Guida Michelin: Le carte Evento aumentano il Prestigio di +3.', multBonus: 1.6, energyDiscount: 0, lightColor: 0xec4899, icon: '🥐' },
+  { id: 'dest_paris', country: 'Francia', city: 'Parigi (CDG)', desc: 'Gran Cucina Parigina: Le carte Evento aumentano il Prestigio di +3.', multBonus: 1.6, energyDiscount: 0, lightColor: 0xec4899, icon: '🥐' },
   { id: 'dest_cairo', country: 'Egitto', city: 'Il Cairo (CAI)', desc: 'Mistero delle Piramidi: Resurrezione delle carte sacrificate.', multBonus: 1.4, sacrificeBonus: 6, lightColor: 0xeab308, icon: '🏺' }
 ];
 
@@ -43,7 +43,7 @@ export const ALL_CARDS = [
   {
     id: 'card_italy_champ', country: 'Italia', name: 'Leonardo, Maestro Rinascimento', type: CARD_TYPES.SOVEREIGN, cost: 3, power: 5, mult: 1.5,
     material: MATERIALS.LEATHER, materialDesc: 'Pelle Toscana Conciata al Vegetale & Sigillo in Ceralacca', rarity: RARITY.LEGENDARY, airport: 'FCO - Roma',
-    image: 'assets/cards/dest_tokyo.jpg',
+    image: 'assets/cards/card_italy_champ.jpg',
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="44" fill="#2d150b" stroke="#f59e0b" stroke-width="2"/><circle cx="50" cy="50" r="18" fill="#b45309" stroke="#fef08a"/><circle cx="50" cy="22" r="5" fill="#ef4444"/></svg>`,
     levelUpReq: 'Visita 2 Città d\'Arte o Gioca 2 carte Meraviglia', isLeveledUp: false, leveledPower: 14, leveledMult: 3.2,
     text: 'Genio Universale: +2 Prestigio a tutte le destinazioni europee.',
@@ -73,7 +73,7 @@ export const ALL_CARDS = [
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#0d1117" stroke="#00f0ff" stroke-width="2"/><polygon points="50,15 62,48 92,50 68,68 76,96 50,78 24,96 32,68 8,50 38,48" fill="#00f0ff" opacity="0.8"/><circle cx="50" cy="50" r="10" fill="#ff0055"/></svg>`,
     levelUpReq: 'Attiva 2 combo ad alta velocità o raggiungi 100 Hype', isLeveledUp: false, leveledPower: 16, leveledMult: 3.5,
     text: 'Puntualità Assoluta: Immune a scioperi e ritardi.',
-    levelUpText: 'LINEA SHINKANSEN: Ruba 5 Miglia e congela il prossimo turno nemico.',
+    levelUpText: 'CORSA AD ALTA VELOCITÀ: Ruba 5 Miglia e congela il prossimo turno nemico.',
     voiceLine: 'Il treno non aspetta, e neppure la mia katana.', soundType: 'tokyo'
   },
   {
@@ -84,7 +84,7 @@ export const ALL_CARDS = [
     text: 'Hype Turistico: Moltiplica x1.8 il punteggio finale della destinazione.', soundType: 'tokyo'
   },
   {
-    id: 'card_japan_shinkansen', country: 'Giappone', name: 'Treno Maglev Shinkansen', type: CARD_TYPES.EVENT, cost: 2, power: 4, mult: 1.4,
+    id: 'card_japan_shinkansen', country: 'Giappone', name: 'Treno Maglev ad Alta Velocità', type: CARD_TYPES.EVENT, cost: 2, power: 4, mult: 1.4,
     material: MATERIALS.ACRYLIC_NEON, materialDesc: 'Acrilico High-Tech Neon & Carta Washi Incastonata', rarity: RARITY.RARE, airport: 'NRT - Tokyo',
     image: 'assets/cards/card_japan_shinkansen.jpg',
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="35" width="70" height="30" rx="12" fill="#0284c7"/><line x1="20" y1="50" x2="80" y2="50" stroke="#fff" stroke-width="3"/></svg>`,
@@ -103,7 +103,7 @@ export const ALL_CARDS = [
     voiceLine: 'Il denaro non dorme mai, e neppure New York.', soundType: 'cash'
   },
   {
-    id: 'card_usa_wallstreet', country: 'USA', name: 'Il Toro di Wall Street', type: CARD_TYPES.DESTINATION, cost: 3, power: 8, mult: 1.5,
+    id: 'card_usa_wallstreet', country: 'USA', name: 'La Borsa di Wall Street', type: CARD_TYPES.DESTINATION, cost: 3, power: 8, mult: 1.5,
     material: MATERIALS.TITANIUM, materialDesc: 'Titanio Nero Spazzolato Opaco & Chip EMV 24k', rarity: RARITY.EPIC, airport: 'JFK - New York',
     image: 'assets/cards/card_usa_wallstreet.jpg',
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="12" y="15" width="76" height="70" rx="10" fill="#09090b" stroke="#10b981" stroke-width="2"/><path d="M25 60 Q40 30 75 50 Q60 70 25 60 Z" fill="#b45309"/></svg>`,
@@ -119,17 +119,17 @@ export const ALL_CARDS = [
 
   // ================= 🇫🇷 FRANCIA (Seta Haute-Couture & Champagne) =================
   {
-    id: 'card_france_champ', country: 'Francia', name: 'Chef Pierre, 3 Stelle Michelin', type: CARD_TYPES.SOVEREIGN, cost: 3, power: 4, mult: 2.2,
+    id: 'card_france_champ', country: 'Francia', name: 'Chef Pierre, Gran Maestro di Cucina', type: CARD_TYPES.SOVEREIGN, cost: 3, power: 4, mult: 2.2,
     material: MATERIALS.SILK, materialDesc: 'Seta Haute-Couture Blu Navy & Ricami Fleur-de-Lis Dorati', rarity: RARITY.LEGENDARY, airport: 'CDG - Parigi',
     image: 'assets/cards/card_france_champ.jpg',
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#1e1b4b" stroke="#f43f5e" stroke-width="2"/><polygon points="50,15 60,38 85,38 65,54 72,78 50,62 28,78 35,54 15,38 40,38" fill="#fbbf24"/></svg>`,
     levelUpReq: 'Gioca 2 carte Gourmet o Eventi in corsia', isLeveledUp: false, leveledPower: 12, leveledMult: 4.0,
     text: 'Haute Cuisine: +1 Moltiplicatore a tutte le carte nella corsia.',
-    levelUpText: 'STELLA MICHELIN SUPREMA: Moltiplica x4.0 il punteggio di Parigi!',
+    levelUpText: 'GRAN GALA SUPREMO: Moltiplica x4.0 il punteggio di Parigi!',
     voiceLine: 'La cucina è arte, eleganza e perfezione assoluta!', soundType: 'chime'
   },
   {
-    id: 'card_france_eiffel', country: 'Francia', name: 'Tour Eiffel & Luci di Notte', type: CARD_TYPES.DESTINATION, cost: 3, power: 6, mult: 1.7,
+    id: 'card_france_eiffel', country: 'Francia', name: 'Tour Eiffel & Campo di Marte', type: CARD_TYPES.DESTINATION, cost: 3, power: 6, mult: 1.7,
     material: MATERIALS.SILK, materialDesc: 'Seta Haute-Couture Blu Navy & Ricami Fleur-de-Lis Dorati', rarity: RARITY.EPIC, airport: 'CDG - Parigi',
     image: 'assets/cards/card_france_eiffel.jpg',
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="15" width="70" height="70" rx="10" fill="#1e1b4b" stroke="#ec4899" stroke-width="2"/><polygon points="50,20 40,80 60,80" fill="#fb7185"/><circle cx="50" cy="20" r="4" fill="#facc15"/></svg>`,
@@ -145,8 +145,8 @@ export const ALL_CARDS = [
 
   // ================= 🇬🇧 REGNO UNITO (Tweed Savile Row & MI6) =================
   {
-    id: 'card_uk_agent', country: 'Regno Unito', name: 'Agente 00-Savile (MI6)', type: CARD_TYPES.SOVEREIGN, cost: 4, power: 7, mult: 1.6,
-    material: MATERIALS.TWEED, materialDesc: 'Tweed Savile Row & Filigrana MI6 Dorata', rarity: RARITY.LEGENDARY, airport: 'LHR - Londra',
+    id: 'card_uk_agent', country: 'Regno Unito', name: 'Agente Segreto di Savile Row', type: CARD_TYPES.SOVEREIGN, cost: 4, power: 7, mult: 1.6,
+    material: MATERIALS.TWEED, materialDesc: 'Tweed Savile Row & Filigrana d'Oro Reale', rarity: RARITY.LEGENDARY, airport: 'LHR - Londra',
     image: 'assets/cards/card_uk_agent.jpg',
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="15" width="70" height="70" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2"/><circle cx="50" cy="45" r="14" fill="#042f2e"/><line x1="20" y1="50" x2="80" y2="50" stroke="#10b981" stroke-width="2"/></svg>`,
     levelUpReq: 'Rivela 1 carta avversaria o attiva 1 imprevisto segreto', isLeveledUp: false, leveledPower: 15, leveledMult: 3.2,
