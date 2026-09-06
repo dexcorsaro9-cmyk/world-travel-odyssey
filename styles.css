@@ -1,0 +1,615 @@
+/* AetherClash: Sovereign - Stile Grafico Neo-Arcana 3D & UI Mobile-First Completa */
+
+:root {
+  --bg-deep: #06070a;
+  --bg-surface: #0f121b;
+  --bg-card: #151824;
+  --accent-gold: #f59e0b;
+  --accent-cyan: #00f0ff;
+  --accent-purple: #c084fc;
+  --accent-crimson: #ef4444;
+  --glow-foil: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(0,240,255,0.3) 50%, rgba(255,0,128,0.3) 100%);
+  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: #020305;
+  background-image: 
+    radial-gradient(circle at 50% 15%, rgba(112, 0, 255, 0.18), transparent 60%),
+    radial-gradient(circle at 50% 85%, rgba(0, 240, 255, 0.12), transparent 60%);
+  color: #f1f5f9;
+  font-family: var(--font-main);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Mobile Frame Container (Verticale 9:16 ergonomico) */
+#app-container {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  height: 100%;
+  max-height: 920px;
+  background: var(--bg-deep);
+  box-shadow: 0 0 60px rgba(0, 240, 255, 0.18), 0 0 25px rgba(0, 0, 0, 0.95);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (min-width: 600px) {
+  #app-container {
+    border-radius: 30px;
+    height: 95vh;
+  }
+}
+
+/* Viewport 3D Three.js */
+#three-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 62%;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+/* Canvas particelle 2D sovrapposto */
+#fx-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* --- VISTE TAB PRINCIPALI --- */
+.tab-view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 60px); /* Esclude la bottom bar */
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.tab-view.active {
+  display: flex;
+}
+
+/* --- TAB 1: ARENA 3D --- */
+.arena-overlay-ui {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.arena-overlay-ui > * {
+  pointer-events: auto;
+}
+
+/* Header Superiore Avversario */
+.top-header {
+  height: 56px;
+  padding: 6px 14px;
+  background: linear-gradient(180deg, rgba(15, 18, 27, 0.96), rgba(6, 7, 10, 0.7));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.avatar-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #1e1b4b;
+  border: 2px solid var(--accent-purple);
+  box-shadow: 0 0 10px rgba(192, 132, 252, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.ai-intent-pill {
+  font-size: 10px;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+  padding: 2px 7px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.game-meta-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.turn-pill {
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 12px;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stakes-pill {
+  background: linear-gradient(135deg, #7c2d12, #ea580c);
+  color: #fef08a;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 8px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(234, 88, 12, 0.5);
+}
+
+/* Clash score overlay sopra gli altari 3D */
+.altars-score-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 10px;
+  margin-top: 50px;
+}
+
+.altar-score-card {
+  background: rgba(15, 18, 27, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 6px 4px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.altar-score-card:active {
+  transform: scale(0.96);
+}
+
+.altar-name {
+  font-size: 10px;
+  font-weight: 800;
+  color: #e2e8f0;
+}
+
+.altar-scores {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+/* HUD Giocatore */
+.player-hud {
+  padding: 6px 12px;
+  background: linear-gradient(0deg, rgba(15, 18, 27, 0.98), rgba(8, 9, 13, 0.85));
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.energy-orb {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #38bdf8, #0369a1 70%, #082f49);
+  border: 2px solid #7dd3fc;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.souls-badge {
+  font-size: 11px;
+  color: #cbd5e1;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-overcharge {
+  background: linear-gradient(135deg, #b45309, #d97706);
+  border: 2px solid #fef08a;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  border-radius: 18px;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+}
+
+.btn-overcharge.is-active {
+  background: linear-gradient(135deg, #0284c7, #06b6d4);
+  border-color: #67e8f9;
+  box-shadow: 0 0 16px rgba(6, 182, 212, 0.8);
+}
+
+.btn-end-turn {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  border: 1px solid #60a5fa;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 7px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* Mano Giocatore ad Arco */
+.hand-container {
+  height: 145px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 0 8px 6px;
+}
+
+.card-item {
+  width: 85px;
+  height: 125px;
+  background: var(--bg-card);
+  border-radius: 10px;
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 5px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease;
+  transform-origin: bottom center;
+  margin: 0 -9px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+}
+
+.card-item:hover, .card-item.selected {
+  transform: translateY(-24px) scale(1.12) !important;
+  z-index: 30 !important;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 12px 24px rgba(0, 240, 255, 0.5);
+}
+
+.card-item.foil {
+  border-color: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.card-item.polychrome {
+  border-color: #f43f5e;
+  animation: rainbow-border 4s linear infinite;
+}
+
+.card-cost-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #0284c7;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.card-power-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #b91c1c;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.card-art-box {
+  flex: 1;
+  margin: 3px 0;
+  border-radius: 6px;
+  background: #0b0e17;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-name-title {
+  font-size: 9px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e2e8f0;
+}
+
+/* --- TAB 2: LA GUGLIA ROGUELIKE (SLAY THE SPIRE) --- */
+.spire-view {
+  background: radial-gradient(circle at 50% 20%, #1e112a, #090a10 80%);
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.spire-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.spire-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.spire-node {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #151824;
+  border: 2px solid #6366f1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+
+.spire-node:hover, .spire-node.available {
+  border-color: #facc15;
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.6);
+  transform: scale(1.08);
+}
+
+.spire-node.completed {
+  opacity: 0.4;
+  border-color: #22c55e;
+}
+
+/* --- TAB 3: COLLEZIONE & 3D INSPECTOR --- */
+.collection-view {
+  background: #090b12;
+  padding: 14px;
+  overflow-y: auto;
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+
+/* --- TAB 4: FORGIA PACCHETTI (UNBOXING) --- */
+.booster-view {
+  background: radial-gradient(circle at 50% 40%, #1e1035, #060814 80%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.booster-pack-3d {
+  width: 170px;
+  height: 250px;
+  background: linear-gradient(135deg, #4338ca, #6b21a8, #b91c1c);
+  border-radius: 16px;
+  border: 3px solid #fbbf24;
+  box-shadow: 0 0 35px rgba(251, 191, 36, 0.4), 0 15px 25px rgba(0,0,0,0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.booster-pack-3d:hover {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 0 50px rgba(251, 191, 36, 0.7);
+}
+
+/* --- TAB 5: CODEX 10 REGOLE --- */
+.codex-view {
+  background: #0a0c14;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.codex-rule-card {
+  background: #131724;
+  border-left: 4px solid var(--accent-cyan);
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 0 8px 8px 0;
+}
+
+/* --- BOTTOM THUMB-BAR (NAVIGAZIONE MOBILE A UNA MANO) --- */
+.bottom-thumb-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(0deg, #050608, #0d0f16);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 100;
+}
+
+.nav-tab-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 700;
+  gap: 3px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 20%;
+}
+
+.nav-tab-btn.active {
+  color: var(--accent-cyan);
+  transform: translateY(-2px);
+}
+
+.nav-tab-btn span.tab-icon {
+  font-size: 18px;
+}
+
+/* Modali e Cut-In */
+.modal-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.modal-content {
+  background: #0f121d;
+  border: 2px solid var(--accent-cyan);
+  border-radius: 20px;
+  padding: 18px;
+  width: 95%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 0 35px rgba(0, 240, 255, 0.35);
+}
+
+.cutin-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(10, 10, 20, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 250;
+  pointer-events: none;
+  animation: cutin-reveal 2.2s forwards;
+}
+
+.speedlines-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: repeating-radial-gradient(circle, transparent 0, transparent 10px, rgba(255, 215, 0, 0.08) 12px, transparent 14px);
+  animation: spin-speedlines 8s linear infinite;
+}
+
+.cutin-champion-card {
+  width: 200px;
+  height: 290px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #1c1917, #09090b);
+  border: 3px solid var(--accent-gold);
+  box-shadow: 0 0 50px rgba(245, 158, 11, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 16px;
+  z-index: 2;
+}
+
+.cutin-banner {
+  font-size: 26px;
+  font-weight: 900;
+  color: #fef08a;
+  text-shadow: 0 0 15px #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+@keyframes rainbow-border {
+  0% { border-color: #f43f5e; }
+  33% { border-color: #38bdf8; }
+  66% { border-color: #facc15; }
+  100% { border-color: #f43f5e; }
+}
+
+@keyframes cutin-reveal {
+  0% { opacity: 0; transform: scale(0.8); }
+  15% { opacity: 1; transform: scale(1); }
+  85% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+
+@keyframes spin-speedlines {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
