@@ -31,11 +31,18 @@ export const RARITY = {
 };
 
 export const WORLD_DESTINATIONS = [
-  { id: 'dest_tokyo', country: 'Giappone', city: 'Tokyo (HND)', desc: 'Alta Velocità Maglev: Costo -1 Miglia e x1.5 Hype.', multBonus: 1.5, energyDiscount: 1, lightColor: 0x00f0ff, icon: '🗼' },
-  { id: 'dest_rome', country: 'Italia', city: 'Roma (FCO)', desc: 'Patrimonio UNESCO: I monumenti raddoppiano il Prestigio x2.0.', multBonus: 2.0, sacrificeBonus: 4, lightColor: 0xf59e0b, icon: '🏛️' },
-  { id: 'dest_ny', country: 'USA', city: 'New York (JFK)', desc: 'Wall Street: L\'Upgrade raddoppia i guadagni.', multBonus: 1.3, championBuff: true, lightColor: 0x10b981, icon: '🗽' },
-  { id: 'dest_paris', country: 'Francia', city: 'Parigi (CDG)', desc: 'Gran Cucina Parigina: Le carte Evento aumentano il Prestigio di +3.', multBonus: 1.6, energyDiscount: 0, lightColor: 0xec4899, icon: '🥐' },
-  { id: 'dest_cairo', country: 'Egitto', city: 'Il Cairo (CAI)', desc: 'Mistero delle Piramidi: Resurrezione delle carte sacrificate.', multBonus: 1.4, sacrificeBonus: 6, lightColor: 0xeab308, icon: '🏺' }
+  { id: 'dest_tokyo', country: 'Giappone', city: 'Tokyo (HND)', continent: 'Asia', desc: 'Alta Velocità Maglev: Costo -1 Miglia e x1.5 Hype.', multBonus: 1.5, energyDiscount: 1, lightColor: 0x00f0ff, icon: '🗼' },
+  { id: 'dest_rome', country: 'Italia', city: 'Roma (FCO)', continent: 'Europe', desc: 'Patrimonio UNESCO: I monumenti raddoppiano il Prestigio x2.0.', multBonus: 2.0, sacrificeBonus: 4, lightColor: 0xf59e0b, icon: '🏛️' },
+  { id: 'dest_ny', country: 'USA', city: 'New York (JFK)', continent: 'Americas', desc: 'Wall Street: L\'Upgrade First Class raddoppia i guadagni.', multBonus: 1.3, championBuff: true, lightColor: 0x10b981, icon: '🗽' },
+  { id: 'dest_paris', country: 'Francia', city: 'Parigi (CDG)', continent: 'Europe', desc: 'Gran Cucina Parigina: Le carte Evento aumentano il Prestigio di +3.', multBonus: 1.6, energyDiscount: 0, lightColor: 0xec4899, icon: '🥐' },
+  { id: 'dest_cairo', country: 'Egitto', city: 'Il Cairo (CAI)', continent: 'Africa', desc: 'Mistero delle Piramidi: Resurrezione delle carte sacrificate e x1.4 Hype.', multBonus: 1.4, sacrificeBonus: 6, lightColor: 0xeab308, icon: '🏺' },
+  { id: 'dest_london', country: 'Regno Unito', city: 'Londra (LHR)', continent: 'Europe', desc: 'Savile Row & MI6: Fornisce +1 Miglia Aerea alla fine di ogni turno.', multBonus: 1.3, energyDiscount: 0, lightColor: 0x38bdf8, icon: '🕰️' },
+  { id: 'dest_rio', country: 'Brasile', city: 'Rio de Janeiro (GIG)', continent: 'Americas', desc: 'Carnevale al Sambodromo: Bonus festa x1.4 Hype a tutte le carte a terra.', multBonus: 1.4, energyDiscount: 0, lightColor: 0x22c55e, icon: '🎭' },
+  { id: 'dest_zurich', country: 'Svizzera', city: 'Zurigo (ZRH)', continent: 'Europe', desc: 'Caveau Bancario: Le carte qui schierate sono immuni da malus.', multBonus: 1.5, energyDiscount: 0, lightColor: 0xef4444, icon: '🏔️' },
+  { id: 'dest_seoul', country: 'Corea del Sud', city: 'Seoul (ICN)', continent: 'Asia', desc: 'Rete 6G K-Pop: Carte coreane ottengono +2 Potere e pescata aggiuntiva.', multBonus: 1.4, energyDiscount: 0, lightColor: 0xa855f7, icon: '⚡' },
+  { id: 'dest_reykjavik', country: 'Islanda', city: 'Reykjavik (KEF)', continent: 'Europe', desc: 'Aurora Boreale: Riduce di 2 il costo delle carte Destinazione.', multBonus: 1.4, energyDiscount: 0, lightColor: 0x06b6d4, icon: '🌋' },
+  { id: 'dest_sydney', country: 'Australia', city: 'Sydney (SYD)', continent: 'Oceania', desc: 'Baia dell\'Opera: Carte di costo 4 o superiore ottengono x1.3 Hype.', multBonus: 1.3, energyDiscount: 0, lightColor: 0x3b82f6, icon: '🦘' },
+  { id: 'dest_buenosaires', country: 'Argentina', city: 'Buenos Aires (EZE)', continent: 'Americas', desc: 'Tango di San Telmo: Ogni carta adiacente guadagna +1 Potere continuo.', multBonus: 1.3, energyDiscount: 0, lightColor: 0xf59e0b, icon: '💃' }
 ];
 
 export const ALL_CARDS = [

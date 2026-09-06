@@ -208,6 +208,37 @@ body {
   transform: scale(0.96);
 }
 
+.altar-mini-cards {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.altar-mini-chip {
+  width: 20px;
+  height: 14px;
+  border-radius: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.altar-mini-chip.empty {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+}
+
+.altar-mini-chip.filled {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(15, 23, 42, 0.95));
+  border: 1px solid #38bdf8;
+  color: #fff;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.4);
+}
+
 .altar-name {
   font-size: 10px;
   font-weight: 800;
@@ -1230,4 +1261,452 @@ body {
   0% { box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
   100% { box-shadow: 0 8px 32px rgba(245, 158, 11, 0.9), 0 0 22px rgba(254, 240, 138, 0.7); }
 }
+
+/* ==================== GLOBAL TOP BAR (CURRENCY & SETTINGS) ==================== */
+.global-app-bar {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 40;
+  pointer-events: none;
+}
+.global-app-bar > * {
+  pointer-events: auto;
+}
+.currency-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.88);
+  border: 1.2px solid #f59e0b;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.6), 0 0 12px rgba(245, 158, 11, 0.35);
+  border-radius: 20px;
+  padding: 4px 12px;
+  color: #fde047;
+  font-size: 11px;
+  font-weight: 900;
+  backdrop-filter: blur(8px);
+}
+.btn-icon-setting {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #cbd5e1;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+  backdrop-filter: blur(8px);
+  transition: all 0.2s;
+}
+.btn-icon-setting:hover, .btn-icon-setting:active {
+  transform: scale(1.1);
+  border-color: #f59e0b;
+  color: #facc15;
+}
+
+/* ==================== TURN BANNER CINEMATIC ==================== */
+.turn-banner-overlay {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-30px);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 27, 75, 0.96));
+  border: 2px solid #facc15;
+  box-shadow: 0 10px 35px rgba(0,0,0,0.9), 0 0 25px rgba(250, 204, 21, 0.6);
+  padding: 8px 24px;
+  border-radius: 24px;
+  color: #fff;
+  text-align: center;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.turn-banner-overlay.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.turn-banner-title {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #facc15;
+  text-shadow: 0 0 10px rgba(250, 204, 21, 0.8);
+}
+.turn-banner-sub {
+  font-size: 9px;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== CONTINENTAL SYNERGY BADGES & TOASTS ==================== */
+.synergy-toast {
+  position: absolute;
+  top: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #064e3b, #022c22);
+  border: 1.5px solid #34d399;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.8), 0 0 18px rgba(52, 211, 153, 0.6);
+  padding: 6px 16px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ecfdf5;
+  font-size: 11px;
+  font-weight: 800;
+  z-index: 60;
+  pointer-events: none;
+  animation: popInToast 2.6s forwards;
+}
+@keyframes popInToast {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.85); }
+  15% { opacity: 1; transform: translateX(-50%) scale(1.05); }
+  25% { transform: translateX(-50%) scale(1); }
+  85% { opacity: 1; transform: translateX(-50%) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-15px); }
+}
+
+/* ==================== POST-MATCH VICTORY PODIUM ==================== */
+.podium-modal {
+  position: absolute;
+  inset: 0;
+  background: rgba(4, 6, 12, 0.94);
+  backdrop-filter: blur(12px);
+  z-index: 90;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+.podium-card {
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+  border: 2px solid #facc15;
+  box-shadow: 0 16px 40px rgba(0,0,0,0.9), 0 0 35px rgba(250, 204, 21, 0.4);
+  border-radius: 20px;
+  padding: 24px 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.podium-trophy-icon {
+  width: 72px;
+  height: 72px;
+  background: radial-gradient(circle, #fef08a, #d97706);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.8), 0 0 25px #facc15;
+  animation: trophyFloat 2.2s infinite alternate ease-in-out;
+}
+@keyframes trophyFloat {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-8px) rotate(3deg); }
+}
+.podium-reward-box {
+  width: 100%;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.podium-btn-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+.btn-podium-primary {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 1px;
+  padding: 12px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+}
+.btn-podium-secondary {
+  background: #1e293b;
+  color: #cbd5e1;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #475569;
+  cursor: pointer;
+}
+
+/* ==================== SPIRE ROGUE-LITE BRANCHING MAP ==================== */
+.spire-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 12px 10px 70px 10px;
+  overflow-y: auto;
+  position: relative;
+}
+.spire-hud-bar {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  border-radius: 14px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+}
+.spire-hp-track {
+  width: 100%;
+  height: 12px;
+  background: #1e293b;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #334155;
+}
+.spire-hp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  width: 100%;
+  transition: width 0.3s ease;
+}
+.spire-relic-shelf {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.spire-relic-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid #f59e0b;
+  border-radius: 10px;
+  padding: 3px 8px;
+  font-size: 9.5px;
+  font-weight: 800;
+  color: #fde047;
+  white-space: nowrap;
+}
+.spire-map-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 0 20px 0;
+}
+.spire-tier-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  position: relative;
+  width: 100%;
+  z-index: 2;
+}
+.spire-node-btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: 2px solid #475569;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.8);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  touch-action: manipulation;
+  position: relative;
+}
+.spire-node-btn.available {
+  border-color: #facc15;
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.7);
+  animation: pulse-fast 1.5s infinite alternate;
+  transform: scale(1.08);
+}
+.spire-node-btn.completed {
+  border-color: #10b981;
+  background: #064e3b;
+  opacity: 0.85;
+}
+.spire-node-btn.locked {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==================== CUSTOM DECKBUILDER & CARD MASTERY ==================== */
+.deckbuilder-box {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1.5px solid rgba(56, 189, 248, 0.5);
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.7);
+}
+.deck-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  margin: 8px 0;
+}
+.deck-slot-item {
+  aspect-ratio: 2/3;
+  border-radius: 6px;
+  border: 1px dashed rgba(255,255,255,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.4);
+  font-size: 8px;
+  font-weight: 800;
+  color: #64748b;
+  position: relative;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+}
+.deck-slot-item.filled {
+  border: 1px solid #38bdf8;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+.flight-curve-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 44px;
+  padding: 4px 10px;
+  background: rgba(0,0,0,0.5);
+  border-radius: 8px;
+  margin-top: 6px;
+}
+.curve-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 16%;
+}
+.curve-bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, #38bdf8, #0284c7);
+  border-radius: 3px 3px 0 0;
+  min-height: 4px;
+  transition: height 0.3s;
+}
+
+/* Card Mastery Visuals */
+.card-item.mastery-silver {
+  border: 2px solid #e2e8f0 !important;
+  box-shadow: 0 0 16px rgba(226, 232, 240, 0.7), inset 0 0 8px rgba(255,255,255,0.5) !important;
+}
+.card-item.mastery-gold {
+  border: 2px solid #ffd700 !important;
+  box-shadow: 0 0 22px rgba(255, 215, 0, 0.85), inset 0 0 10px rgba(254, 240, 138, 0.6) !important;
+}
+.card-item.mastery-diamond {
+  border: 2px solid #a855f7 !important;
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.9), 0 0 15px #38bdf8 !important;
+  animation: diamondShimmer 2s infinite alternate ease-in-out;
+}
+@keyframes diamondShimmer {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(45deg); }
+}
+
+/* ==================== DUTY FREE 3-TIER PACK SELECTOR ==================== */
+.booster-tier-selector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  width: 100%;
+  justify-content: center;
+}
+.pack-tier-card {
+  flex: 1;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 12px;
+  padding: 8px 4px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pack-tier-card.selected {
+  border-color: #facc15;
+  background: rgba(30, 27, 75, 0.95);
+  box-shadow: 0 0 18px rgba(250, 204, 21, 0.5);
+  transform: translateY(-2px);
+}
+
+/* ==================== ACADEMY PUZZLES & ACHIEVEMENTS ==================== */
+.puzzle-card-box {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1.5px solid #38bdf8;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+.achievement-card {
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.achievement-card.completed {
+  border-color: #facc15;
+  background: rgba(30, 27, 75, 0.9);
+}
+.btn-claim-reward {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-weight: 900;
+  font-size: 10px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
+  white-space: nowrap;
+}
+.btn-claim-reward.claimed {
+  background: #334155;
+  color: #94a3b8;
+  cursor: default;
+  box-shadow: none;
+}
+
 

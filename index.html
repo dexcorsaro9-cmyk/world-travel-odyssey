@@ -16,7 +16,12 @@
   <link rel="apple-touch-icon" href="icon-192.png">
 
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="assets/pixi.min.js"></script>
+  <script>
+    if (typeof PIXI === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/8.6.6/pixi.min.js"><\/script>');
+    }
+  </script>
   <style>
     /* Stili Specifici per Carte con Grafica Integrata e Finiture Materiche di Lusso */
     .card-item {
@@ -306,9 +311,29 @@
     <!-- Canvas Particellare Sovrapposto -->
     <canvas id="fx-canvas"></canvas>
 
+    <!-- Global App Bar: Saldo Miglia Aeree & Impostazioni -->
+    <div class="global-app-bar">
+      <div id="global-miles-badge" class="currency-pill">
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none"><circle cx="8" cy="8" r="6" fill="#facc15" stroke="#b45309" stroke-width="1.2"/><text x="8" y="10" font-size="6" font-weight="900" fill="#78350f" text-anchor="middle">M</text></svg>
+        <span id="global-miles-num">350</span> MIGLIA
+      </div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button id="btn-open-settings" class="btn-icon-setting" title="Impostazioni di Volo">⚙️</button>
+      </div>
+    </div>
+
     <!-- ==================== TAB 1: ARENA 3D (I TERMINAL MONDIALI) ==================== -->
     <section id="tab-arena" class="tab-view active">
       <div id="three-canvas-container"></div>
+
+      <!-- Banner Cinematografico di Turno -->
+      <div id="turn-banner-overlay" class="turn-banner-overlay">
+        <div id="turn-banner-title" class="turn-banner-title">SCALO 1: DECOLLO</div>
+        <div id="turn-banner-sub" class="turn-banner-sub">Pianifica gli atterraggi sui terminal mondiali</div>
+      </div>
+
+      <!-- Container Toast Sinergie Continentali -->
+      <div id="synergy-toast-container"></div>
 
       <!-- Overlay UI Interattiva del Viaggio -->
       <div class="arena-overlay-ui">
@@ -397,30 +422,92 @@
 
     <!-- ==================== TAB 2: IL GIRO DEL MONDO IN 80 GIORNI (SPIRE) ==================== -->
     <section id="tab-spire" class="tab-view spire-view">
-      <div class="spire-header">
+      <div class="spire-header" style="text-align:center; margin-bottom:8px;">
         <h2 style="font-size: 18px; font-weight: 900; color: #facc15; display:flex; align-items:center; justify-content:center; gap:6px;">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><circle cx="12" cy="12" r="9" stroke="#facc15" stroke-width="1.8"/><ellipse cx="12" cy="12" rx="9" ry="4" stroke="#facc15" stroke-width="1.2"/><line x1="3" y1="12" x2="21" y2="12" stroke="#facc15" stroke-width="1.2"/></svg>
-          IL GIRO DEL MONDO
+          IL GIRO DEL MONDO (ROGUE-LITE)
         </h2>
-        <p style="font-size: 11px; color: #94a3b8;">Scala i continenti, fai sosta ai Duty Free e conquista il Globo.</p>
-        <div style="display: flex; justify-content: center; gap: 14px; margin-top: 8px; font-size: 11px;">
-          <span style="display:inline-flex; align-items:center; gap:4px;"><svg viewBox="0 0 16 16" width="13" height="13" fill="none"><rect x="2" y="5" width="12" height="9" rx="2" stroke="#38bdf8" stroke-width="1.2"/><path d="M5 5 V3 Q5 2 8 2 Q11 2 11 3 V5" stroke="#38bdf8" stroke-width="1.2"/></svg> Valigia: <b>30/30</b></span>
-          <span style="display:inline-flex; align-items:center; gap:4px;"><svg viewBox="0 0 16 16" width="13" height="13" fill="none"><circle cx="8" cy="8" r="6" fill="#facc15" stroke="#b45309" stroke-width="1.2"/><circle cx="8" cy="8" r="4" stroke="#ffffff" stroke-width="0.8" stroke-dasharray="1 1"/><text x="8" y="10" font-size="6" font-weight="900" fill="#78350f" text-anchor="middle">M</text></svg> Miglia d'Oro: <b id="spire-gold">350</b></span>
-          <span style="display:inline-flex; align-items:center; gap:4px;"><svg viewBox="0 0 16 16" width="13" height="13" fill="none"><path d="M8 2 C6 2 4 4 4 6.5 C4 9.5 8 14 8 14 C8 14 12 9.5 12 6.5 C12 4 10 2 8 2 Z" fill="#ef4444" stroke="#ffffff" stroke-width="0.8"/><circle cx="8" cy="6.5" r="1.5" fill="#ffffff"/></svg> Scalo: <b id="spire-floor">1/6</b></span>
+        <p style="font-size: 10.5px; color: #94a3b8;">Attraversa i 6 continenti, gestisci la valigia e conquista il Globo.</p>
+      </div>
+
+      <!-- Spire HUD Bar -->
+      <div class="spire-hud-bar">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:10.5px;">
+          <span style="display:inline-flex; align-items:center; gap:4px; font-weight:800; color:#38bdf8;">
+            🧳 Valigia: <b id="spire-hp-num">30/30 HP</b>
+          </span>
+          <span style="display:inline-flex; align-items:center; gap:4px; font-weight:800; color:#fde047;">
+            💰 Miglia Run: <b id="spire-gold">350</b>
+          </span>
+          <span style="display:inline-flex; align-items:center; gap:4px; font-weight:800; color:#cbd5e1;">
+            📍 Scalo: <b id="spire-floor">1/6</b>
+          </span>
+        </div>
+        <div class="spire-hp-track">
+          <div id="spire-hp-fill" class="spire-hp-fill" style="width: 100%;"></div>
+        </div>
+        <!-- Scaffale Souvenir Rari -->
+        <div style="font-size:9px; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;">Reliquie Souvenir Attive:</div>
+        <div class="spire-relic-shelf" id="spire-relic-shelf">
+          <span class="spire-relic-chip" title="Bussola d'Oro: Inizia ogni scalo con +1 Miglia Aerea">🧭 Bussola d'Oro</span>
+          <span class="spire-relic-chip" title="Caffettiera Partenopea: Prima carta di costo 1 costa 0">☕ Caffettiera DOC</span>
         </div>
       </div>
 
-      <div class="spire-tree" id="spire-tree-nodes"></div>
+      <!-- Mappa Grafica a Bivi (SVG Tree) -->
+      <div class="spire-map-container" id="spire-map-container"></div>
+
+      <div style="text-align:center; margin-top:8px;">
+        <button id="btn-spire-restart" style="background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#fca5a5; font-size:10px; font-weight:800; padding:5px 14px; border-radius:10px; cursor:pointer;">
+          🔄 Riavvia Itinerario dal Turno 1
+        </button>
+      </div>
     </section>
 
     <!-- ==================== TAB 3: PASSAPORTO & COLLEZIONE PAESI ==================== -->
     <section id="tab-collection" class="tab-view collection-view">
-      <div style="text-align: center;">
+      <div style="text-align: center; margin-bottom: 6px;">
         <h2 style="font-size: 18px; font-weight: 900; color: #38bdf8; display:flex; align-items:center; justify-content:center; gap:6px;">
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="#1e1b4b" stroke="#38bdf8" stroke-width="1.5"/><circle cx="12" cy="12" r="5" stroke="#ffd700" stroke-width="1.2"/><polygon points="12,5 13,8 12,10 11,8" fill="#ffd700"/></svg>
-          PASSAPORTO MONDIALE (39 CARTE)
+          PASSAPORTO & DECKBUILDER (39 CARTE)
         </h2>
-        <p style="font-size: 11px; color: #94a3b8;">Filtra per Nazione ed esplora i materiali autentici.</p>
+        <p style="font-size: 10.5px; color: #94a3b8;">Crea mazzi personalizzati da 12 carte e potenzia la Maestria Foil.</p>
+      </div>
+
+      <!-- Custom Deckbuilder Drawer (12 Carte & Curva) -->
+      <div class="deckbuilder-box" id="deckbuilder-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:11px; font-weight:900; color:#38bdf8;">🗂️ MAZZO ATTIVO:</span>
+            <select id="deck-select" style="background:#0f172a; border:1px solid #38bdf8; color:#fff; font-size:10px; font-weight:800; padding:3px 6px; border-radius:8px;">
+              <option value="0">1. Globetrotter Express (12/12)</option>
+              <option value="1">2. Euro-Pass Schengen (12/12)</option>
+              <option value="2">3. Tokyo-Shinjuku Speed (12/12)</option>
+            </select>
+          </div>
+          <button id="btn-save-deck" style="background:linear-gradient(135deg,#0284c7,#0369a1); border:1px solid #38bdf8; color:#fff; font-size:9.5px; font-weight:800; padding:3px 8px; border-radius:8px; cursor:pointer;">💾 Salva</button>
+        </div>
+
+        <!-- Slot 12 Carte Attive -->
+        <div class="deck-slots-grid" id="deck-slots-grid"></div>
+
+        <!-- Istogramma Curva di Volo -->
+        <div class="flight-curve-chart">
+          <div class="curve-bar-col"><div class="curve-bar-fill" id="curve-bar-1" style="height:20px;"></div><span style="font-size:7.5px; color:#94a3b8;">1 ✈</span></div>
+          <div class="curve-bar-col"><div class="curve-bar-fill" id="curve-bar-2" style="height:32px;"></div><span style="font-size:7.5px; color:#94a3b8;">2 ✈</span></div>
+          <div class="curve-bar-col"><div class="curve-bar-fill" id="curve-bar-3" style="height:28px;"></div><span style="font-size:7.5px; color:#94a3b8;">3 ✈</span></div>
+          <div class="curve-bar-col"><div class="curve-bar-fill" id="curve-bar-4" style="height:16px;"></div><span style="font-size:7.5px; color:#94a3b8;">4 ✈</span></div>
+          <div class="curve-bar-col"><div class="curve-bar-fill" id="curve-bar-5" style="height:10px;"></div><span style="font-size:7.5px; color:#94a3b8;">5+ ✈</span></div>
+          <div style="font-size:8.5px; color:#cbd5e1; text-align:right; align-self:center; line-height:1.3;">
+            <div>Costo Medio: <b id="stat-avg-cost" style="color:#38bdf8;">2.6</b></div>
+            <div>Potere Medio: <b id="stat-avg-power" style="color:#facc15;">5.4</b></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra di Ricerca & Filtri -->
+      <div style="margin: 4px 0 6px 0;">
+        <input type="text" id="card-search-input" placeholder="🔍 Cerca per nome, nazione o monumento..." style="width:100%; background:rgba(15,23,42,0.85); border:1px solid #334155; border-radius:10px; padding:6px 10px; color:#fff; font-size:10.5px; outline:none;">
       </div>
 
       <!-- Filtro Continenti & Paesi -->
@@ -455,6 +542,25 @@
 
       <!-- HUD Sovrapposto dello Sbustamento -->
       <div class="booster-hud-overlay">
+        <!-- Selettore dei 3 Tier di Bustine Duty Free -->
+        <div class="booster-tier-selector" id="booster-tier-selector">
+          <div class="pack-tier-card selected" data-tier="economy">
+            <div style="font-size:13px;">🥉</div>
+            <div style="font-size:9px; font-weight:900; color:#cbd5e1;">ECONOMY</div>
+            <div style="font-size:7.5px; color:#38bdf8;">100 M • 3 Carte</div>
+          </div>
+          <div class="pack-tier-card" data-tier="business">
+            <div style="font-size:13px;">🥈</div>
+            <div style="font-size:9px; font-weight:900; color:#c084fc;">BUSINESS</div>
+            <div style="font-size:7.5px; color:#c084fc;">250 M • 4 Carte</div>
+          </div>
+          <div class="pack-tier-card" data-tier="sovereign">
+            <div style="font-size:13px;">🥇</div>
+            <div style="font-size:9px; font-weight:900; color:#ffd700;">SOVEREIGN</div>
+            <div style="font-size:7.5px; color:#ffd700;">500 M • 5 Carte (Foil)</div>
+          </div>
+        </div>
+
         <!-- Info Card Ispezionata o Appena Rivelata -->
         <div id="booster-inspect-card" class="booster-inspect-card-info" style="display: none;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
@@ -499,6 +605,8 @@
         <button class="codex-nav-btn" data-chapter="codex-ch4">🗺️ 4. Le 9 Fazioni</button>
         <button class="codex-nav-btn" data-chapter="codex-ch5">⚠️ 5. Dogana & Trappole</button>
         <button class="codex-nav-btn" data-chapter="codex-ch6">🧳 6. Giro del Mondo</button>
+        <button class="codex-nav-btn" data-chapter="codex-ch7">🎓 7. Accademia di Volo</button>
+        <button class="codex-nav-btn" data-chapter="codex-ch8">🏆 8. Trofei Consolari</button>
       </div>
 
       <!-- CAPITOLO 1: STRUTTURA DEL VOLO -->
@@ -650,6 +758,75 @@
             <li><b>Duty Free & Souvenir:</b> Spendendo Miglia d'Oro puoi acquistare visti consolari ed edizioni rare.</li>
           </ul>
         </div>
+      </div>
+
+      <!-- CAPITOLO 7: ACCADEMIA DI VOLO (PUZZLE TATTICI) -->
+      <div id="codex-ch7" class="codex-chapter-content">
+        <div class="codex-rule-card" style="border-color:#38bdf8;">
+          <h4 style="color:#38bdf8; font-size:13px; font-weight:900; margin-bottom:4px;">🎓 Accademia Tattica Consolare</h4>
+          <p style="font-size:10.5px; color:#cbd5e1; line-height:1.45;">
+            Risolvi le simulazioni ufficiali di volo. Ogni puzzle superato conferisce <b>+100 Miglia d'Oro</b> al tuo saldo!
+          </p>
+        </div>
+
+        <!-- Puzzle 1: Conquista di Shinjuku -->
+        <div class="puzzle-card-box" id="puzzle-box-1">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:11px; font-weight:900; color:#facc15;">PUZZLE 1: CONQUISTA DI SHINJUKU</span>
+            <span class="puzzle-badge" id="puz-badge-1" style="font-size:9px; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:2px 6px; border-radius:6px;">+100 MIGLIA</span>
+          </div>
+          <p style="font-size:10px; color:#cbd5e1; line-height:1.4; margin-bottom:8px;">
+            <b>Situazione:</b> Il rivale ha 22 punti su Tokyo. Hai <b>3 Miglia Aeree</b> disponibili. Scegli la mossa corretta per superare 25 punti ed ottenere la vittoria!
+          </p>
+          <div style="display:flex; gap:6px; margin-bottom:8px;">
+            <button class="btn-puz-choice" data-puzzle="1" data-opt="a" style="flex:1; background:#1e293b; border:1px solid #475569; color:#fff; font-size:9px; padding:6px; border-radius:8px; cursor:pointer;">A: Espresso (1) + Shinkansen (2)</button>
+            <button class="btn-puz-choice" data-puzzle="1" data-opt="b" style="flex:1; background:#1e293b; border:1px solid #475569; color:#fff; font-size:9px; padding:6px; border-radius:8px; cursor:pointer;">B: Fuji (3) con bonus x1.8 Hype</button>
+          </div>
+          <div id="puz-feedback-1" style="display:none; font-size:9.5px; padding:6px 10px; border-radius:6px; margin-top:4px;"></div>
+        </div>
+
+        <!-- Puzzle 2: La Dogana di Malpensa -->
+        <div class="puzzle-card-box" id="puzzle-box-2">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:11px; font-weight:900; color:#facc15;">PUZZLE 2: LA DOGANA DI MALPENSA</span>
+            <span class="puzzle-badge" id="puz-badge-2" style="font-size:9px; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:2px 6px; border-radius:6px;">+100 MIGLIA</span>
+          </div>
+          <p style="font-size:10px; color:#cbd5e1; line-height:1.4; margin-bottom:8px;">
+            <b>Situazione:</b> Il rivale sta per lanciare il suo Sovrano Nazionale da costo 4. Quale carta coperta devi schierare per neutralizzarlo prima che tocchi terra?
+          </p>
+          <div style="display:flex; gap:6px; margin-bottom:8px;">
+            <button class="btn-puz-choice" data-puzzle="2" data-opt="a" style="flex:1; background:#1e293b; border:1px solid #475569; color:#fff; font-size:9.5px; padding:6px; border-radius:8px; cursor:pointer;">A: Visto Negato (Costo 2)</button>
+            <button class="btn-puz-choice" data-puzzle="2" data-opt="b" style="flex:1; background:#1e293b; border:1px solid #475569; color:#fff; font-size:9.5px; padding:6px; border-radius:8px; cursor:pointer;">B: Bagaglio Smarrito (Costo 1)</button>
+          </div>
+          <div id="puz-feedback-2" style="display:none; font-size:9.5px; padding:6px 10px; border-radius:6px; margin-top:4px;"></div>
+        </div>
+
+        <!-- Puzzle 3: First Class Overcharge -->
+        <div class="puzzle-card-box" id="puzzle-box-3">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <span style="font-size:11px; font-weight:900; color:#facc15;">PUZZLE 3: IL BLUFF FIRST CLASS</span>
+            <span class="puzzle-badge" id="puz-badge-3" style="font-size:9px; font-weight:800; color:#38bdf8; background:rgba(56,189,248,0.15); padding:2px 6px; border-radius:6px;">+100 MIGLIA</span>
+          </div>
+          <p style="font-size:10px; color:#cbd5e1; line-height:1.4; margin-bottom:8px;">
+            <b>Situazione:</b> Turno 6. Vinci su New York di 10 punti, sei in parità su Roma e perdi su Tokyo. L'avversario chiama 1st CLASS. Cosa fai?
+          </p>
+          <div style="display:flex; gap:6px; margin-bottom:8px;">
+            <button class="btn-puz-choice" data-puzzle="3" data-opt="a" style="flex:1; background:#1e293b; border:1px solid #475569; color:#fff; font-size:9.5px; padding:6px; border-radius:8px; cursor:pointer;">A: Ritiro (Perdi solo 1 Miglio)</button>
+            <button class="btn-puz-choice" data-puzzle="3" data-opt="b" style="flex:1; background:#1e293b; border:1px solid #475569; color:#fff; font-size:9.5px; padding:6px; border-radius:8px; cursor:pointer;">B: Gioca Colosseo su Roma e accetta</button>
+          </div>
+          <div id="puz-feedback-3" style="display:none; font-size:9.5px; padding:6px 10px; border-radius:6px; margin-top:4px;"></div>
+        </div>
+      </div>
+
+      <!-- CAPITOLO 8: 15 TROFEI & TRAGUARDI CONSOLARI -->
+      <div id="codex-ch8" class="codex-chapter-content">
+        <div class="codex-rule-card" style="border-color:#f59e0b; margin-bottom:10px;">
+          <h4 style="color:#facc15; font-size:13px; font-weight:900; margin-bottom:4px;">🏆 Bacheca Traguardi Consolari (15 Trofei)</h4>
+          <p style="font-size:10.5px; color:#cbd5e1; line-height:1.45;">
+            Completa le imprese di volo per sbloccare Miglia d'Oro e titoli di prestigio internazionale.
+          </p>
+        </div>
+        <div id="achievements-container" style="display:flex; flex-direction:column; gap:8px;"></div>
       </div>
     </section>
 
@@ -972,13 +1149,20 @@
         <div id="inspect-desc" style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin: 6px 0; text-align: left; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px;"></div>
         <div id="inspect-quote" style="font-size: 10px; font-style: italic; color: #fde047; margin: 4px 0;"></div>
         
-        <button id="inspect-close" style="margin-top: 8px; width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; padding: 10px 24px; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+        <!-- Pulsante Upgrade Maestria Carta (Foil / Prismatic / Diamond) -->
+        <div style="margin: 8px 0;">
+          <button id="btn-upgrade-mastery" style="width:100%; background:linear-gradient(135deg, #a855f7, #6366f1); border:1px solid #c084fc; color:#fff; font-weight:900; font-size:11px; padding:8px 14px; border-radius:10px; cursor:pointer; box-shadow:0 4px 14px rgba(168,85,247,0.5);">
+            ✨ POTENZIA MAESTRIA FOIL (-150 MIGLIA)
+          </button>
+        </div>
+
+        <button id="inspect-close" style="margin-top: 4px; width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; padding: 10px 24px; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
           CHIUDI ATLANTE
         </button>
       </div>
     </div>
 
-    <!-- Modale Fine Viaggio -->
+    <!-- Modale Fine Viaggio Standard -->
     <div id="modal-gameover" class="modal-overlay" style="display: none;">
       <div class="modal-content" style="border-color: #f59e0b;">
         <h2 id="gameover-title" style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">VIAGGIO TRIONFALE!</h2>
@@ -986,6 +1170,110 @@
         <button id="btn-restart" style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; font-weight: 900; padding: 10px 24px; border-radius: 12px; font-size: 13px; cursor: pointer; box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);">
           NUOVO VOLO
         </button>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE PODIO VITTORIA AAA ==================== -->
+    <div id="modal-podium" class="podium-modal">
+      <div class="podium-card">
+        <div class="podium-trophy-icon" id="podium-icon">🏆</div>
+        <h2 id="podium-title" style="font-size:20px; font-weight:900; color:#facc15; text-shadow:0 0 12px rgba(250,204,21,0.7);">VITTORIA TRIONFALE!</h2>
+        <p id="podium-subtitle" style="font-size:11px; color:#cbd5e1; line-height:1.4;">Hai dominato i cieli internazionali e conquistato le metropoli mondiali.</p>
+
+        <div class="podium-reward-box">
+          <div>
+            <div style="font-size:9px; color:#94a3b8; text-transform:uppercase;">Miglia Guadagnate</div>
+            <div id="podium-reward-miles" style="font-size:16px; font-weight:900; color:#fde047;">+150 ✈️</div>
+          </div>
+          <div style="border-left:1px solid #334155; height:24px;"></div>
+          <div>
+            <div style="font-size:9px; color:#94a3b8; text-transform:uppercase;">Posta in Gioco</div>
+            <div id="podium-reward-stakes" style="font-size:16px; font-weight:900; color:#38bdf8;">1x</div>
+          </div>
+          <div style="border-left:1px solid #334155; height:24px;"></div>
+          <div>
+            <div style="font-size:9px; color:#94a3b8; text-transform:uppercase;">Grado Pilota</div>
+            <div style="font-size:16px; font-weight:900; color:#c084fc;">CAPTAIN ★</div>
+          </div>
+        </div>
+
+        <div class="podium-btn-group">
+          <button id="btn-podium-restart" class="btn-podium-primary">✈️ NUOVA ROTTA AEREA</button>
+          <button id="btn-podium-hub" class="btn-podium-secondary">🏠 TORNA ALL'HUB</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE RESORT 5 STELLE (SPIRE) ==================== -->
+    <div id="modal-spire-resort" class="modal-overlay" style="display:none;">
+      <div class="modal-content" style="max-width:340px; border-color:#38bdf8;">
+        <div style="font-size:32px; margin-bottom:4px;">🏨</div>
+        <h3 style="color:#38bdf8; font-size:16px; font-weight:900;">RESORT DI LUSSO 5 STELLE</h3>
+        <p style="font-size:11px; color:#cbd5e1; margin:6px 0 14px 0;">Scegli come rilassarti prima del prossimo volo:</p>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button id="btn-resort-heal" style="background:#064e3b; border:1.5px solid #10b981; color:#fff; padding:10px; border-radius:12px; font-size:11px; font-weight:800; cursor:pointer; text-align:left;">
+            <div>🧳 Ripara Valigia (+12 HP)</div>
+            <div style="font-size:9px; color:#a7f3d0; margin-top:2px;">Ripristina la resistenza della tua valigia di viaggio.</div>
+          </button>
+          <button id="btn-resort-foil" style="background:#451a03; border:1.5px solid #f59e0b; color:#fff; padding:10px; border-radius:12px; font-size:11px; font-weight:800; cursor:pointer; text-align:left;">
+            <div>✨ Lucidatura Passaporto Foil (+2 Potere)</div>
+            <div style="font-size:9px; color:#fde047; margin-top:2px;">Applica una finitura olografica che potenzia permanentemente una carta.</div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE SHOP DUTY FREE (SPIRE) ==================== -->
+    <div id="modal-spire-shop" class="modal-overlay" style="display:none;">
+      <div class="modal-content" style="max-width:360px; border-color:#facc15;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <h3 style="color:#facc15; font-size:15px; font-weight:900;">🛍️ DUTY FREE DELLO SCALO</h3>
+          <span style="font-size:10.5px; color:#fde047; font-weight:800;" id="spire-shop-balance">350 Miglia</span>
+        </div>
+        <p style="font-size:10.5px; color:#cbd5e1; margin-bottom:10px;">Acquista souvenir rari o visti per la continuazione del viaggio:</p>
+        <div id="spire-shop-items-grid" style="display:flex; flex-direction:column; gap:6px;"></div>
+        <button id="btn-spire-shop-close" style="margin-top:12px; width:100%; background:#334155; border:none; color:#fff; padding:8px; border-radius:10px; font-size:11px; font-weight:700; cursor:pointer;">Prosegui il Viaggio</button>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE EVENTO NARRATIVO (SPIRE) ==================== -->
+    <div id="modal-spire-narrative" class="modal-overlay" style="display:none;">
+      <div class="modal-content" style="max-width:340px; border-color:#c084fc;">
+        <div style="font-size:32px; margin-bottom:4px;">🧭</div>
+        <h3 id="narrative-event-title" style="color:#c084fc; font-size:15px; font-weight:900;">INCONTRO DIPLOMATICO</h3>
+        <p id="narrative-event-text" style="font-size:11px; color:#cbd5e1; line-height:1.45; margin:8px 0 14px 0;"></p>
+        <div id="narrative-event-choices" style="display:flex; flex-direction:column; gap:8px;"></div>
+      </div>
+    </div>
+
+    <!-- ==================== MODALE IMPOSTAZIONI DI VOLO ==================== -->
+    <div id="modal-settings" class="modal-overlay" style="display:none;">
+      <div class="modal-content" style="max-width:320px; border-color:#64748b;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="color:#fff; font-size:15px; font-weight:900;">⚙️ IMPOSTAZIONI</h3>
+          <button id="btn-close-settings" style="background:none; border:none; color:#94a3b8; font-size:16px; cursor:pointer;">✕</button>
+        </div>
+        
+        <div style="display:flex; flex-direction:column; gap:12px; text-align:left;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; margin-bottom:4px;">
+              <span>Volume Audio Master:</span>
+              <span id="setting-vol-text" style="color:#38bdf8;">100%</span>
+            </div>
+            <input type="range" id="setting-vol-slider" min="0" max="100" value="100" style="width:100%; accent-color:#0284c7;">
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:700;">
+            <span>Feedback Tattile (Haptics):</span>
+            <input type="checkbox" id="setting-haptics-toggle" checked style="width:18px; height:18px; accent-color:#f59e0b;">
+          </div>
+
+          <div style="border-top:1px solid #334155; padding-top:10px; margin-top:4px;">
+            <button id="btn-reset-data" style="width:100%; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#fca5a5; font-size:10px; font-weight:800; padding:8px; border-radius:8px; cursor:pointer;">
+              ⚠️ Ripristina Dati di Gioco
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1002,9 +1290,18 @@
     const RARITY = { COMMON: 'common', RARE: 'rare', EPIC: 'epic', LEGENDARY: 'legendary' };
 
     const WORLD_DESTINATIONS = [
-      { id: 'dest_tokyo', country: 'Giappone', city: 'Tokyo (HND)', desc: 'Alta Velocità Maglev: Costo -1 Miglia e x1.5 Hype.', multBonus: 1.5, energyDiscount: 1, lightColor: 0x00f0ff, icon: '🗼' },
-      { id: 'dest_rome', country: 'Italia', city: 'Roma (FCO)', desc: 'Patrimonio UNESCO: I monumenti raddoppiano il Prestigio x2.0.', multBonus: 2.0, sacrificeBonus: 4, lightColor: 0xf59e0b, icon: '🏛️' },
-      { id: 'dest_ny', country: 'USA', city: 'New York (JFK)', desc: 'Wall Street: L\'Upgrade raddoppia i guadagni.', multBonus: 1.3, championBuff: true, lightColor: 0x10b981, icon: '🗽' }
+      { id: 'dest_tokyo', country: 'Giappone', city: 'Tokyo (HND)', continent: 'Asia', desc: 'Alta Velocità Maglev: Costo -1 Miglia e x1.5 Hype.', multBonus: 1.5, energyDiscount: 1, lightColor: 0x00f0ff, icon: '🗼' },
+      { id: 'dest_rome', country: 'Italia', city: 'Roma (FCO)', continent: 'Europe', desc: 'Patrimonio UNESCO: I monumenti raddoppiano il Prestigio x2.0.', multBonus: 2.0, sacrificeBonus: 4, lightColor: 0xf59e0b, icon: '🏛️' },
+      { id: 'dest_ny', country: 'USA', city: 'New York (JFK)', continent: 'Americas', desc: 'Wall Street: L\'Upgrade First Class raddoppia i guadagni.', multBonus: 1.3, championBuff: true, lightColor: 0x10b981, icon: '🗽' },
+      { id: 'dest_paris', country: 'Francia', city: 'Parigi (CDG)', continent: 'Europe', desc: 'Gran Cucina Parigina: Le carte Evento aumentano il Prestigio di +3.', multBonus: 1.6, energyDiscount: 0, lightColor: 0xec4899, icon: '🥐' },
+      { id: 'dest_cairo', country: 'Egitto', city: 'Il Cairo (CAI)', continent: 'Africa', desc: 'Mistero delle Piramidi: Resurrezione delle carte sacrificate e x1.4 Hype.', multBonus: 1.4, sacrificeBonus: 6, lightColor: 0xeab308, icon: '🏺' },
+      { id: 'dest_london', country: 'Regno Unito', city: 'Londra (LHR)', continent: 'Europe', desc: 'Savile Row & MI6: Fornisce +1 Miglia Aerea alla fine di ogni turno.', multBonus: 1.3, energyDiscount: 0, lightColor: 0x38bdf8, icon: '🕰️' },
+      { id: 'dest_rio', country: 'Brasile', city: 'Rio de Janeiro (GIG)', continent: 'Americas', desc: 'Carnevale al Sambodromo: Bonus festa x1.4 Hype a tutte le carte a terra.', multBonus: 1.4, energyDiscount: 0, lightColor: 0x22c55e, icon: '🎭' },
+      { id: 'dest_zurich', country: 'Svizzera', city: 'Zurigo (ZRH)', continent: 'Europe', desc: 'Caveau Bancario: Le carte qui schierate sono immuni da malus.', multBonus: 1.5, energyDiscount: 0, lightColor: 0xef4444, icon: '🏔️' },
+      { id: 'dest_seoul', country: 'Corea del Sud', city: 'Seoul (ICN)', continent: 'Asia', desc: 'Rete 6G K-Pop: Carte coreane ottengono +2 Potere e pescata aggiuntiva.', multBonus: 1.4, energyDiscount: 0, lightColor: 0xa855f7, icon: '⚡' },
+      { id: 'dest_reykjavik', country: 'Islanda', city: 'Reykjavik (KEF)', continent: 'Europe', desc: 'Aurora Boreale: Riduce di 2 il costo delle carte Destinazione.', multBonus: 1.4, energyDiscount: 0, lightColor: 0x06b6d4, icon: '🌋' },
+      { id: 'dest_sydney', country: 'Australia', city: 'Sydney (SYD)', continent: 'Oceania', desc: 'Baia dell\'Opera: Carte di costo 4 o superiore ottengono x1.3 Hype.', multBonus: 1.3, energyDiscount: 0, lightColor: 0x3b82f6, icon: '🦘' },
+      { id: 'dest_buenosaires', country: 'Argentina', city: 'Buenos Aires (EZE)', continent: 'Americas', desc: 'Tango di San Telmo: Ogni carta adiacente guadagna +1 Potere continuo.', multBonus: 1.3, energyDiscount: 0, lightColor: 0xf59e0b, icon: '💃' }
     ];
 
     const ALL_CARDS = [
@@ -1029,8 +1326,8 @@
       { id: 'card_france_champagne', country: 'Francia', name: 'Calice Champagne Millesimato', type: CARD_TYPES.EVENT, cost: 1, power: 2, mult: 1.5, material: MATERIALS.SILK, materialDesc: 'Seta Haute-Couture Blu Navy & Ricami Fleur-de-Lis Dorati', rarity: RARITY.COMMON, airport: 'ORY - Parigi', image: 'assets/cards/card_france_champagne.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="40" fill="#450a0a" stroke="#fef08a"/><path d="M40 30 L60 30 L55 60 L50 75 L45 60 Z" fill="#facc15"/></svg>`, text: 'Brindisi VIP: Rimuove tutti i malus dagli alleati.', soundType: 'chime' },
 
       // 🇬🇧 Regno Unito (Tweed Savile Row & MI6)
-      { id: 'card_uk_agent', country: 'Regno Unito', name: 'Agente Segreto di Savile Row', type: CARD_TYPES.SOVEREIGN, cost: 4, power: 7, mult: 1.6, material: MATERIALS.TWEED, materialDesc: 'Tweed Savile Row & Filigrana d'Oro Reale', rarity: RARITY.LEGENDARY, airport: 'LHR - Londra', image: 'assets/cards/card_uk_agent.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="15" width="70" height="70" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2"/><circle cx="50" cy="45" r="14" fill="#042f2e"/></svg>`, isLeveledUp: false, leveledPower: 15, leveledMult: 3.2, text: 'Licenza di Spionaggio: Rivela tutte le carte nemiche in mano.', levelUpText: 'MISSIONE COMPIUTA: Neutralizza la carta nemica più forte.', voiceLine: 'Agitato, non mescolato.', soundType: 'chime' },
-      { id: 'card_uk_bigben', country: 'Regno Unito', name: 'Torre del Big Ben', type: CARD_TYPES.DESTINATION, cost: 2, power: 5, mult: 1.2, material: MATERIALS.TWEED, materialDesc: 'Tweed Savile Row & Filigrana d'Oro Reale', rarity: RARITY.RARE, airport: 'LHR - Londra', image: 'assets/cards/card_uk_bigben.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="30" y="15" width="40" height="70" fill="#1f2937" stroke="#fbbf24" stroke-width="2"/><circle cx="50" cy="35" r="10" fill="#fef08a"/></svg>`, text: 'Rintocco Preciso: +1 Miglia permanente al tuo turno.', soundType: 'chime' },
+      { id: 'card_uk_agent', country: 'Regno Unito', name: 'Agente Segreto di Savile Row', type: CARD_TYPES.SOVEREIGN, cost: 4, power: 7, mult: 1.6, material: MATERIALS.TWEED, materialDesc: "Tweed Savile Row & Filigrana d'Oro Reale", rarity: RARITY.LEGENDARY, airport: 'LHR - Londra', image: 'assets/cards/card_uk_agent.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="15" width="70" height="70" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="2"/><circle cx="50" cy="45" r="14" fill="#042f2e"/></svg>`, isLeveledUp: false, leveledPower: 15, leveledMult: 3.2, text: 'Licenza di Spionaggio: Rivela tutte le carte nemiche in mano.', levelUpText: 'MISSIONE COMPIUTA: Neutralizza la carta nemica più forte.', voiceLine: 'Agitato, non mescolato.', soundType: 'chime' },
+      { id: 'card_uk_bigben', country: 'Regno Unito', name: 'Torre del Big Ben', type: CARD_TYPES.DESTINATION, cost: 2, power: 5, mult: 1.2, material: MATERIALS.TWEED, materialDesc: "Tweed Savile Row & Filigrana d'Oro Reale", rarity: RARITY.RARE, airport: 'LHR - Londra', image: 'assets/cards/card_uk_bigben.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="30" y="15" width="40" height="70" fill="#1f2937" stroke="#fbbf24" stroke-width="2"/><circle cx="50" cy="35" r="10" fill="#fef08a"/></svg>`, text: 'Rintocco Preciso: +1 Miglia permanente al tuo turno.', soundType: 'chime' },
 
       // 🇧🇷 Brasile (Jacaranda & Piume Sambodromo)
       { id: 'card_brazil_samba', country: 'Brasile', name: 'Regina della Samba', type: CARD_TYPES.SOVEREIGN, cost: 3, power: 5, mult: 2.0, material: MATERIALS.TROPICAL, materialDesc: 'Legno Jacaranda Tropicale Pregiato & Piume Sambodromo', rarity: RARITY.LEGENDARY, airport: 'GIG - Rio', image: 'assets/cards/card_brazil_samba.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#064e3b" stroke="#fbbf24" stroke-width="2"/><path d="M50 20 Q30 50 50 80 Q70 50 50 20 Z" fill="#10b981"/></svg>`, isLeveledUp: false, leveledPower: 14, leveledMult: 3.8, text: 'Festa Irrefrenabile: Annulla gli imprevisti doganali.', levelUpText: 'CARNEVALE DI RIO: Moltiplica x3.8 e congela il turno nemico!', voiceLine: 'Il ritmo del Brasile conquista il mondo!', soundType: 'chime' },
@@ -1484,6 +1781,42 @@
         g.gain.setValueAtTime(0.35, now); g.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
         osc.connect(g); g.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.5);
       }
+      playFanfare() {
+        if (this.isMuted) return; this.init();
+        const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+        const now = this.ctx.currentTime;
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.12);
+          g.gain.setValueAtTime(0.3, now + idx * 0.12);
+          g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.12 + 0.8);
+          osc.connect(g); g.connect(this.ctx.destination);
+          osc.start(now + idx * 0.12);
+          osc.stop(now + idx * 0.12 + 0.8);
+        });
+      }
+      playCoins() {
+        if (this.isMuted) return; this.init();
+        const now = this.ctx.currentTime;
+        [987.77, 1318.51, 1567.98, 1975.53].forEach((f, i) => {
+          const osc = this.ctx.createOscillator(), g = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(f, now + i * 0.06);
+          g.gain.setValueAtTime(0.25, now + i * 0.06);
+          g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.06 + 0.3);
+          osc.connect(g); g.connect(this.ctx.destination);
+          osc.start(now + i * 0.06);
+          osc.stop(now + i * 0.06 + 0.3);
+        });
+      }
+      triggerHaptic(duration = 25) {
+        try {
+          if (navigator.vibrate && !window.__wto_haptics_disabled) {
+            navigator.vibrate(duration);
+          }
+        } catch (e) {}
+      }
     }
     const sound = new TravelSoundManager();
 
@@ -1542,1257 +1875,839 @@
     }
     let fx = null;
 
-    // --- 4. THREE.JS 3D WORLD ARENA SCENE ---
-    class ThreeWorldScene {
-      constructor(containerEl) {
-        this.container = containerEl;
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.terminals = [];
-        this.clock = null;
-        this.init();
+    // --- 4. PIXIJS v8 AAA 2.5D DIORAMA ENGINE (METROPOLIS RADAR CONSOLES) ---
+// =========================================================================
+// WORLD TRAVEL ODYSSEY (WTO) - AAA 2.5D LUXURY DIORAMA GRAPHICS ENGINES
+// Powered by PixiJS v8 - Surpassing Marvel Snap & Hearthstone Standards
+// =========================================================================
+
+class PixiArenaEngine {
+  constructor(containerEl) {
+    this.container = containerEl;
+    this.app = null;
+    this.width = 390;
+    this.height = 450;
+    this.isReady = false;
+
+    this.destinations = [
+      { name: 'Tokyo', iata: 'HND', color: 0x00f0ff, continent: 'Asia' },
+      { name: 'Roma', iata: 'FCO', color: 0xf59e0b, continent: 'Europa' },
+      { name: 'New York', iata: 'JFK', color: 0x10b981, continent: 'Nord America' }
+    ];
+
+    // Scene layers
+    this.bgLayer = null;
+    this.flightVectorLayer = null;
+    this.padsLayer = null;
+    this.fxLayer = null;
+
+    // Animation states
+    this.time = 0;
+    this.radarAngle = 0;
+    this.shockwaves = [];
+    this.sparks = [];
+    this.flightJets = [];
+    this.overchargeEnergy = 0;
+
+    this.init();
+  }
+
+  async init() {
+    if (typeof PIXI === 'undefined') {
+      console.warn('[WTO PixiArena] PIXI not found!');
+      return;
+    }
+
+    this.width = this.container.clientWidth || 390;
+    this.height = this.container.clientHeight || 420;
+
+    this.app = new PIXI.Application();
+    await this.app.init({
+      width: this.width,
+      height: this.height,
+      backgroundAlpha: 0,
+      antialias: true,
+      resolution: Math.min(window.devicePixelRatio || 2, 2),
+      autoDensity: true
+    });
+
+    this.container.innerHTML = '';
+    this.container.appendChild(this.app.canvas);
+    this.app.canvas.style.width = '100%';
+    this.app.canvas.style.height = '100%';
+    this.app.canvas.style.position = 'absolute';
+    this.app.canvas.style.top = '0';
+    this.app.canvas.style.left = '0';
+    this.app.canvas.style.pointerEvents = 'none';
+
+    // Build layers
+    this.bgLayer = new PIXI.Container();
+    this.flightVectorLayer = new PIXI.Container();
+    this.padsLayer = new PIXI.Container();
+    this.fxLayer = new PIXI.Container();
+
+    this.app.stage.addChild(this.bgLayer);
+    this.app.stage.addChild(this.flightVectorLayer);
+    this.app.stage.addChild(this.padsLayer);
+    this.app.stage.addChild(this.fxLayer);
+
+    // Create persistent graphics
+    this.bgGraphics = new PIXI.Graphics();
+    this.bgLayer.addChild(this.bgGraphics);
+
+    this.vectorGraphics = new PIXI.Graphics();
+    this.flightVectorLayer.addChild(this.vectorGraphics);
+
+    this.padsGraphics = new PIXI.Graphics();
+    this.padsLayer.addChild(this.padsGraphics);
+
+    this.fxGraphics = new PIXI.Graphics();
+    this.fxLayer.addChild(this.fxGraphics);
+
+    // Initialize flight jets
+    this.initFlightJets();
+
+    // Start render loop
+    this.app.ticker.add((ticker) => {
+      this.update(ticker.deltaTime);
+    });
+
+    this.isReady = true;
+    console.log('[WTO PixiArena] AAA 2.5D Diorama Engine Initialized!');
+  }
+
+  initFlightJets() {
+    this.flightJets = [
+      { t: 0, speed: 0.004, fromIdx: 0, toIdx: 1 },
+      { t: 0.5, speed: 0.0035, fromIdx: 1, toIdx: 2 },
+      { t: 0.25, speed: 0.003, fromIdx: 2, toIdx: 0 }
+    ];
+  }
+
+  setDestinations(dests) {
+    if (!dests || dests.length < 3) return;
+    this.destinations = dests.map(d => ({
+      name: d.name,
+      iata: d.airport ? d.airport.split(' ')[0] : (d.iata || 'WTO'),
+      color: d.padColor ? parseInt(d.padColor.replace('#', '0x'), 16) : 0xf59e0b,
+      continent: d.continent || 'Mondo'
+    }));
+  }
+
+  triggerCardImpact(laneIdx, card) {
+    const padPositions = this.getPadPositions();
+    const pad = padPositions[laneIdx] || padPositions[1];
+
+    // Shockwave ring
+    this.shockwaves.push({
+      x: pad.x,
+      y: pad.y,
+      radius: 10,
+      maxRadius: 120,
+      alpha: 1.0,
+      color: pad.color
+    });
+
+    // 25 Golden/Neon sparks
+    for (let i = 0; i < 25; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 2 + Math.random() * 6;
+      this.sparks.push({
+        x: pad.x,
+        y: pad.y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 1.5,
+        alpha: 1.0,
+        decay: 0.02 + Math.random() * 0.03,
+        color: Math.random() > 0.4 ? 0xffd700 : pad.color,
+        size: 1.5 + Math.random() * 2.5
+      });
+    }
+
+    try {
+      if (typeof fx !== 'undefined' && fx.shake) fx.shake(8, 300);
+      if (typeof sound !== 'undefined' && sound.playStamp) sound.playStamp();
+    } catch (e) {}
+  }
+
+  triggerOvercharge() {
+    this.overchargeEnergy = 1.0;
+    const padPositions = this.getPadPositions();
+    padPositions.forEach(p => {
+      this.shockwaves.push({
+        x: p.x,
+        y: p.y,
+        radius: 15,
+        maxRadius: 160,
+        alpha: 1.0,
+        color: 0xffd700
+      });
+    });
+  }
+
+  getPadPositions() {
+    const w = this.width;
+    const h = this.height;
+    const padY = h * 0.38; // Positioned right under the score headers
+    const padW = Math.min(w * 0.28, 106);
+    const spacing = w / 3;
+
+    return [
+      { x: spacing * 0.5, y: padY, w: padW, h: 140, color: this.destinations[0]?.color || 0x00f0ff, dest: this.destinations[0] },
+      { x: spacing * 1.5, y: padY, w: padW, h: 140, color: this.destinations[1]?.color || 0xf59e0b, dest: this.destinations[1] },
+      { x: spacing * 2.5, y: padY, w: padW, h: 140, color: this.destinations[2]?.color || 0x10b981, dest: this.destinations[2] }
+    ];
+  }
+
+  update(dt) {
+    if (!this.isReady) return;
+    this.time += dt * 0.03;
+    this.radarAngle = (this.radarAngle + dt * 0.035) % (Math.PI * 2);
+
+    const padPositions = this.getPadPositions();
+
+    // 1. Render Background Aeronautic Table
+    this.renderTableBackground(padPositions);
+
+    // 2. Render Flight Vector Lines & Supersonic Jets
+    this.renderFlightVectors(padPositions);
+
+    // 3. Render 3 Metropolis Consoles
+    this.renderMetropolisPads(padPositions);
+
+    // 4. Render Dynamic Visual FX (Shockwaves, Sparks, Overcharge)
+    this.renderFX();
+  }
+
+  renderTableBackground(pads) {
+    const g = this.bgGraphics;
+    g.clear();
+    const w = this.width;
+    const h = this.height;
+    const cx = w / 2;
+    const cy = h * 0.45;
+
+    // Tactical Coordinates & Meridian Rings
+    g.circle(cx, cy, Math.min(w, h) * 0.42).stroke({ width: 1, color: 0x1e293b, alpha: 0.35 });
+    g.circle(cx, cy, Math.min(w, h) * 0.28).stroke({ width: 1, color: 0x1e293b, alpha: 0.25 });
+    g.circle(cx, cy, Math.min(w, h) * 0.14).stroke({ width: 1, color: 0x38bdf8, alpha: 0.2 });
+
+    // Compass Crosshairs
+    g.moveTo(cx - 50, cy).lineTo(cx + 50, cy).stroke({ width: 1, color: 0x38bdf8, alpha: 0.25 });
+    g.moveTo(cx, cy - 50).lineTo(cx, cy + 50).stroke({ width: 1, color: 0x38bdf8, alpha: 0.25 });
+
+    // Central Rotating Celestial Compass Rose (Gold Filigree)
+    const compassAngle = this.time * 0.15;
+    const r = 24;
+    for (let i = 0; i < 8; i++) {
+      const a = compassAngle + (i * Math.PI) / 4;
+      const len = i % 2 === 0 ? r : r * 0.6;
+      const px = cx + Math.cos(a) * len;
+      const py = cy + Math.sin(a) * len;
+      g.moveTo(cx, cy).lineTo(px, py).stroke({
+        width: i % 2 === 0 ? 1.5 : 1,
+        color: 0xfacc15,
+        alpha: i % 2 === 0 ? 0.35 : 0.2
+      });
+    }
+
+    // Latitude & Longitude navigation grid lines
+    const gridSpacing = 48;
+    for (let x = 0; x < w; x += gridSpacing) {
+      g.moveTo(x, 0).lineTo(x, h).stroke({ width: 0.6, color: 0x0f172a, alpha: 0.3 });
+    }
+    for (let y = 0; y < h; y += gridSpacing) {
+      g.moveTo(0, y).lineTo(w, y).stroke({ width: 0.6, color: 0x0f172a, alpha: 0.3 });
+    }
+  }
+
+  renderFlightVectors(pads) {
+    const g = this.vectorGraphics;
+    g.clear();
+
+    // Curved Flight Arcs between Pad 0 <-> Pad 1, and Pad 1 <-> Pad 2
+    const drawArc = (p1, p2, color) => {
+      const midX = (p1.x + p2.x) / 2;
+      const midY = (p1.y + p2.y) / 2 - 25; // Arc curvature upward
+
+      // Draw dashed arc with glowing glow
+      g.moveTo(p1.x, p1.y - 10);
+      g.quadraticCurveTo(midX, midY, p2.x, p2.y - 10).stroke({
+        width: 1.4,
+        color: color,
+        alpha: 0.4
+      });
+    };
+
+    drawArc(pads[0], pads[1], pads[0].color);
+    drawArc(pads[1], pads[2], pads[1].color);
+    drawArc(pads[2], pads[0], pads[2].color);
+
+    // Supersonic Flight Jet Blips traveling along the arcs
+    this.flightJets.forEach(jet => {
+      jet.t = (jet.t + jet.speed) % 1.0;
+      const from = pads[jet.fromIdx];
+      const to = pads[jet.toIdx];
+      const midX = (from.x + to.x) / 2;
+      const midY = (from.y + to.y) / 2 - 25;
+
+      // Quadratic bezier calculation
+      const t = jet.t;
+      const jx = (1 - t) * (1 - t) * from.x + 2 * (1 - t) * t * midX + t * t * to.x;
+      const jy = (1 - t) * (1 - t) * (from.y - 10) + 2 * (1 - t) * t * midY + t * t * (to.y - 10);
+
+      // Jet icon / pulsing blip
+      g.circle(jx, jy, 3.5).fill({ color: 0xffffff, alpha: 0.9 });
+      g.circle(jx, jy, 7).stroke({ width: 1.5, color: from.color, alpha: 0.6 });
+      // Jet engine trail
+      g.circle(jx - 4, jy + 1, 2).fill({ color: from.color, alpha: 0.4 });
+    });
+  }
+
+  renderMetropolisPads(pads) {
+    const g = this.padsGraphics;
+    g.clear();
+
+    pads.forEach((p, idx) => {
+      const halfW = p.w / 2;
+      const halfH = p.h / 2;
+      const cornerR = 14;
+
+      // 1. Deep Glassmorphic Base Pad
+      g.roundRect(p.x - halfW, p.y - halfH, p.w, p.h, cornerR).fill({
+        color: 0x0a0f1d,
+        alpha: 0.75
+      });
+
+      // 2. Beveled Metallic Glowing Border
+      g.roundRect(p.x - halfW, p.y - halfH, p.w, p.h, cornerR).stroke({
+        width: 1.8,
+        color: p.color,
+        alpha: 0.75
+      });
+
+      // 3. Runway Approach Lighting System (ALS): 5 pulsing LEDs leading in
+      const ledCount = 5;
+      const ledSpacing = (p.h - 32) / (ledCount - 1);
+      for (let i = 0; i < ledCount; i++) {
+        const ly = p.y - halfH + 16 + i * ledSpacing;
+        // Sequential ripple pulse
+        const pulse = Math.sin(this.time * 6 - i * 0.8) * 0.5 + 0.5;
+        const ledAlpha = 0.35 + pulse * 0.65;
+        // Left runway light
+        g.circle(p.x - halfW + 6, ly, 2).fill({ color: p.color, alpha: ledAlpha });
+        // Right runway light
+        g.circle(p.x + halfW - 6, ly, 2).fill({ color: p.color, alpha: ledAlpha });
       }
-      init() {
-        if (typeof THREE === 'undefined') return;
-        const w = this.container.clientWidth || 390, h = this.container.clientHeight || 450;
-        this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0x06070a, 0.03);
-        this.clock = new THREE.Clock();
 
-        this.camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
-        this.camera.position.set(0, 15, 14);
-        this.camera.lookAt(0, 0, -1);
+      // 4. Center Rotating Airport Radar Sweep
+      const radarR = Math.min(halfW - 14, 32);
+      const radarCenterY = p.y;
+      g.circle(p.x, radarCenterY, radarR).stroke({ width: 1, color: p.color, alpha: 0.25 });
+      g.circle(p.x, radarCenterY, radarR * 0.5).stroke({ width: 0.8, color: p.color, alpha: 0.2 });
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        this.renderer.setSize(w, h);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.shadowMap.enabled = true;
-        this.container.appendChild(this.renderer.domElement);
+      // Radar sweep ray with fading phosphor sector
+      const sweepX = p.x + Math.cos(this.radarAngle) * radarR;
+      const sweepY = radarCenterY + Math.sin(this.radarAngle) * radarR;
+      g.moveTo(p.x, radarCenterY).lineTo(sweepX, sweepY).stroke({
+        width: 1.5,
+        color: 0xffffff,
+        alpha: 0.85
+      });
 
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.65));
-        const dir = new THREE.DirectionalLight(0xffffff, 1.2);
-        dir.position.set(5, 18, 10);
-        dir.castShadow = true;
-        this.scene.add(dir);
-
-        const colors = [0x00f0ff, 0xf59e0b, 0x10b981];
-        const spacingX = 4.1;
-
-        // ==================== TAVOLO 3D IN NOCE & OTTONE (FIRST-CLASS LOUNGE) ====================
-        const tableGroup = new THREE.Group();
-        tableGroup.position.set(0, -0.6, -2);
-
-        // Piano Tavolo in Noce Pregiato Lucido
-        const tableTopGeo = new THREE.BoxGeometry(22, 0.7, 18);
-        const tableTopMat = new THREE.MeshStandardMaterial({
-          color: 0x1f140e,
-          roughness: 0.35,
-          metalness: 0.15
+      // Phosphor echo trail (3 trailing ghost rays)
+      for (let s = 1; s <= 3; s++) {
+        const trailA = this.radarAngle - s * 0.12;
+        const tx = p.x + Math.cos(trailA) * radarR;
+        const ty = radarCenterY + Math.sin(trailA) * radarR;
+        g.moveTo(p.x, radarCenterY).lineTo(tx, ty).stroke({
+          width: 1.2,
+          color: p.color,
+          alpha: 0.6 / s
         });
-        const tableTopMesh = new THREE.Mesh(tableTopGeo, tableTopMat);
-        tableTopMesh.receiveShadow = true;
-        tableGroup.add(tableTopMesh);
+      }
 
-        // Bordo / Modanatura in Ottone Dorato Satinato
-        const tableRimGeo = new THREE.BoxGeometry(22.4, 0.15, 18.4);
-        const tableRimMat = new THREE.MeshStandardMaterial({
-          color: 0xf59e0b,
-          metalness: 0.85,
-          roughness: 0.25
+      // 5. High-Tech Aeronautic Coordinates Brackets
+      const bLen = 8;
+      // Top-Left
+      g.moveTo(p.x - halfW + 4, p.y - halfH + 4 + bLen).lineTo(p.x - halfW + 4, p.y - halfH + 4).lineTo(p.x - halfW + 4 + bLen, p.y - halfH + 4).stroke({ width: 1.5, color: p.color, alpha: 0.9 });
+      // Top-Right
+      g.moveTo(p.x + halfW - 4 - bLen, p.y - halfH + 4).lineTo(p.x + halfW - 4, p.y - halfH + 4).lineTo(p.x + halfW - 4, p.y - halfH + 4 + bLen).stroke({ width: 1.5, color: p.color, alpha: 0.9 });
+      // Bottom-Left
+      g.moveTo(p.x - halfW + 4, p.y + halfH - 4 - bLen).lineTo(p.x - halfW + 4, p.y + halfH - 4).lineTo(p.x - halfW + 4 + bLen, p.y + halfH - 4).stroke({ width: 1.5, color: p.color, alpha: 0.9 });
+      // Bottom-Right
+      g.moveTo(p.x + halfW - 4 - bLen, p.y + halfH - 4).lineTo(p.x + halfW - 4, p.y + halfH - 4).lineTo(p.x + halfW - 4, p.y + halfH - 4 - bLen).stroke({ width: 1.5, color: p.color, alpha: 0.9 });
+
+      // Landing Strip Centerline (Dashed Runway)
+      for (let d = -halfH + 20; d < halfH - 20; d += 16) {
+        if (Math.abs(d) > 28) {
+          g.moveTo(p.x, p.y + d).lineTo(p.x, p.y + d + 8).stroke({ width: 1.5, color: 0xffffff, alpha: 0.35 });
+        }
+      }
+    });
+  }
+
+  renderFX() {
+    const g = this.fxGraphics;
+    g.clear();
+
+    // 1. Shockwaves
+    for (let i = this.shockwaves.length - 1; i >= 0; i--) {
+      const sw = this.shockwaves[i];
+      sw.radius += 4.5;
+      sw.alpha -= 0.035;
+
+      if (sw.alpha <= 0 || sw.radius >= sw.maxRadius) {
+        this.shockwaves.splice(i, 1);
+      } else {
+        g.circle(sw.x, sw.y, sw.radius).stroke({
+          width: 3 * sw.alpha,
+          color: sw.color,
+          alpha: sw.alpha
         });
-        const tableRimMesh = new THREE.Mesh(tableRimGeo, tableRimMat);
-        tableRimMesh.position.y = 0.36;
-        tableGroup.add(tableRimMesh);
+        g.circle(sw.x, sw.y, sw.radius * 0.7).stroke({
+          width: 1.5 * sw.alpha,
+          color: 0xffffff,
+          alpha: sw.alpha * 0.6
+        });
+      }
+    }
 
-        // Rosa dei Venti & Anello delle Rotte Aeree Intagliato a Specchio
-        const compassRingGeo = new THREE.RingGeometry(2.0, 2.15, 48);
-        const compassRingMat = new THREE.MeshStandardMaterial({
+    // 2. Sparks
+    for (let i = this.sparks.length - 1; i >= 0; i--) {
+      const s = this.sparks[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.vy += 0.15; // Gravity
+      s.vx *= 0.96; // Drag
+      s.alpha -= s.decay;
+
+      if (s.alpha <= 0) {
+        this.sparks.splice(i, 1);
+      } else {
+        g.circle(s.x, s.y, s.size).fill({
+          color: s.color,
+          alpha: s.alpha
+        });
+      }
+    }
+
+    // 3. Overcharge Lightning Energy
+    if (this.overchargeEnergy > 0) {
+      this.overchargeEnergy -= 0.02;
+      const pads = this.getPadPositions();
+      // Draw jittery electrical lightning arcs between pads
+      const drawBolt = (p1, p2) => {
+        let curX = p1.x;
+        let curY = p1.y;
+        const steps = 6;
+        const dx = (p2.x - p1.x) / steps;
+        const dy = (p2.y - p1.y) / steps;
+
+        g.moveTo(curX, curY);
+        for (let s = 1; s < steps; s++) {
+          const jitterX = (Math.random() - 0.5) * 22;
+          const jitterY = (Math.random() - 0.5) * 22;
+          curX = p1.x + dx * s + jitterX;
+          curY = p1.y + dy * s + jitterY;
+          g.lineTo(curX, curY);
+        }
+        g.lineTo(p2.x, p2.y).stroke({
+          width: 2.2,
           color: 0xfde047,
-          emissive: 0xf59e0b,
-          emissiveIntensity: 0.35,
-          metalness: 0.9,
-          roughness: 0.2,
-          side: THREE.DoubleSide
+          alpha: this.overchargeEnergy
         });
-        const compassRing = new THREE.Mesh(compassRingGeo, compassRingMat);
-        compassRing.rotation.x = -Math.PI / 2;
-        compassRing.position.y = 0.37;
-        tableGroup.add(compassRing);
+      };
 
-        // Linee di Atterraggio Piste Vettoriali sul Tavolo
-        for (let r = -1; r <= 1; r++) {
-          const runwayGeo = new THREE.PlaneGeometry(0.08, 12);
-          const runwayMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, opacity: 0.35, transparent: true });
-          const runwayMesh = new THREE.Mesh(runwayGeo, runwayMat);
-          runwayMesh.rotation.x = -Math.PI / 2;
-          runwayMesh.position.set(r * 4.1, 0.37, 0);
-          tableGroup.add(runwayMesh);
+      drawBolt(pads[0], pads[1]);
+      drawBolt(pads[1], pads[2]);
+    }
+  }
+
+  onResize() {
+    if (!this.app || !this.app.renderer) return;
+    this.width = this.container.clientWidth || 390;
+    this.height = this.container.clientHeight || 420;
+    this.app.renderer.resize(this.width, this.height);
+  }
+}
+
+
+// =========================================================================
+// PIXI BOOSTER ENGINE - LUXURY DIPLOMATIC FOIL POUCH UNBOXING
+// =========================================================================
+
+class PixiBoosterEngine {
+  constructor(containerEl) {
+    this.container = containerEl;
+    this.app = null;
+    this.width = 390;
+    this.height = 500;
+    this.isReady = false;
+
+    this.activeTier = 'economy';
+    this.isOpened = false;
+    this.isTearing = false;
+    this.tearProgress = 0; // 0 to 1
+
+    this.revealedCards = [];
+    this.particles = [];
+    this.time = 0;
+
+    this.init();
+  }
+
+  async init() {
+    if (typeof PIXI === 'undefined') return;
+
+    this.width = this.container.clientWidth || 390;
+    this.height = this.container.clientHeight || 500;
+
+    this.app = new PIXI.Application();
+    await this.app.init({
+      width: this.width,
+      height: this.height,
+      backgroundAlpha: 0,
+      antialias: true,
+      resolution: Math.min(window.devicePixelRatio || 2, 2),
+      autoDensity: true
+    });
+
+    this.container.innerHTML = '';
+    this.container.appendChild(this.app.canvas);
+    this.app.canvas.style.width = '100%';
+    this.app.canvas.style.height = '100%';
+    this.app.canvas.style.position = 'absolute';
+    this.app.canvas.style.top = '0';
+    this.app.canvas.style.left = '0';
+
+    this.mainGraphics = new PIXI.Graphics();
+    this.fxGraphics = new PIXI.Graphics();
+    this.app.stage.addChild(this.mainGraphics);
+    this.app.stage.addChild(this.fxGraphics);
+
+    this.setupInteractions();
+
+    this.app.ticker.add((ticker) => {
+      this.update(ticker.deltaTime);
+    });
+
+    this.isReady = true;
+    console.log('[WTO PixiBooster] AAA Luxury Foil Pack Engine Initialized!');
+  }
+
+  setTier(tier) {
+    this.activeTier = tier;
+    this.reset();
+  }
+
+  reset() {
+    this.isOpened = false;
+    this.isTearing = false;
+    this.tearProgress = 0;
+    this.revealedCards = [];
+    this.particles = [];
+
+    const actionText = document.getElementById('booster-action-text');
+    if (actionText) {
+      actionText.textContent = "✦ SCORRI O TOCCA IL SIGILLO D'ORO PER STRAPPARE LA BUSTINA! ✦";
+      actionText.style.display = 'block';
+    }
+    const btnReset = document.getElementById('btn-booster-reset');
+    if (btnReset) btnReset.style.display = 'none';
+    const btnCloseInspect = document.getElementById('btn-booster-close-inspect');
+    if (btnCloseInspect) btnCloseInspect.style.display = 'none';
+    const cardInfo = document.getElementById('booster-inspect-card');
+    if (cardInfo) cardInfo.style.display = 'none';
+  }
+
+  setupInteractions() {
+    const canvas = this.app.canvas;
+    let isDragging = false;
+    let startX = 0;
+
+    const handleStart = (clientX) => {
+      if (this.isOpened) return;
+      isDragging = true;
+      startX = clientX;
+    };
+
+    const handleMove = (clientX) => {
+      if (!isDragging || this.isOpened) return;
+      const dx = clientX - startX;
+      if (dx > 10) {
+        this.tearProgress = Math.min(1.0, dx / (this.width * 0.55));
+        // Spawn sparks along tear line
+        const cx = this.width / 2;
+        const cy = this.height * 0.42;
+        const tearX = cx - 90 + this.tearProgress * 180;
+        this.spawnTearSparks(tearX, cy);
+
+        if (this.tearProgress >= 0.95 && !this.isOpened) {
+          this.triggerOpen();
         }
+      }
+    };
 
-        this.scene.add(tableGroup);
-
-        // Faretto da Tavolo con Ombre e Illuminazione Soffusa
-        const tableSpot = new THREE.SpotLight(0xfef08a, 1.4, 30, Math.PI / 3.5, 0.4);
-        tableSpot.position.set(0, 16, 4);
-        tableSpot.target.position.set(0, -0.6, -2);
-        this.scene.add(tableSpot);
-        this.scene.add(tableSpot.target);
-
-        for (let i = 0; i < 3; i++) {
-          const group = new THREE.Group();
-          group.position.set((i - 1) * spacingX, 0, -1.8);
-
-          const baseGeo = new THREE.BoxGeometry(3.5, 0.4, 7.6);
-          const baseMat = new THREE.MeshStandardMaterial({ color: 0x121520, roughness: 0.5, metalness: 0.2 });
-          const baseMesh = new THREE.Mesh(baseGeo, baseMat);
-          baseMesh.receiveShadow = true;
-          group.add(baseMesh);
-
-          const rimGeo = new THREE.BoxGeometry(3.6, 0.08, 7.7);
-          const rimMat = new THREE.MeshStandardMaterial({ color: colors[i], emissive: colors[i], emissiveIntensity: 0.7 });
-          const rimMesh = new THREE.Mesh(rimGeo, rimMat);
-          rimMesh.position.y = 0.22;
-          group.add(rimMesh);
-
-          const cryGeo = new THREE.IcosahedronGeometry(0.36, 0);
-          const cryMat = new THREE.MeshStandardMaterial({ color: colors[i], emissive: colors[i], emissiveIntensity: 0.8, metalness: 0.8 });
-          const crystal = new THREE.Mesh(cryGeo, cryMat);
-          crystal.position.set(0, 1.3, 0);
-          group.add(crystal);
-
-          const pLight = new THREE.PointLight(colors[i], 1.2, 7);
-          pLight.position.set(0, 2, 0);
-          group.add(pLight);
-
-          this.scene.add(group);
-          this.terminals.push({ group, crystal });
+    const handleEnd = () => {
+      if (!this.isOpened && isDragging) {
+        // If pulled more than 40%, complete opening!
+        if (this.tearProgress > 0.4) {
+          this.triggerOpen();
+        } else {
+          // Snap back
+          this.tearProgress = 0;
         }
+      }
+      isDragging = false;
+    };
 
-        this.animate();
+    canvas.addEventListener('mousedown', (e) => handleStart(e.clientX));
+    window.addEventListener('mousemove', (e) => handleMove(e.clientX));
+    window.addEventListener('mouseup', handleEnd);
+
+    canvas.addEventListener('touchstart', (e) => handleStart(e.touches[0].clientX), { passive: true });
+    window.addEventListener('touchmove', (e) => handleMove(e.touches[0].clientX), { passive: true });
+    window.addEventListener('touchend', handleEnd);
+
+    // Tap fallback on tear strip
+    canvas.addEventListener('click', (e) => {
+      if (!this.isOpened) {
+        this.triggerOpen();
       }
-      onResize() {
-        if (!this.container || !this.renderer || !this.camera) return;
-        const w = this.container.clientWidth || 390;
-        const h = this.container.clientHeight || 450;
-        this.camera.aspect = w / h;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(w, h);
+    });
+  }
+
+  spawnTearSparks(x, y) {
+    for (let i = 0; i < 4; i++) {
+      this.particles.push({
+        x: x,
+        y: y,
+        vx: (Math.random() - 0.5) * 5,
+        vy: (Math.random() - 0.5) * 5,
+        alpha: 1.0,
+        decay: 0.04 + Math.random() * 0.04,
+        color: 0xffd700,
+        size: 1.5 + Math.random() * 2.5
+      });
+    }
+  }
+
+  triggerOpen() {
+    if (this.isOpened) return;
+    this.isOpened = true;
+    this.tearProgress = 1.0;
+
+    // Explosive gold leaf confetti
+    const cx = this.width / 2;
+    const cy = this.height * 0.42;
+    for (let i = 0; i < 60; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 3 + Math.random() * 8;
+      this.particles.push({
+        x: cx,
+        y: cy,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed - 2,
+        alpha: 1.0,
+        decay: 0.015 + Math.random() * 0.02,
+        color: [0xffd700, 0xf59e0b, 0x38bdf8, 0xffffff, 0xc084fc][Math.floor(Math.random() * 5)],
+        size: 2 + Math.random() * 4
+      });
+    }
+
+    try {
+      if (typeof sound !== 'undefined') {
+        sound.playFanfare();
+        sound.playCoins();
       }
-      animate() {
-        requestAnimationFrame(() => this.animate());
-        if (!this.clock || !this.renderer || !this.scene || !this.camera) return;
-        const time = this.clock.getElapsedTime();
-        this.terminals.forEach((term, i) => {
-          term.group.position.y = Math.sin(time * 1.5 + i * 2) * 0.12;
-          term.crystal.rotation.y = time * 2;
+      if (typeof fx !== 'undefined' && fx.shake) fx.shake(14, 400);
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate([40, 60, 100]);
+    } catch (e) {}
+
+    // Pull cards from global hub
+    if (window.hub && typeof window.hub.generatePackCards === 'function') {
+      this.revealedCards = window.hub.generatePackCards(this.activeTier);
+    } else {
+      this.revealedCards = (typeof ALL_CARDS !== 'undefined') ? ALL_CARDS.slice(0, 4) : [];
+    }
+
+    const actionText = document.getElementById('booster-action-text');
+    if (actionText) {
+      actionText.textContent = "✦ BUSTINA SBOCCIATA! TOCCA LE CARTE PER ISPEZIONARLE ✦";
+    }
+    const btnReset = document.getElementById('btn-booster-reset');
+    if (btnReset) btnReset.style.display = 'inline-block';
+  }
+
+  update(dt) {
+    if (!this.isReady) return;
+    this.time += dt * 0.03;
+
+    this.renderPack();
+    this.renderFX();
+  }
+
+  renderPack() {
+    const g = this.mainGraphics;
+    g.clear();
+
+    const w = this.width;
+    const h = this.height;
+    const cx = w / 2;
+    const cy = h * 0.44;
+
+    const packW = Math.min(w * 0.65, 230);
+    const packH = packW * 1.5;
+    const halfW = packW / 2;
+    const halfH = packH / 2;
+
+    const tierColors = {
+      economy: { bg: 0x1e293b, rim: 0x38bdf8, gold: 0x94a3b8, label: 'ECONOMY CLASS' },
+      business: { bg: 0x2e1065, rim: 0xc084fc, gold: 0xa855f7, label: 'BUSINESS SUITE' },
+      sovereign: { bg: 0x1c1917, rim: 0xfacc15, gold: 0xffd700, label: 'SOVEREIGN DIPLOMATIC' }
+    };
+    const tier = tierColors[this.activeTier] || tierColors.economy;
+
+    if (!this.isOpened) {
+      // 1. Pack Body Shadow & Outer Aura
+      g.roundRect(cx - halfW - 4, cy - halfH - 4, packW + 8, packH + 8, 20).stroke({
+        width: 3,
+        color: tier.rim,
+        alpha: 0.6 + Math.sin(this.time * 3) * 0.25
+      });
+
+      // 2. Foil Envelope Texture
+      g.roundRect(cx - halfW, cy - halfH, packW, packH, 16).fill({
+        color: tier.bg,
+        alpha: 0.95
+      });
+
+      // 3. Gold Metallic Specular Sweep Line
+      const sweepPos = ((this.time * 0.5) % 2) - 0.5; // -0.5 to 1.5
+      const sweepX = cx - halfW + sweepPos * packW;
+      g.rect(Math.max(cx - halfW, sweepX - 20), cy - halfH, 40, packH).fill({
+        color: 0xffffff,
+        alpha: 0.12
+      });
+
+      // 4. Gold Border Emboss
+      g.roundRect(cx - halfW + 6, cy - halfH + 6, packW - 12, packH - 12, 12).stroke({
+        width: 1.5,
+        color: tier.gold,
+        alpha: 0.8
+      });
+
+      // 5. Globe Emblem / Coat of Arms in center
+      const globeY = cy - 25;
+      g.circle(cx, globeY, 32).stroke({ width: 1.5, color: tier.gold, alpha: 0.7 });
+      g.ellipse(cx, globeY, 32, 14).stroke({ width: 1.2, color: tier.gold, alpha: 0.5 });
+      g.moveTo(cx - 32, globeY).lineTo(cx + 32, globeY).stroke({ width: 1.2, color: tier.gold, alpha: 0.6 });
+
+      // 6. Tear-Strip Bar (Interactive Pull-Tab)
+      const stripY = cy + 45;
+      const stripH = 34;
+      const pullOffset = this.tearProgress * (packW + 40);
+
+      // Perforated Tear Line
+      for (let x = cx - halfW + 10; x < cx + halfW - 10; x += 10) {
+        g.moveTo(x, stripY).lineTo(x + 5, stripY).stroke({ width: 2, color: 0xffd700, alpha: 0.85 });
+      }
+
+      // Golden Pull Tab Ribbon
+      g.roundRect(cx - halfW - 4 + pullOffset * 0.4, stripY - 14, packW + 8 - pullOffset, stripH, 8).fill({
+        color: 0xd97706,
+        alpha: 0.9
+      });
+      g.roundRect(cx - halfW - 4 + pullOffset * 0.4, stripY - 14, packW + 8 - pullOffset, stripH, 8).stroke({
+        width: 1.5,
+        color: 0xfef08a,
+        alpha: 1.0
+      });
+
+      // Subtle Barcode at bottom
+      const barY = cy + halfH - 24;
+      for (let b = 0; b < 16; b++) {
+        const bx = cx - 50 + b * 6.5;
+        const bw = (b % 3 === 0) ? 2.5 : 1.2;
+        g.rect(bx, barY, bw, 14).fill({ color: tier.gold, alpha: 0.6 });
+      }
+
+    } else {
+      // BUSTINA APERTA: Mostra le carte in ventaglio 2.5D
+      const numCards = this.revealedCards.length || 3;
+      const cardW = 76;
+      const cardH = 114;
+      const totalSpread = Math.min(w * 0.85, 310);
+      const stepX = (totalSpread - cardW) / Math.max(1, numCards - 1);
+
+      this.revealedCards.forEach((c, i) => {
+        const targetX = (w - totalSpread) / 2 + i * stepX + cardW / 2;
+        const angle = (i - (numCards - 1) / 2) * 0.08;
+        const targetY = cy + Math.abs(i - (numCards - 1) / 2) * 8 - 10;
+
+        // Card Glow Backdrop
+        const rColor = c.rarity === 'legendary' ? 0xffd700 : (c.rarity === 'epic' ? 0xc084fc : 0x38bdf8);
+        g.roundRect(targetX - cardW / 2 - 3, targetY - cardH / 2 - 3, cardW + 6, cardH + 6, 10).stroke({
+          width: 2.5,
+          color: rColor,
+          alpha: 0.85 + Math.sin(this.time * 4 + i) * 0.15
         });
-        this.renderer.render(this.scene, this.camera);
+
+        // Card Base
+        g.roundRect(targetX - cardW / 2, targetY - cardH / 2, cardW, cardH, 8).fill({
+          color: 0x0f172a,
+          alpha: 0.95
+        });
+
+        // Golden Card Rim
+        g.roundRect(targetX - cardW / 2 + 3, targetY - cardH / 2 + 3, cardW - 6, cardH - 6, 6).stroke({
+          width: 1,
+          color: 0xfacc15,
+          alpha: 0.8
+        });
+
+        // Card Star/Crown Emblem
+        g.circle(targetX, targetY - 12, 14).stroke({ width: 1.2, color: rColor, alpha: 0.9 });
+        g.circle(targetX, targetY - 12, 4).fill({ color: 0xffffff, alpha: 0.9 });
+      });
+    }
+  }
+
+  renderFX() {
+    const g = this.fxGraphics;
+    g.clear();
+
+    for (let i = this.particles.length - 1; i >= 0; i--) {
+      const p = this.particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.12; // Gravity
+      p.vx *= 0.97;
+      p.alpha -= p.decay;
+
+      if (p.alpha <= 0) {
+        this.particles.splice(i, 1);
+      } else {
+        g.circle(p.x, p.y, p.size).fill({
+          color: p.color,
+          alpha: p.alpha
+        });
       }
     }
-    let threeArena = null;
+  }
+
+  onResize() {
+    if (!this.app || !this.app.renderer) return;
+    this.width = this.container.clientWidth || 390;
+    this.height = this.container.clientHeight || 500;
+    this.app.renderer.resize(this.width, this.height);
+  }
+}
+
+    let pixiArena = null;
+    let pixiBooster = null;
 
-    // --- 5. THREE.JS SBUSTAMENTO 3D (AIRPORT DUTY FREE PACK OPENING) ---
-    class ThreeBoosterScene {
-      constructor(containerEl) {
-        this.container = containerEl;
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.packGroup = null;
-        this.packBody = null;
-        this.topCap = null;
-        this.sealMesh = null;
-        this.sliderMesh = null;
-        this.lightBeam = null;
-        this.sparkPoints = null;
-        this.floatingParticles = null;
-        this.pointLight = null;
-        this.spotLight = null;
-        this.cardMeshes = [];
-        this.isOpened = false;
-        this.isTearing = false;
-        this.inspectingItem = null;
-        this.clock = null;
-        if (typeof THREE !== 'undefined') {
-          this.raycaster = new THREE.Raycaster();
-          this.mouse = new THREE.Vector2();
-          this.targetTilt = new THREE.Vector2(0, 0);
-        } else {
-          this.raycaster = null;
-          this.mouse = { x: 0, y: 0 };
-          this.targetTilt = { x: 0, y: 0 };
-        }
-        this.isDragging = false;
-        this.lastPointer = { x: 0, y: 0 };
-        this.init();
-      }
-
-      init() {
-        if (typeof THREE === 'undefined') return;
-        const w = this.container.clientWidth || 390;
-        const h = this.container.clientHeight || 600;
-
-        this.scene = new THREE.Scene();
-        this.clock = new THREE.Clock();
-
-        this.camera = new THREE.PerspectiveCamera(46, w / h, 0.1, 100);
-        this.camera.position.set(0, 0, 9.6);
-
-        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        this.renderer.setSize(w, h);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.shadowMap.enabled = true;
-        this.container.appendChild(this.renderer.domElement);
-
-        // Illuminazione Teatrale da Lounge Aeroportuale
-        const ambient = new THREE.AmbientLight(0xffffff, 0.65);
-        this.scene.add(ambient);
-
-        const dirLight = new THREE.DirectionalLight(0xfff7ed, 1.2);
-        dirLight.position.set(5, 10, 8);
-        this.scene.add(dirLight);
-
-        // Luce d'Oro Dinamica che cattura i riflessi metallici
-        this.pointLight = new THREE.PointLight(0xf59e0b, 2.8, 20);
-        this.pointLight.position.set(0, 2, 6);
-        this.scene.add(this.pointLight);
-
-        // Fascio di Luce da palcoscenico per lo sbustamento
-        this.spotLight = new THREE.SpotLight(0xfffbeb, 1.5, 25, Math.PI / 4, 0.6, 1);
-        this.spotLight.position.set(0, 8, 4);
-        this.spotLight.target.position.set(0, 0, 0);
-        this.scene.add(this.spotLight);
-        this.scene.add(this.spotLight.target);
-
-        this.createAmbientDustParticles();
-        this.createPackMesh();
-        this.setupInteractions();
-        this.animate();
-      }
-
-      // Polvere di stelle / paillettes dorate fluttuanti nello spazio 3D
-      createAmbientDustParticles() {
-        const pCount = 130;
-        const geo = new THREE.BufferGeometry();
-        const pos = new Float32Array(pCount * 3);
-        const col = new Float32Array(pCount * 3);
-        const c1 = new THREE.Color(0xfacc15), c2 = new THREE.Color(0x38bdf8), c3 = new THREE.Color(0xffffff);
-
-        for (let i = 0; i < pCount; i++) {
-          pos[i * 3] = (Math.random() - 0.5) * 16;
-          pos[i * 3 + 1] = (Math.random() - 0.5) * 14;
-          pos[i * 3 + 2] = (Math.random() - 0.5) * 10;
-          const chosen = Math.random() < 0.6 ? c1 : (Math.random() < 0.5 ? c2 : c3);
-          col[i * 3] = chosen.r; col[i * 3 + 1] = chosen.g; col[i * 3 + 2] = chosen.b;
-        }
-
-        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
-
-        const mat = new THREE.PointsMaterial({
-          size: 0.12,
-          vertexColors: true,
-          transparent: true,
-          opacity: 0.75,
-          blending: THREE.AdditiveBlending
-        });
-
-        this.floatingParticles = new THREE.Points(geo, mat);
-        this.scene.add(this.floatingParticles);
-      }
-
-      // Texture Procedurale Olografica ad Alta Risoluzione della Bustina First Class
-      generatePackTexture() {
-        const c = document.createElement('canvas');
-        c.width = 1024; c.height = 1440;
-        const ctx = c.getContext('2d');
-
-        // Sfondo lamina metallica viola reale con micro-righe iridescenti
-        const grad = ctx.createLinearGradient(0, 0, 1024, 1440);
-        grad.addColorStop(0, '#1a0b2e');
-        grad.addColorStop(0.3, '#2a1147');
-        grad.addColorStop(0.7, '#130c26');
-        grad.addColorStop(1, '#080512');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 1024, 1440);
-
-        // Riflesso diagonale olografico
-        const sheen = ctx.createLinearGradient(0, 0, 1024, 1440);
-        sheen.addColorStop(0.2, 'rgba(255,255,255,0)');
-        sheen.addColorStop(0.45, 'rgba(250, 204, 21, 0.15)');
-        sheen.addColorStop(0.5, 'rgba(56, 189, 248, 0.22)');
-        sheen.addColorStop(0.55, 'rgba(236, 72, 153, 0.15)');
-        sheen.addColorStop(0.8, 'rgba(255,255,255,0)');
-        ctx.fillStyle = sheen;
-        ctx.fillRect(0, 0, 1024, 1440);
-
-        // Bordo dorato sbalzato con angoli Art-Déco
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 16;
-        ctx.strokeRect(30, 30, 964, 1380);
-        ctx.strokeStyle = '#fef08a';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(45, 45, 934, 1350);
-
-        // Header superiore: Concourse VIP Lounge
-        ctx.fillStyle = '#facc15';
-        ctx.font = 'bold 32px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('✈️ AIRPORT DUTY FREE • FIRST CLASS LOUNGE ✈️', 512, 120);
-
-        // Linea guida dello strappo con forbice e chevron dorati
-        ctx.strokeStyle = '#facc15';
-        ctx.setLineDash([20, 14]);
-        ctx.lineWidth = 6;
-        ctx.beginPath();
-        ctx.moveTo(60, 290);
-        ctx.lineTo(964, 290);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.fillStyle = '#fef08a';
-        ctx.font = 'bold 26px sans-serif';
-        ctx.fillText('✂️ ✦ SCORRI O TOCCA PER STRAPPARE IL SIGILLO ✦ ✂️', 512, 275);
-
-        // Logo Principale 3D "WORLD TRAVEL ODYSSEY"
-        ctx.save();
-        ctx.shadowColor = '#f59e0b';
-        ctx.shadowBlur = 30;
-        ctx.fillStyle = '#fef08a';
-        ctx.font = '900 68px sans-serif';
-        ctx.fillText('WORLD TRAVEL', 512, 480);
-        ctx.fillText('ODYSSEY', 512, 560);
-        ctx.restore();
-
-        // Globo vettoriale al centro
-        ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)';
-        ctx.lineWidth = 5;
-        ctx.beginPath();
-        ctx.arc(512, 790, 180, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.ellipse(512, 790, 180, 80, 0, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.ellipse(512, 790, 80, 180, 0, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Rotte di volo mondiali
-        ctx.fillStyle = '#38bdf8';
-        ctx.font = 'bold 30px monospace';
-        ctx.fillText('FCO ➔ HND ➔ JFK ➔ CAI ➔ CDG', 512, 1020);
-
-        // Badge di rarità
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.fillRect(180, 1070, 664, 90);
-        ctx.strokeStyle = '#f59e0b';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(180, 1070, 664, 90);
-        ctx.fillStyle = '#ffd700';
-        ctx.font = 'bold 32px sans-serif';
-        ctx.fillText('★ 4 CARTE MONDO ESCLUSIVE ★', 512, 1115);
-        ctx.font = '22px sans-serif';
-        ctx.fillStyle = '#e2e8f0';
-        ctx.fillText('GARANTITA ALMENO 1 RARA, EPICA O LEGGENDARIA', 512, 1145);
-
-        // Codice a barre Duty Free e sigillo di sicurezza
-        ctx.fillStyle = '#cbd5e1';
-        ctx.font = 'bold 44px monospace';
-        ctx.fillText('|||| ||| |||||| | ||||| |||| || |||||', 512, 1260);
-        ctx.font = '20px monospace';
-        ctx.fillText('BOARDING PASS SERIAL: WTO-DUTYFREE-2026-FIRSTCLASS', 512, 1310);
-
-        return new THREE.CanvasTexture(c);
-      }
-
-      // Texture del sigillo dorato da strappare
-      generateSealTexture() {
-        const c = document.createElement('canvas');
-        c.width = 512; c.height = 128;
-        const ctx = c.getContext('2d');
-        const g = ctx.createLinearGradient(0, 0, 512, 128);
-        g.addColorStop(0, '#f59e0b'); g.addColorStop(0.5, '#fef08a'); g.addColorStop(1, '#d97706');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, 512, 128);
-        ctx.fillStyle = '#78350f';
-        ctx.font = '900 24px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('>>> STRAPPA QUI • PULL TO OPEN >>>', 256, 74);
-        return new THREE.CanvasTexture(c);
-      }
-
-      // Costruzione del Modello 3D della Bustina
-      createPackMesh() {
-        this.packGroup = new THREE.Group();
-        const packTex = this.generatePackTexture();
-        const sealTex = this.generateSealTexture();
-
-        // Corpo Principale Inferiore della Bustina
-        const bodyGeo = new THREE.BoxGeometry(3.5, 3.8, 0.36);
-        const bodyMat = new THREE.MeshStandardMaterial({
-          map: packTex,
-          metalness: 0.75,
-          roughness: 0.28,
-          emissive: 0x2e1065,
-          emissiveIntensity: 0.2
-        });
-        this.packBody = new THREE.Mesh(bodyGeo, bodyMat);
-        this.packBody.position.set(0, -0.45, 0);
-        this.packGroup.add(this.packBody);
-
-        // Sezione Superiore da Decapitare (Top Cap)
-        const capGeo = new THREE.BoxGeometry(3.5, 1.1, 0.36);
-        const capMat = new THREE.MeshStandardMaterial({
-          map: packTex,
-          metalness: 0.75,
-          roughness: 0.28,
-          emissive: 0x2e1065,
-          emissiveIntensity: 0.2
-        });
-        this.topCap = new THREE.Mesh(capGeo, capMat);
-        this.topCap.position.set(0, 2.05, 0);
-        this.packGroup.add(this.topCap);
-
-        // Cerniera / Sigillo Dorato di Strappo Orizzontale
-        const sealGeo = new THREE.BoxGeometry(3.6, 0.44, 0.42);
-        const sealMat = new THREE.MeshStandardMaterial({
-          map: sealTex,
-          metalness: 0.95,
-          roughness: 0.12,
-          emissive: 0xf59e0b,
-          emissiveIntensity: 0.6
-        });
-        this.sealMesh = new THREE.Mesh(sealGeo, sealMat);
-        this.sealMesh.position.set(0, 1.35, 0);
-        this.packGroup.add(this.sealMesh);
-
-        // Cursore della Cerniera (Zipper Slider dorato)
-        const sliderGeo = new THREE.BoxGeometry(0.35, 0.5, 0.52);
-        const sliderMat = new THREE.MeshStandardMaterial({
-          color: 0xffd700,
-          metalness: 0.98,
-          roughness: 0.1
-        });
-        this.sliderMesh = new THREE.Mesh(sliderGeo, sliderMat);
-        this.sliderMesh.position.set(-1.75, 1.35, 0);
-        this.packGroup.add(this.sliderMesh);
-
-        // Fascio God-Ray di Luce Interna Additiva
-        const beamGeo = new THREE.CylinderGeometry(0.1, 1.8, 8, 32, 1, true);
-        const beamMat = new THREE.MeshBasicMaterial({
-          color: 0xfef08a,
-          transparent: true,
-          opacity: 0,
-          side: THREE.DoubleSide,
-          blending: THREE.AdditiveBlending
-        });
-        this.lightBeam = new THREE.Mesh(beamGeo, beamMat);
-        this.lightBeam.position.set(0, 2, 0);
-        this.lightBeam.scale.set(0.01, 0.01, 0.01);
-        this.scene.add(this.lightBeam);
-
-        // Sistema di scintille per lo strappo 3D
-        this.createTearSparkSystem();
-
-        this.scene.add(this.packGroup);
-      }
-
-      createTearSparkSystem() {
-        const count = 70;
-        const geo = new THREE.BufferGeometry();
-        const pos = new Float32Array(count * 3);
-        const vels = [];
-
-        for (let i = 0; i < count; i++) {
-          pos[i * 3] = (Math.random() - 0.5) * 3.4;
-          pos[i * 3 + 1] = 1.35;
-          pos[i * 3 + 2] = 0.25;
-          vels.push({
-            vx: (Math.random() - 0.5) * 5,
-            vy: Math.random() * 4 + 2,
-            vz: Math.random() * 5 + 3
-          });
-        }
-
-        geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-        const mat = new THREE.PointsMaterial({
-          color: 0xffd700,
-          size: 0.18,
-          transparent: true,
-          opacity: 0,
-          blending: THREE.AdditiveBlending
-        });
-
-        this.sparkPoints = new THREE.Points(geo, mat);
-        this.sparkPoints.userData = { vels, active: false, time: 0 };
-        this.scene.add(this.sparkPoints);
-      }
-
-      // Animazione Spettacolare di Strappo Sigillo, Eruzione di Luce e Decapitazione
-      openBooster() {
-        if (this.isOpened || this.isTearing) return;
-        this.isTearing = true;
-
-        sound.playTear();
-        sound.playWhoosh();
-        fx.shake(16, 500);
-
-        const startTime = performance.now();
-
-        // 1. Il cursore della cerniera scorre rapidamente
-        const animateTearSeq = (now) => {
-          const elapsed = (now - startTime) / 1000;
-
-          // Cursore zippa da sinistra a destra in 220ms
-          const pZip = Math.min(1, elapsed / 0.22);
-          this.sliderMesh.position.x = -1.75 + 3.5 * pZip;
-
-          // Attivazione scintille 3D
-          if (pZip > 0.1 && !this.sparkPoints.userData.active) {
-            this.sparkPoints.userData.active = true;
-            this.sparkPoints.material.opacity = 1.0;
-          }
-
-          // Aggiornamento posizioni scintille
-          if (this.sparkPoints.userData.active) {
-            const pos = this.sparkPoints.geometry.attributes.position.array;
-            const vels = this.sparkPoints.userData.vels;
-            for (let i = 0; i < vels.length; i++) {
-              pos[i * 3] += vels[i].vx * 0.016;
-              pos[i * 3 + 1] += vels[i].vy * 0.016;
-              pos[i * 3 + 2] += vels[i].vz * 0.016;
-              vels[i].vy -= 0.15; // gravità
-            }
-            this.sparkPoints.geometry.attributes.position.needsUpdate = true;
-            this.sparkPoints.material.opacity = Math.max(0, 1 - (elapsed / 0.7));
-          }
-
-          // Quando la zip completa: il Top Cap vola via roteando
-          if (elapsed > 0.2) {
-            const pCap = (elapsed - 0.2) / 0.5;
-            this.topCap.position.y += 0.08;
-            this.topCap.position.z -= 0.04;
-            this.topCap.rotation.x += 0.09;
-            this.topCap.rotation.z += 0.06;
-            this.topCap.material.opacity = Math.max(0, 1 - pCap);
-            this.topCap.material.transparent = true;
-
-            this.sealMesh.material.opacity = Math.max(0, 1 - pCap * 1.5);
-            this.sealMesh.material.transparent = true;
-
-            // Il fascio God-Ray di luce erompe
-            const pBeam = Math.min(1, (elapsed - 0.2) / 0.4);
-            this.lightBeam.scale.set(pBeam, pBeam, pBeam);
-            this.lightBeam.material.opacity = 0.85 * (1 - pCap);
-            this.pointLight.intensity = 2.8 + 2.5 * pBeam;
-          }
-
-          // Il corpo inferiore si abbassa e si dissolve
-          if (elapsed > 0.35) {
-            const pBody = (elapsed - 0.35) / 0.4;
-            this.packBody.position.y -= 0.06;
-            this.packBody.scale.multiplyScalar(0.98);
-            this.packBody.material.opacity = Math.max(0, 1 - pBody);
-            this.packBody.material.transparent = true;
-          }
-
-          if (elapsed < 0.75) {
-            requestAnimationFrame(animateTearSeq);
-          } else {
-            this.scene.remove(this.packGroup);
-            this.scene.remove(this.lightBeam);
-            this.scene.remove(this.sparkPoints);
-            this.isOpened = true;
-            this.isTearing = false;
-            this.spawnCards3DFan();
-          }
-        };
-
-        requestAnimationFrame(animateTearSeq);
-      }
-
-      // Eruzione delle 4 Carte 3D che si dispongono a ventaglio semicircolare
-      spawnCards3DFan() {
-        sound.playChime();
-        sound.playEpic();
-        document.getElementById('booster-action-text').textContent = '✦ TOCCA CIASCUNA CARTA 3D PER GIRARLA E RIVELARLA! ✦';
-        document.getElementById('btn-booster-reset').style.display = 'block';
-
-        // 4 Posizioni ergonomiche e spettacolari ad arco 3D
-        const fanTargets = [
-          { x: -3.2, y: 0.25, z: 1.0, rotY: 0.24, rotZ: 0.07 },
-          { x: -1.1, y: -0.1, z: 1.7, rotY: 0.08, rotZ: 0.02 },
-          { x: 1.1, y: -0.1, z: 1.7, rotY: -0.08, rotZ: -0.02 },
-          { x: 3.2, y: 0.25, z: 1.0, rotY: -0.24, rotZ: -0.07 }
-        ];
-
-        // Selezione con rarità garantita: almeno 1 Rara, Epica o Leggendaria
-        const selectedCards = [];
-        const highTier = ALL_CARDS.filter(c => c.rarity === RARITY.RARE || c.rarity === RARITY.EPIC || c.rarity === RARITY.LEGENDARY);
-        selectedCards.push(highTier[Math.floor(Math.random() * highTier.length)]);
-
-        while (selectedCards.length < 4) {
-          const rand = ALL_CARDS[Math.floor(Math.random() * ALL_CARDS.length)];
-          if (!selectedCards.some(c => c.id === rand.id)) {
-            selectedCards.push(rand);
-          }
-        }
-        // Mischia per suspence
-        selectedCards.sort(() => Math.random() - 0.5);
-
-        selectedCards.forEach((cardData, idx) => {
-          const target = fanTargets[idx];
-          const cardGroup = new THREE.Group();
-          cardGroup.position.set(0, -1.0, 0);
-          cardGroup.scale.set(0.08, 0.08, 0.08);
-
-          // 1. Texture Retro Passaporto Diplomatico First-Class
-          const backTex = new THREE.CanvasTexture(this.generatePassportBackCanvas());
-          // 2. Texture Frontale Autentica Personalizzata per Nazione con Immagine HD Reale
-          let frontTex;
-          if (cardData.image) {
-            frontTex = new THREE.TextureLoader().load(cardData.image, (tex) => {
-              tex.generateMipmaps = true;
-              tex.minFilter = THREE.LinearMipmapLinearFilter;
-              tex.needsUpdate = true;
-            });
-          } else {
-            frontTex = new THREE.CanvasTexture(this.generateCardFrontCanvas(cardData));
-          }
-
-          // Piano Retro (visibile inizialmente verso la camera)
-          const backGeo = new THREE.PlaneGeometry(1.8, 2.6);
-          const backMat = new THREE.MeshStandardMaterial({
-            map: backTex,
-            roughness: 0.25,
-            metalness: 0.6
-          });
-          const backMesh = new THREE.Mesh(backGeo, backMat);
-          backMesh.position.z = 0.023;
-          cardGroup.add(backMesh);
-
-          // Piano Fronte (ruotato di 180 gradi, svelato al flip)
-          const frontGeo = new THREE.PlaneGeometry(1.8, 2.6);
-          const frontMat = new THREE.MeshStandardMaterial({
-            map: frontTex,
-            roughness: 0.18,
-            metalness: 0.45
-          });
-          const frontMesh = new THREE.Mesh(frontGeo, frontMat);
-          frontMesh.position.z = -0.023;
-          frontMesh.rotation.y = Math.PI;
-          cardGroup.add(frontMesh);
-
-          // Bordo con Lamina d'Oro Metallica Spessa (3D Bevel)
-          const rimGeo = new THREE.BoxGeometry(1.82, 2.62, 0.044);
-          const rimMat = new THREE.MeshStandardMaterial({
-            color: 0xf59e0b,
-            metalness: 0.95,
-            roughness: 0.15
-          });
-          const rimMesh = new THREE.Mesh(rimGeo, rimMat);
-          cardGroup.add(rimMesh);
-
-          // Alone Aureola Luminosa di Rarità dietro la Carta
-          const auraColor = cardData.rarity === RARITY.LEGENDARY ? 0xffd700 : (cardData.rarity === RARITY.EPIC ? 0xc084fc : 0x38bdf8);
-          const auraGeo = new THREE.PlaneGeometry(2.3, 3.1);
-          const auraMat = new THREE.MeshBasicMaterial({
-            color: auraColor,
-            transparent: true,
-            opacity: 0.35,
-            blending: THREE.AdditiveBlending
-          });
-          const auraMesh = new THREE.Mesh(auraGeo, auraMat);
-          auraMesh.position.z = 0.015;
-          cardGroup.add(auraMesh);
-
-          this.scene.add(cardGroup);
-
-          // Animazione di Eruzione e Slittamento ad Arco nel Ventaglio
-          const delay = idx * 130;
-          setTimeout(() => {
-            sound.playStamp();
-            const startT = performance.now();
-            const animErupt = (now) => {
-              const p = Math.min(1, (now - startT) / 520);
-              // Traiettoria parabolica ascendente
-              const arcY = Math.sin(p * Math.PI) * 1.8;
-              cardGroup.position.x = target.x * p;
-              cardGroup.position.y = target.y * p + arcY;
-              cardGroup.position.z = target.z * p;
-              cardGroup.rotation.y = target.rotY * p;
-              cardGroup.rotation.z = target.rotZ * p;
-
-              const sc = 0.08 + 0.92 * p;
-              cardGroup.scale.set(sc, sc, sc);
-
-              if (p < 1) {
-                requestAnimationFrame(animErupt);
-              }
-            };
-            requestAnimationFrame(animErupt);
-          }, delay);
-
-          this.cardMeshes.push({
-            group: cardGroup,
-            cardData,
-            isFlipped: false,
-            target,
-            frontMesh,
-            backMesh,
-            auraMesh
-          });
-        });
-      }
-
-      // Canvas Retro Passaporto Diplomatico di Lusso (Navy Leather + Oro)
-      generatePassportBackCanvas() {
-        const c = document.createElement('canvas');
-        c.width = 512; c.height = 768;
-        const ctx = c.getContext('2d');
-
-        // Pelle blu notte passaporto
-        const g = ctx.createRadialGradient(256, 384, 50, 256, 384, 400);
-        g.addColorStop(0, '#131b2e'); g.addColorStop(1, '#070b14');
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, 512, 768);
-
-        // Doppia cornice d'oro con angoli lavorati
-        ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 8;
-        ctx.strokeRect(20, 20, 472, 728);
-        ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2;
-        ctx.strokeRect(28, 28, 456, 712);
-
-        // Stella polare / Rosa dei Venti d'Oro
-        ctx.save();
-        ctx.translate(256, 260);
-        ctx.fillStyle = '#facc15';
-        for (let i = 0; i < 8; i++) {
-          ctx.rotate(Math.PI / 4);
-          ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.lineTo(8, -60);
-          ctx.lineTo(0, -90);
-          ctx.lineTo(-8, -60);
-          ctx.fill();
-        }
-        ctx.restore();
-
-        // Globo aureo
-        ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 4;
-        ctx.beginPath(); ctx.arc(256, 260, 50, 0, Math.PI * 2); ctx.stroke();
-        ctx.beginPath(); ctx.ellipse(256, 260, 50, 22, 0, 0, Math.PI * 2); ctx.stroke();
-
-        // Testo Goffrato in Foglia d'Oro
-        ctx.fillStyle = '#fef08a';
-        ctx.font = '900 34px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('WORLD TRAVEL', 256, 440);
-        ctx.fillText('ODYSSEY', 256, 485);
-
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = 'bold 16px sans-serif';
-        ctx.fillText('DIPLOMATIC PASSPORT', 256, 535);
-
-        ctx.fillStyle = '#f59e0b';
-        ctx.font = '14px monospace';
-        ctx.fillText('★ FIRST CLASS PASSENGER ★', 256, 570);
-        ctx.fillText('GLOBAL AIRPORT CONCOURSE', 256, 680);
-
-        return c;
-      }
-
-      // Canvas Fronte Carta Autentico e Ricco con Stile Specifico per Nazione
-      generateCardFrontCanvas(cardData) {
-        const c = document.createElement('canvas');
-        c.width = 512; c.height = 768;
-        const ctx = c.getContext('2d');
-
-        // Materiale di base in base alla Nazione / Materiale
-        this.renderCardMaterialBackground(ctx, cardData);
-
-        // Cornice specifica per rarità
-        const rColor = cardData.rarity === RARITY.LEGENDARY ? '#ffd700' :
-                       (cardData.rarity === RARITY.EPIC ? '#c084fc' :
-                       (cardData.rarity === RARITY.RARE ? '#38bdf8' : '#94a3b8'));
-
-        ctx.strokeStyle = rColor;
-        ctx.lineWidth = cardData.rarity === RARITY.LEGENDARY ? 12 : 8;
-        ctx.strokeRect(14, 14, 484, 740);
-
-        // 1. Header Superiore: Costo Miglia (Top-Left) e Potere/Hype (Top-Right)
-        // Costo Miglia
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath(); ctx.arc(60, 60, 36, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 4; ctx.stroke();
-        ctx.fillStyle = '#38bdf8'; ctx.font = '900 28px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(`✈️${cardData.cost}`, 60, 70);
-
-        // Potere / Mult
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath(); ctx.arc(452, 60, 36, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 4; ctx.stroke();
-        ctx.fillStyle = '#facc15'; ctx.font = '900 26px sans-serif';
-        ctx.fillText(`⚡${cardData.power}`, 452, 69);
-
-        // 2. Banner Nazione & Aeroporto
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.fillRect(110, 32, 292, 46);
-        ctx.strokeStyle = rColor; ctx.lineWidth = 2;
-        ctx.strokeRect(110, 32, 292, 46);
-        ctx.fillStyle = '#f8fafc'; ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(`${cardData.country.toUpperCase()} • ${cardData.airport}`, 256, 62);
-
-        // 3. Nome della Carta
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '900 28px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(cardData.name, 256, 130);
-
-        // Sottotitolo / Tipo Carta
-        ctx.fillStyle = rColor;
-        ctx.font = 'bold 15px sans-serif';
-        const typeLabel = cardData.type === CARD_TYPES.SOVEREIGN ? '★ SOVRANO DEL MONDO (LEVEL-UP) ★' :
-                         (cardData.type === CARD_TYPES.DESTINATION ? '🏛️ DESTINAZIONE / MERAVIGLIA' :
-                         (cardData.type === CARD_TYPES.INCIDENT ? '⚠️ IMPREVISTO DOGANALE SEGRETO' : '⚡ VOLO SPECIALE / EVENTO'));
-        ctx.fillText(typeLabel, 256, 160);
-
-        // 4. Area Grafica / Illustrazione Culturale al Centro (Y: 180 - 460)
-        this.renderCardArtIllustration(ctx, cardData);
-
-        // 5. Box Meccanica & Abilità di Gioco (Y: 480 - 700)
-        ctx.fillStyle = 'rgba(10, 15, 29, 0.9)';
-        ctx.fillRect(28, 480, 456, 210);
-        ctx.strokeStyle = 'rgba(251, 191, 36, 0.4)'; ctx.lineWidth = 3;
-        ctx.strokeRect(28, 480, 456, 210);
-
-        // Hype Moltiplicatore Esponenziale
-        ctx.fillStyle = '#f59e0b';
-        ctx.font = '900 20px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(`MOLTIPLICATORE HYPE: x${cardData.mult}`, 46, 515);
-
-        // Descrizione Abilità con a-capo automatico
-        ctx.fillStyle = '#cbd5e1';
-        ctx.font = '17px sans-serif';
-        this.wrapCanvasText(ctx, cardData.text, 46, 550, 420, 24);
-
-        if (cardData.levelUpText) {
-          ctx.fillStyle = '#ffd700';
-          ctx.font = 'bold 15px sans-serif';
-          this.wrapCanvasText(ctx, `👑 ${cardData.levelUpText}`, 46, 625, 420, 22);
-        }
-
-        // 6. Footer con Barcode e Matricola
-        ctx.fillStyle = '#64748b';
-        ctx.font = '12px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(`WTO-2026 • ${cardData.id.toUpperCase()} • FIRST CLASS EDITION`, 256, 725);
-
-        return c;
-      }
-
-      // Texture di Sfondo Materica per Nazione
-      renderCardMaterialBackground(ctx, cardData) {
-        const mat = cardData.material;
-        if (mat === MATERIALS.LEATHER) {
-          // Pelle Toscana Cucita
-          const g = ctx.createLinearGradient(0, 0, 512, 768);
-          g.addColorStop(0, '#381608'); g.addColorStop(1, '#1b0a04');
-          ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 768);
-          // Cucitura perimetrale
-          ctx.strokeStyle = '#ca8a04'; ctx.setLineDash([8, 6]); ctx.lineWidth = 2;
-          ctx.strokeRect(22, 22, 468, 724); ctx.setLineDash([]);
-        } else if (mat === MATERIALS.ACRYLIC_NEON || mat === MATERIALS.KOREA) {
-          // Cyber-Tokyo / Seoul Acrilico Neon
-          const g = ctx.createLinearGradient(0, 0, 512, 768);
-          g.addColorStop(0, '#0a0d1a'); g.addColorStop(0.5, '#1e1035'); g.addColorStop(1, '#05070d');
-          ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 768);
-          // Griglia laser
-          ctx.strokeStyle = 'rgba(0, 240, 255, 0.12)'; ctx.lineWidth = 1;
-          for (let x = 0; x < 512; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 768); ctx.stroke(); }
-          for (let y = 0; y < 768; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke(); }
-        } else if (mat === MATERIALS.TITANIUM) {
-          // Titanio Nero Spazzolato Wall Street
-          const g = ctx.createLinearGradient(0, 0, 512, 0);
-          g.addColorStop(0, '#18181b'); g.addColorStop(0.5, '#27272a'); g.addColorStop(1, '#18181b');
-          ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 768);
-          // Spazzolatura metallica
-          ctx.strokeStyle = 'rgba(255,255,255,0.03)'; ctx.lineWidth = 1;
-          for (let y = 0; y < 768; y += 4) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(512, y); ctx.stroke(); }
-        } else if (mat === MATERIALS.PAPYRUS) {
-          // Papiro Antico Egizio & Lapislazzuli
-          const g = ctx.createLinearGradient(0, 0, 512, 768);
-          g.addColorStop(0, '#422006'); g.addColorStop(1, '#251203');
-          ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 768);
-          // Texture fibrosa
-          ctx.fillStyle = 'rgba(202, 138, 4, 0.08)';
-          for (let i = 0; i < 400; i++) {
-            ctx.fillRect(Math.random() * 512, Math.random() * 768, Math.random() * 60 + 10, 2);
-          }
-        } else if (mat === MATERIALS.VOLCANIC_ICE) {
-          // Ghiaccio Vulcanico & Ossidiana Islandese
-          const g = ctx.createLinearGradient(0, 0, 512, 768);
-          g.addColorStop(0, '#082f49'); g.addColorStop(1, '#02131f');
-          ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 768);
-          // Venature di ghiaccio
-          ctx.strokeStyle = 'rgba(56, 189, 248, 0.2)'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.moveTo(60, 100); ctx.lineTo(180, 300); ctx.lineTo(340, 500); ctx.stroke();
-        } else {
-          // Seta, Tropicale, Svizzera, Tweed standard luxury
-          const g = ctx.createLinearGradient(0, 0, 512, 768);
-          g.addColorStop(0, '#131b2e'); g.addColorStop(1, '#080d17');
-          ctx.fillStyle = g; ctx.fillRect(0, 0, 512, 768);
-        }
-      }
-
-      // Illustrazione Vettoriale Ispirata alla Nazione al Centro
-      renderCardArtIllustration(ctx, cardData) {
-        ctx.save();
-        // Finestra circolare / ottagonale per l'illustrazione
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-        ctx.beginPath();
-        ctx.arc(256, 320, 120, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 4; ctx.stroke();
-
-        const country = cardData.country;
-        if (country === 'Italia') {
-          // Archi romani & Corona d'alloro
-          ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 6;
-          for (let i = -2; i <= 2; i++) {
-            ctx.strokeRect(256 + i * 36 - 12, 280, 24, 60);
-          }
-          ctx.fillStyle = '#b91c1c'; ctx.beginPath(); ctx.arc(330, 390, 24, 0, Math.PI * 2); ctx.fill(); // Sigillo Ceralacca
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 14px sans-serif'; ctx.fillText('DOCG', 330, 395);
-        } else if (country === 'Giappone') {
-          // Portale Torii Neon & Monte Fuji
-          ctx.fillStyle = '#e11d48'; ctx.beginPath(); ctx.arc(256, 270, 45, 0, Math.PI * 2); ctx.fill(); // Sole Levante
-          ctx.fillStyle = '#00f0ff';
-          ctx.fillRect(190, 300, 132, 14); // Trave Torii
-          ctx.fillRect(205, 300, 14, 80); ctx.fillRect(293, 300, 14, 80);
-        } else if (country === 'USA') {
-          // Simbolo $ d'Oro e Chip Elettronico
-          ctx.fillStyle = '#fbbf24'; ctx.font = '900 90px sans-serif'; ctx.textAlign = 'center';
-          ctx.fillText('$', 256, 350);
-          ctx.strokeStyle = '#10b981'; ctx.lineWidth = 4;
-          ctx.strokeRect(180, 240, 152, 140);
-        } else if (country === 'Egitto') {
-          // Piramidi d'Oro nel Deserto
-          ctx.fillStyle = '#eab308';
-          ctx.beginPath(); ctx.moveTo(256, 230); ctx.lineTo(160, 370); ctx.lineTo(352, 370); ctx.fill();
-          ctx.fillStyle = '#a16207';
-          ctx.beginPath(); ctx.moveTo(256, 230); ctx.lineTo(256, 370); ctx.lineTo(352, 370); ctx.fill();
-        } else if (country === 'Francia') {
-          // Tour Eiffel & Bagliore Notturno
-          ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 6;
-          ctx.beginPath(); ctx.moveTo(256, 220); ctx.lineTo(210, 370); ctx.moveTo(256, 220); ctx.lineTo(302, 370); ctx.stroke();
-          ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(256, 215, 10, 0, Math.PI * 2); ctx.fill();
-        } else if (country === 'Brasile') {
-          // Sole del Sambodromo & Onde Tropicali
-          ctx.fillStyle = '#10b981';
-          ctx.beginPath(); ctx.arc(256, 320, 60, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#facc15';
-          ctx.beginPath(); ctx.arc(256, 320, 35, 0, Math.PI * 2); ctx.fill();
-        } else {
-          // Meraviglia / Bussola Globale
-          ctx.fillStyle = '#38bdf8';
-          ctx.font = '80px sans-serif'; ctx.textAlign = 'center';
-          ctx.fillText('🌍', 256, 345);
-        }
-        ctx.restore();
-      }
-
-      wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
-        const words = text.split(' ');
-        let line = '';
-        for (let n = 0; n < words.length; n++) {
-          const testLine = line + words[n] + ' ';
-          const metrics = ctx.measureText(testLine);
-          if (metrics.width > maxWidth && n > 0) {
-            ctx.fillText(line, x, y);
-            line = words[n] + ' ';
-            y += lineHeight;
-          } else {
-            line = testLine;
-          }
-        }
-        ctx.fillText(line, x, y);
-      }
-
-      // Gestione Interazioni Mouse & Touch (Inclinazione 3D e Rivelazione)
-      setupInteractions() {
-        const dom = this.container;
-
-        const updatePointer = (clientX, clientY) => {
-          const rect = dom.getBoundingClientRect();
-          this.mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-          this.mouse.y = -(((clientY - rect.top) / rect.height) * 2 - 1);
-
-          // Calcola inclinazione fluida per la bustina ancora chiusa
-          if (!this.isOpened && this.packGroup) {
-            this.targetTilt.x = -this.mouse.y * 0.35;
-            this.targetTilt.y = this.mouse.x * 0.35;
-          }
-
-          // Se stiamo ispezionando una carta in 3D: ruotala liberamente con il drag
-          if (this.inspectingItem && this.isDragging) {
-            const dx = clientX - this.lastPointer.x;
-            const dy = clientY - this.lastPointer.y;
-            this.inspectingItem.group.rotation.y += dx * 0.02;
-            this.inspectingItem.group.rotation.x += dy * 0.02;
-          }
-          this.lastPointer.x = clientX;
-          this.lastPointer.y = clientY;
-        };
-
-        dom.addEventListener('pointerdown', (e) => {
-          this.isDragging = true;
-          this.lastPointer.x = e.clientX;
-          this.lastPointer.y = e.clientY;
-          updatePointer(e.clientX, e.clientY);
-        });
-
-        window.addEventListener('pointermove', (e) => {
-          updatePointer(e.clientX, e.clientY);
-        });
-
-        window.addEventListener('pointerup', (e) => {
-          this.isDragging = false;
-        });
-
-        dom.addEventListener('click', (e) => this.handleSceneClick(e));
-      }
-
-      handleSceneClick(e) {
-        if (!this.camera || !this.scene) return;
-        const rect = this.container.getBoundingClientRect();
-        this.mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        this.mouse.y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-
-        if (!this.isOpened) {
-          // Tocca la bustina o il sigillo per iniziare lo strappo
-          const hits = this.raycaster.intersectObjects(this.packGroup.children, true);
-          if (hits.length > 0) {
-            this.openBooster();
-          }
-        } else {
-          // Tocca una carta per girarla o per ispezionarla in 3D 360°
-          for (const item of this.cardMeshes) {
-            const hits = this.raycaster.intersectObjects(item.group.children, true);
-            if (hits.length > 0) {
-              if (!item.isFlipped) {
-                this.flipCard3D(item);
-              } else {
-                this.inspectCard3D(item);
-              }
-              break;
-            }
-          }
-        }
-      }
-
-      // Animazione 3D della Carta che Esegue il Salto e Gira di 180°
-      flipCard3D(item) {
-        item.isFlipped = true;
-        sound.playCardFlip();
-        sound.playWhoosh();
-
-        const startT = performance.now();
-        const startRotY = item.target.rotY;
-
-        // Effetti sonori e particelle al picco del reveal (90°)
-        let triggeredEffect = false;
-
-        const animateFlip = (now) => {
-          const p = Math.min(1, (now - startT) / 420);
-
-          // Salto scenico in avanti verso la camera
-          const popZ = Math.sin(p * Math.PI) * 2.2;
-          item.group.position.z = item.target.z + popZ;
-          item.group.position.y = item.target.y + Math.sin(p * Math.PI) * 0.4;
-
-          // Rotazione di 180° attorno all'asse Y
-          item.group.rotation.y = startRotY + Math.PI * p;
-
-          // Al momento del passaggio (quando la faccia comincia a vedersi)
-          if (p >= 0.5 && !triggeredEffect) {
-            triggeredEffect = true;
-            if (item.cardData.rarity === RARITY.LEGENDARY) {
-              sound.playLegendary();
-              fx.shake(14, 450);
-              fx.spawnExplosion(window.innerWidth / 2, window.innerHeight * 0.42, '#ffd700', 80);
-            } else if (item.cardData.rarity === RARITY.EPIC) {
-              sound.playEpic();
-              fx.spawnExplosion(window.innerWidth / 2, window.innerHeight * 0.42, '#c084fc', 45);
-            } else if (item.cardData.rarity === RARITY.RARE) {
-              sound.playRare();
-              fx.spawnExplosion(window.innerWidth / 2, window.innerHeight * 0.42, '#38bdf8', 30);
-            } else {
-              sound.playStamp();
-            }
-          }
-
-          if (p < 1) {
-            requestAnimationFrame(animateFlip);
-          } else {
-            item.group.position.copy(item.target);
-            item.group.rotation.y = item.target.rotY + Math.PI; // Faccia rivolta verso la camera
-            this.showCardBannerHUD(item.cardData);
-            this.checkAllCardsRevealed();
-          }
-        };
-
-        requestAnimationFrame(animateFlip);
-      }
-
-      // Mostra Banner HUD con Dettagli Carta
-      showCardBannerHUD(cardData) {
-        const hud = document.getElementById('booster-inspect-card');
-        if (hud) {
-          hud.style.display = 'block';
-          document.getElementById('b-card-name').textContent = cardData.name;
-          document.getElementById('b-card-origin').textContent = `${cardData.country} • ${cardData.airport}`;
-          document.getElementById('b-card-rarity').textContent = cardData.rarity.toUpperCase();
-          document.getElementById('b-card-rarity').style.color = cardData.rarity === RARITY.LEGENDARY ? '#ffd700' : (cardData.rarity === RARITY.EPIC ? '#c084fc' : '#38bdf8');
-          document.getElementById('b-card-desc').textContent = `${cardData.text} (Hype: x${cardData.mult})`;
-        }
-      }
-
-      // Controllo se tutte le 4 carte sono state girate
-      checkAllCardsRevealed() {
-        const allDone = this.cardMeshes.every(c => c.isFlipped);
-        if (allDone) {
-          sound.playChime();
-          document.getElementById('booster-action-text').textContent = '🎉 TUTTE LE 4 CARTE MONDIALI RIVELATE! TOCCA PER ISPEZIONARLE IN 3D (360°)';
-          document.getElementById('btn-booster-reset').style.display = 'block';
-        }
-      }
-
-      // Modalità Ispezione 3D a 360 Gradi (Zoom al Centro con Rotazione Libera)
-      inspectCard3D(item) {
-        if (this.inspectingItem === item) return;
-        this.inspectingItem = item;
-
-        sound.playWhoosh();
-        this.showCardBannerHUD(item.cardData);
-        document.getElementById('btn-booster-close-inspect').style.display = 'block';
-        document.getElementById('booster-action-text').textContent = 'TRASCINA PER RUOTARE LA CARTA IN 3D A 360° SOTTO I RIFLESSI D\'ORO!';
-
-        const startT = performance.now();
-        const startPos = item.group.position.clone();
-        const startRot = item.group.rotation.clone();
-
-        const animZoom = (now) => {
-          const p = Math.min(1, (now - startT) / 320);
-          item.group.position.lerpVectors(startPos, new THREE.Vector3(0, 0.2, 4.4), p);
-          item.group.scale.set(1.25, 1.25, 1.25);
-          if (p < 1) requestAnimationFrame(animZoom);
-        };
-        requestAnimationFrame(animZoom);
-      }
-
-      // Chiusura Ispezione 3D e Ritorno nel Ventaglio
-      closeInspect() {
-        if (!this.inspectingItem) return;
-        const item = this.inspectingItem;
-        this.inspectingItem = null;
-
-        document.getElementById('btn-booster-close-inspect').style.display = 'none';
-        document.getElementById('booster-action-text').textContent = '✦ TOCCA QUALSIASI CARTA PER ISPEZIONARLA IN 3D! ✦';
-
-        const startT = performance.now();
-        const startPos = item.group.position.clone();
-
-        const animReturn = (now) => {
-          const p = Math.min(1, (now - startT) / 300);
-          item.group.position.lerpVectors(startPos, item.target, p);
-          item.group.rotation.set(0, item.target.rotY + Math.PI, item.target.rotZ);
-          item.group.scale.set(1.0, 1.0, 1.0);
-          if (p < 1) requestAnimationFrame(animReturn);
-        };
-        requestAnimationFrame(animReturn);
-      }
-
-      // Ripristino per Aprire un Altro Pacchetto 3D
-      reset() {
-        this.closeInspect();
-        this.cardMeshes.forEach(c => this.scene.remove(c.group));
-        this.cardMeshes = [];
-        this.isOpened = false;
-        this.isTearing = false;
-
-        if (this.packGroup) this.scene.remove(this.packGroup);
-        this.createPackMesh();
-
-        document.getElementById('booster-action-text').textContent = '✦ SCORRI O TOCCA IL SIGILLO D\'ORO PER STRAPPARE LA BUSTINA! ✦';
-        document.getElementById('btn-booster-reset').style.display = 'none';
-        document.getElementById('booster-inspect-card').style.display = 'none';
-      }
-
-      onResize() {
-        if (!this.container || !this.renderer || !this.camera) return;
-        const w = this.container.clientWidth || 390;
-        const h = this.container.clientHeight || 600;
-        this.camera.aspect = w / h;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(w, h);
-      }
-
-      // Loop di Rendering 60FPS con Fisica di Levigatura e Riflessi Dinamici
-      animate() {
-        requestAnimationFrame(() => this.animate());
-        if (!this.clock) return;
-        const time = this.clock.getElapsedTime();
-
-        // 1. Orbita della Luce d'Oro PointLight per speculari dorati vivi
-        if (this.pointLight) {
-          this.pointLight.position.x = Math.sin(time * 1.6) * 4.5;
-          this.pointLight.position.y = 2 + Math.cos(time * 1.2) * 2;
-        }
-
-        // 2. Movimento polvere di stelle / paillettes nello spazio
-        if (this.floatingParticles) {
-          this.floatingParticles.rotation.y = time * 0.05;
-          const pos = this.floatingParticles.geometry.attributes.position.array;
-          for (let i = 1; i < pos.length; i += 3) {
-            pos[i] += 0.008;
-            if (pos[i] > 7) pos[i] = -7;
-          }
-          this.floatingParticles.geometry.attributes.position.needsUpdate = true;
-        }
-
-        // 3. Oscillazione fluttuante & Inclinazione con Mouse / Gyro per la Bustina 3D
-        if (this.packGroup && !this.isOpened && !this.isTearing) {
-          this.packGroup.position.y = Math.sin(time * 2.2) * 0.18;
-          // Inclinazione verso il puntatore del mouse
-          this.packGroup.rotation.x += (this.targetTilt.x - this.packGroup.rotation.x) * 0.1;
-          this.packGroup.rotation.y += (this.targetTilt.y - this.packGroup.rotation.y) * 0.1;
-
-          // Polso luminoso del cursore zip dorato
-          if (this.sliderMesh) {
-            const pulse = 1 + Math.sin(time * 6) * 0.12;
-            this.sliderMesh.scale.set(pulse, pulse, pulse);
-          }
-        }
-
-        // 4. Oscillazione organica delle 4 carte nel ventaglio
-        if (this.isOpened) {
-          this.cardMeshes.forEach((item, i) => {
-            if (this.inspectingItem !== item) {
-              item.group.position.y = item.target.y + Math.sin(time * 2.2 + i * 1.4) * 0.09;
-            }
-          });
-        }
-
-        this.renderer.render(this.scene, this.camera);
-      }
-    }
-    let threeBooster = null;
-
-    
     // --- FUNZIONI DI SUPPORTO GRAFICA INTEGRATA CARTE ---
     function getCountryFlag(country) {
       const flags = {
@@ -2807,11 +2722,16 @@
     function renderIntegratedCardInner(card) {
       const flag = getCountryFlag(card.country);
       const code = card.airport ? card.airport.split(' ')[0] : 'WTO';
+      let masteryBadge = '';
+      if (card.mastery === 2) masteryBadge = '<span style="color:#e2e8f0; font-size:7px; font-weight:900;" title="Silver Foil">★ FOIL</span>';
+      else if (card.mastery === 3) masteryBadge = '<span style="color:#ffd700; font-size:7px; font-weight:900;" title="Prismatic Gold">★★ GOLD</span>';
+      else if (card.mastery === 4) masteryBadge = '<span style="color:#38bdf8; font-size:7px; font-weight:900;" title="Celestial Diamond">★★★ DIAMOND</span>';
+
       return `
         <div class="card-head-bar">
           <div class="card-seal-cost" title="Miglia Aeree">✈ ${card.cost}</div>
-          <div class="card-crest-country"><span>${flag}</span> <span>${code}</span></div>
-          <div class="card-seal-power" title="Potere Prestigio">⚡ ${card.power}</div>
+          <div class="card-crest-country"><span>${flag}</span> <span>${code}</span> ${masteryBadge}</div>
+          <div class="card-seal-power" title="Potere Prestigio">⚡ ${card.currentPower || card.power}</div>
         </div>
         <div style="flex:1;"></div>
         <div class="card-foot-bar">
@@ -2829,20 +2749,97 @@
       constructor() {
         this.pvpMode = 'ai';
         this.selectedCardId = null;
+        this.activePackTier = 'economy';
         this.spireMiles = 350;
         this.spireFloor = 1;
+        this.activeFilter = 'all';
 
+        this.initStorage();
         this.setupP2PChannel();
         this.initFlight();
         this.setupNavigation();
         this.setupControls();
         this.setupPvPModal();
         this.setupSpireTour();
+        this.setupDeckbuilder();
         this.setupCollection();
         this.setupBoosterControls();
         this.setupSplashScreen();
         this.setupFlipCard();
         this.setupCodexSimulator();
+        this.setupAcademyPuzzles();
+        this.setupAchievements();
+        this.setupSettingsModal();
+        this.updateGlobalMilesUI();
+      }
+
+      // ==================== PERSISTENZA STATO GIOCO (LOCALSTORAGE) ====================
+      initStorage() {
+        const saved = localStorage.getItem('wto_save_data_v1');
+        if (saved) {
+          try {
+            this.saveData = JSON.parse(saved);
+          } catch (e) {
+            this.saveData = null;
+          }
+        }
+        if (!this.saveData) {
+          this.saveData = {
+            miles: 450,
+            unlockedCards: ALL_CARDS.map(c => c.id),
+            cardMastery: { 'card_italy_champ': 2 },
+            customDecks: [
+              { name: '1. Globetrotter Express', cards: [...STARTER_DECK_P1] },
+              { name: '2. Euro-Pass Schengen', cards: ['card_italy_champ', 'card_italy_colosseum', 'card_italy_espresso', 'card_france_champ', 'card_france_eiffel', 'card_france_champagne', 'card_uk_agent', 'card_uk_bigben', 'card_swiss_banker', 'card_swiss_train', 'trap_visa_denied', 'spell_diplomatic_pass'] },
+              { name: '3. Tokyo-Shinjuku High-Tech', cards: ['card_japan_champ', 'card_japan_fuji', 'card_japan_shinkansen', 'card_korea_kpop', 'card_korea_tower', 'card_usa_champ', 'card_usa_wallstreet', 'card_brazil_samba', 'card_germany_autobahn', 'trap_strike', 'spell_lastminute', 'card_australia_sydney'] }
+            ],
+            activeDeckIdx: 0,
+            spireRun: {
+              hp: 30,
+              maxHp: 30,
+              floor: 1,
+              miles: 350,
+              relics: ['🧭 Bussola d\'Oro', '☕ Caffettiera DOC'],
+              completedNodes: []
+            },
+            puzzlesSolved: [false, false, false],
+            achievementsClaimed: {},
+            stats: { matchesPlayed: 0, matchesWon: 0, packsOpened: 0 }
+          };
+          this.saveState();
+        }
+
+        // Applica le maestrie salvate alle carte in memoria
+        ALL_CARDS.forEach(c => {
+          c.mastery = this.saveData.cardMastery[c.id] || 1;
+        });
+      }
+
+      saveState() {
+        try {
+          localStorage.setItem('wto_save_data_v1', JSON.stringify(this.saveData));
+        } catch (e) {
+          console.warn('[WTO] Impossibile salvare in localStorage:', e);
+        }
+      }
+
+      updateGlobalMilesUI() {
+        const milesVal = this.saveData ? this.saveData.miles : 450;
+        const globEl = document.getElementById('global-miles-num');
+        if (globEl) globEl.textContent = milesVal.toLocaleString();
+        const spireGoldEl = document.getElementById('spire-gold');
+        if (spireGoldEl) spireGoldEl.textContent = this.saveData.spireRun.miles.toLocaleString();
+        const spireShopBal = document.getElementById('spire-shop-balance');
+        if (spireShopBal) spireShopBal.textContent = `${this.saveData.spireRun.miles} Miglia`;
+      }
+
+      addMiles(amt) {
+        if (!this.saveData) return;
+        this.saveData.miles = Math.max(0, this.saveData.miles + amt);
+        if (amt > 0) sound.playCoins();
+        this.updateGlobalMilesUI();
+        this.checkAchievements();
+        this.saveState();
       }
 
       setupP2PChannel() {
@@ -2869,13 +2866,15 @@
           this.combatLog.push(`⚠️ L'AVVERSARIO HA CHIAMATO L'OVERCHARGE! Posta: ${this.stakes}x!`);
           this.renderArena();
         } else if (msg.type === 'RETREAT') {
-          alert('L\'avversario si è ritirato! Vittoria a tavolino con +1 Miglio.');
+          alert('L\'avversario si è ritirato! Vittoria a tavolino.');
           this.phase = 'GAME_OVER';
           this.winner = 'player';
           this.renderArena();
+          this.showPodium(true);
         }
       }
 
+      // ==================== INIZIALIZZAZIONE VOLO ARENA ====================
       initFlight() {
         this.turn = 1;
         this.maxTurns = 6;
@@ -2889,11 +2888,22 @@
         this.playerOvercharged = false;
         this.aiOvercharged = false;
 
-        this.destinations = WORLD_DESTINATIONS.slice(0, 3).map((dest, i) => ({
+        // Selezione casuale di 3 metropoli uniche tra le 12 mondiali
+        const shuffledDests = [...WORLD_DESTINATIONS].sort(() => Math.random() - 0.5);
+        this.destinations = shuffledDests.slice(0, 3).map((dest, i) => ({
           id: i, config: dest, playerCards: [], aiCards: [], playerScore: 0, aiScore: 0, winner: null
         }));
 
-        this.playerDeck = this.buildDeck(STARTER_DECK_P1);
+        // Aggiorna l'illuminazione del tavolo 3D con i colori delle città estratte
+        try {
+          if (threeArena && typeof threeArena.updateTerminalColors === 'function') {
+            threeArena.updateTerminalColors(this.destinations.map(d => d.config.lightColor));
+          }
+        } catch (e) {}
+
+        // Mazzo giocatore (caricato dal mazzo attivo personalizzato)
+        const curDeck = this.saveData.customDecks[this.saveData.activeDeckIdx] || this.saveData.customDecks[0];
+        this.playerDeck = this.buildDeck(curDeck.cards);
         this.playerHand = [];
         this.aiDeck = this.buildDeck(STARTER_DECK_P2);
         this.aiHand = [];
@@ -2905,15 +2915,22 @@
           this.drawCard('ai');
         }
 
-        this.aiIntent = 'Volo diretto su Tokyo Shinjuku';
-        this.combatLog = ['Decollo autorizzato. Schiera il tuo primo Paese sulla Metropoli desiderata!'];
+        this.aiIntent = `Volo diretto su ${this.destinations[0].config.city.split(' ')[0]}`;
+        this.combatLog = [`Decollo autorizzato su ${this.destinations.map(d => d.config.city.split(' ')[0]).join(', ')}!`];
+
+        this.showTurnBanner(1, 'DECOLLO AUTORIZZATO');
         this.renderArena();
       }
 
       buildDeck(ids) {
         return ids.map((id, idx) => {
           const b = ALL_CARDS.find(c => c.id === id) || ALL_CARDS[0];
-          return { ...b, instanceId: `${id}_${idx}_${Math.random().toString(36).substr(2, 4)}`, currentPower: b.power };
+          return {
+            ...b,
+            instanceId: `${id}_${idx}_${Math.random().toString(36).substr(2, 4)}`,
+            currentPower: b.power,
+            mastery: this.saveData.cardMastery[b.id] || 1
+          };
         }).sort(() => Math.random() - 0.5);
       }
 
@@ -2952,11 +2969,11 @@
         });
 
         try {
-          if (target === 'tab-arena' && threeArena && typeof threeArena.onResize === 'function') {
-            threeArena.onResize();
+          if (target === 'tab-arena' && pixiArena && typeof pixiArena.onResize === 'function') {
+            pixiArena.onResize();
           }
-          if (target === 'tab-booster' && threeBooster && typeof threeBooster.onResize === 'function') {
-            threeBooster.onResize();
+          if (target === 'tab-booster' && pixiBooster && typeof pixiBooster.onResize === 'function') {
+            pixiBooster.onResize();
           }
         } catch (e) {
           console.warn('[WTO] 3D resize error on tab switch:', e);
@@ -2997,6 +3014,7 @@
             fx.shake(12, 400);
             this.playerOvercharged = true;
             this.stakes *= 2;
+            if (typeof pixiArena !== 'undefined' && pixiArena) pixiArena.triggerOvercharge();
             if (this.p2pChannel) this.p2pChannel.postMessage({ type: 'OVERCHARGE', data: { stakes: this.stakes } });
             this.combatLog.push(`✈️ 1st CLASS UPGRADE! Miglia a ${this.stakes}x!`);
             this.renderArena();
@@ -3009,6 +3027,7 @@
             this.phase = 'GAME_OVER';
             this.winner = 'ai';
             this.renderArena();
+            this.showPodium(false);
           }
         };
 
@@ -3027,6 +3046,56 @@
           document.getElementById('modal-gameover').style.display = 'none';
           this.initFlight();
         };
+
+        // Podio vittoria bottoni
+        const btnPodRestart = document.getElementById('btn-podium-restart');
+        if (btnPodRestart) {
+          btnPodRestart.onclick = () => {
+            document.getElementById('modal-podium').style.display = 'none';
+            this.initFlight();
+          };
+        }
+        const btnPodHub = document.getElementById('btn-podium-hub');
+        if (btnPodHub) {
+          btnPodHub.onclick = () => {
+            document.getElementById('modal-podium').style.display = 'none';
+            this.switchTab('tab-collection');
+          };
+        }
+      }
+
+      showTurnBanner(turn, subtitle) {
+        const overlay = document.getElementById('turn-banner-overlay');
+        const titleEl = document.getElementById('turn-banner-title');
+        const subEl = document.getElementById('turn-banner-sub');
+        if (!overlay) return;
+
+        titleEl.textContent = `SCALO ${turn}/6: ${subtitle.toUpperCase()}`;
+        subEl.textContent = turn === 6 ? 'ULTIMA CHIAMATA IMBARCO • CALCOLO FINALE PRESTIGIO' : 'Pianifica gli atterraggi sui terminal mondiali';
+        overlay.classList.add('show');
+        sound.triggerHaptic(30);
+
+        setTimeout(() => {
+          overlay.classList.remove('show');
+        }, 2100);
+      }
+
+      triggerSynergyToast(title, desc) {
+        const container = document.getElementById('synergy-toast-container');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = 'synergy-toast';
+        toast.innerHTML = `
+          <span style="font-size:14px;">⚡</span>
+          <div>
+            <div style="font-size:10.5px; font-weight:900; color:#fde047;">${title}</div>
+            <div style="font-size:8.5px; color:#cbd5e1;">${desc}</div>
+          </div>
+        `;
+        container.appendChild(toast);
+        sound.playChime();
+        sound.triggerHaptic(20);
+        setTimeout(() => toast.remove(), 2600);
       }
 
       renderArena() {
@@ -3050,10 +3119,22 @@
           const el = document.createElement('div');
           el.className = 'altar-score-card';
           el.style.borderColor = dest.winner === 'player' ? '#00f0ff' : (dest.winner === 'ai' ? '#ef4444' : 'rgba(255,255,255,0.15)');
+          let chipsHtml = '<div class="altar-mini-cards">';
+          for (let s = 0; s < 4; s++) {
+            const pCard = dest.playerCards[s];
+            if (pCard) {
+              const flag = getCountryFlag(pCard.country);
+              chipsHtml += `<div class="altar-mini-chip filled" title="${pCard.name}">${flag} ${pCard.power}</div>`;
+            } else {
+              chipsHtml += `<div class="altar-mini-chip empty"></div>`;
+            }
+          }
+          chipsHtml += '</div>';
+
           el.innerHTML = `
             <div class="altar-name">${dest.config.icon} ${dest.config.city}</div>
             <div class="altar-scores"><span style="color:#f87171;">${dest.aiScore}</span><span style="color:#64748b;">vs</span><span style="color:#00f0ff;">${dest.playerScore}</span></div>
-            <div style="font-size:8px; color:#cbd5e1; margin-top:2px;">${dest.playerCards.length}/4 Passaporti</div>
+            ${chipsHtml}
           `;
           el.onclick = () => { if (this.selectedCardId) this.landCard(this.selectedCardId, idx); };
           container.appendChild(el);
@@ -3063,7 +3144,8 @@
         hand.innerHTML = '';
         this.playerHand.forEach((card, i) => {
           const el = document.createElement('div');
-          el.className = `card-item ${card.material} ${this.selectedCardId === card.instanceId ? 'selected' : ''}`;
+          const masteryClass = card.mastery === 2 ? 'mastery-silver' : (card.mastery === 3 ? 'mastery-gold' : (card.mastery === 4 ? 'mastery-diamond' : ''));
+          el.className = `card-item ${card.material} ${masteryClass} ${this.selectedCardId === card.instanceId ? 'selected' : ''}`;
           if (card.image) el.style.backgroundImage = `url('${card.image}')`;
           const angle = (i - (this.playerHand.length - 1) / 2) * 5;
           el.style.transform = `rotate(${angle}deg) translateY(${Math.abs(angle) * 0.8}px)`;
@@ -3074,6 +3156,7 @@
               this.showInspect(card);
             } else {
               this.selectedCardId = card.instanceId;
+              sound.triggerHaptic(15);
               if (card.soundType === 'espresso') sound.playEspresso();
               else if (card.soundType === 'cash') sound.playCash();
               else if (card.soundType === 'tokyo') sound.playTokyo();
@@ -3086,23 +3169,6 @@
 
         const logEl = document.getElementById('combat-log-stream');
         if (logEl) logEl.innerHTML = this.combatLog.slice(-1).map(m => `<div>${m}</div>`).join('');
-
-        if (this.phase === 'GAME_OVER') {
-          const modal = document.getElementById('modal-gameover');
-          const title = document.getElementById('gameover-title');
-          const desc = document.getElementById('gameover-desc');
-          if (this.winner === 'player') {
-            title.textContent = '🏆 VIAGGIO TRIONFALE!';
-            title.style.color = '#facc15';
-            desc.textContent = `Hai conquistato le capitali e vinto ${this.stakes * 150} Miglia di Gloria!`;
-            fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#facc15', 60);
-          } else {
-            title.textContent = '✈️ SCALO INTERROTTO';
-            title.style.color = '#f87171';
-            desc.textContent = `L'avversario ha preso il controllo del terminal.`;
-          }
-          modal.style.display = 'flex';
-        }
       }
 
       landCard(instanceId, destIdx) {
@@ -3131,14 +3197,24 @@
 
         dest.playerCards.push(card);
         sound.playStamp();
+        if (typeof pixiArena !== 'undefined' && pixiArena) pixiArena.triggerCardImpact(destIdx, card);
+        sound.triggerHaptic(35);
         fx.shake(5, 180);
 
         if (this.p2pChannel) this.p2pChannel.postMessage({ type: 'CARD_PLAYED', data: { card, destIdx } });
 
         if (dest.playerCards.length >= 2) this.checkLevelUp();
 
-        this.combatLog.push(`Atterrato: [${card.name}] su ${dest.config.city}`);
+        this.combatLog.push(`Atterrato: [${card.name}] su ${dest.config.city.split(' ')[0]}`);
         this.recalculateScores();
+        if (typeof pixiArena !== 'undefined' && pixiArena) {
+          pixiArena.setDestinations(this.destinations.map(d => ({
+            name: d.config.city,
+            airport: d.config.airport,
+            padColor: d.config.padColor,
+            continent: d.config.continent
+          })));
+        }
         this.renderArena();
       }
 
@@ -3199,10 +3275,39 @@
         setTimeout(() => { cutin.style.display = 'none'; this.renderArena(); }, 2200);
       }
 
+      // ==================== CALCOLO PUNTEGGI & SINERGIE CONTINENTALI ====================
       recalculateScores() {
         this.destinations.forEach(dest => {
           let baseP = dest.playerCards.reduce((sum, c) => sum + (c.isFacedown ? 0 : c.currentPower), 0);
           let multP = dest.config.multBonus || 1.0;
+
+          // Sinergie Passaporto Continentale
+          const contCounts = {};
+          dest.playerCards.forEach(c => {
+            if (!c.isFacedown && c.continent) {
+              contCounts[c.continent] = (contCounts[c.continent] || 0) + 1;
+            }
+          });
+
+          if (contCounts['Europe'] >= 2 && !dest.synergyTriggeredEu) {
+            dest.synergyTriggeredEu = true;
+            baseP += 2;
+            this.triggerSynergyToast('🇪🇺 SCHENGEN EXPRESS', '+2 Potere alle rotte europee!');
+            this.checkAchievements('schengen');
+          }
+          if (contCounts['Asia'] >= 2 && !dest.synergyTriggeredAsia) {
+            dest.synergyTriggeredAsia = true;
+            multP *= 1.3;
+            this.triggerSynergyToast('🏮 PACIFIC RIM HYPERLOOP', 'x1.3 Mult alle rotte asiatiche!');
+            this.checkAchievements('pacific_rim');
+          }
+          if (contCounts['Americas'] >= 2 && !dest.synergyTriggeredAm) {
+            dest.synergyTriggeredAm = true;
+            baseP += 3;
+            this.triggerSynergyToast('🌎 PAN-AMERICAN CORRIDOR', '+3 Potere alle rotte americane!');
+            this.checkAchievements('pan_american');
+          }
+
           dest.playerCards.forEach(c => { if (!c.isFacedown && c.mult) multP *= c.mult; });
           if (this.playerOvercharged) multP *= 1.25;
           dest.playerScore = Math.round(baseP * multP);
@@ -3233,7 +3338,7 @@
                 this.aiMiles -= card.cost;
                 this.aiHand.splice(this.aiHand.indexOf(card), 1);
                 target.aiCards.push(card);
-                this.combatLog.push(`L'avversario è atterrato su ${target.config.city}`);
+                this.combatLog.push(`L'avversario è atterrato su ${target.config.city.split(' ')[0]}`);
               }
             }
           }
@@ -3253,8 +3358,8 @@
               else if (d.aiScore > d.playerScore) aiWins++;
             });
             this.winner = pWins >= 2 ? 'player' : (aiWins >= 2 ? 'ai' : 'draw');
-            if (this.winner === 'player') sound.playChime();
             this.renderArena();
+            this.showPodium(this.winner === 'player');
           } else {
             this.turn++;
             this.playerMaxMiles = Math.min(6, this.turn);
@@ -3264,23 +3369,67 @@
             this.drawCard('ai');
             this.phase = 'PLANNING';
             this.combatLog.push(`--- Scalo ${this.turn}/${this.maxTurns} ---`);
+            this.showTurnBanner(this.turn, this.turn === 6 ? 'ULTIMA CHIAMATA' : 'ROUTING AUMENTATO');
             this.renderArena();
           }
         }, 600);
       }
 
+      // ==================== PODIO VITTORIA & CELEBRAZIONE ====================
+      showPodium(isPlayerWin) {
+        const modal = document.getElementById('modal-podium');
+        if (!modal) return;
+
+        const titleEl = document.getElementById('podium-title');
+        const subEl = document.getElementById('podium-subtitle');
+        const milesEl = document.getElementById('podium-reward-miles');
+        const stakesEl = document.getElementById('podium-reward-stakes');
+        const iconEl = document.getElementById('podium-icon');
+
+        const reward = isPlayerWin ? this.stakes * 150 : 25;
+        this.saveData.stats.matchesPlayed = (this.saveData.stats.matchesPlayed || 0) + 1;
+
+        if (isPlayerWin) {
+          this.saveData.stats.matchesWon = (this.saveData.stats.matchesWon || 0) + 1;
+          iconEl.textContent = '🏆';
+          titleEl.textContent = 'VIAGGIO TRIONFALE!';
+          titleEl.style.color = '#facc15';
+          subEl.textContent = `Hai conquistato le capitali mondiali e ottenuto il controllo dei terminal!`;
+          milesEl.textContent = `+${reward} ✈️`;
+          stakesEl.textContent = `${this.stakes}x`;
+
+          sound.playFanfare();
+          fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#facc15', 80);
+          setTimeout(() => fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#38bdf8', 50), 200);
+
+          this.checkAchievements('first_win');
+          if (this.saveData.stats.matchesWon >= 3) this.checkAchievements('elite_pilot');
+          if (this.stakes >= 2) this.checkAchievements('high_roller');
+        } else {
+          iconEl.textContent = '✈️';
+          titleEl.textContent = 'SCALO COMPLETATO';
+          titleEl.style.color = '#94a3b8';
+          subEl.textContent = 'Il rivale ha preso il controllo dei cieli. Ti spettano comunque miglia di consolazione.';
+          milesEl.textContent = `+${reward} ✈️`;
+          stakesEl.textContent = `${this.stakes}x`;
+          sound.playChime();
+        }
+
+        this.addMiles(reward);
+        modal.style.display = 'flex';
+      }
+
+      // ==================== ISPEZIONE CARTA & UPGRADE MAESTRIA ====================
       showInspect(card) {
         const modal = document.getElementById('modal-inspect');
         const flipper = document.getElementById('inspect-card-flipper');
         const front = document.getElementById('inspect-card-front');
 
-        // Reset flip sul fronte
         if (flipper) flipper.classList.remove('flipped');
 
         const flag = getCountryFlag(card.country);
         const airportCode = card.airport ? card.airport.split(' ')[0] : 'WTO';
 
-        // FRONTE INTEGRATO
         if (front) {
           front.style.backgroundImage = card.image ? `url('${card.image}')` : 'none';
           const rColor = card.rarity === RARITY.LEGENDARY ? '#ffd700' :
@@ -3292,45 +3441,32 @@
 
         const costEl = document.getElementById('inspect-seal-cost');
         if (costEl) costEl.innerHTML = `✈ ${card.cost}`;
-
         const crestEl = document.getElementById('inspect-crest-country');
         if (crestEl) crestEl.innerHTML = `<span>${flag}</span> <span>${airportCode}</span>`;
-
         const powerEl = document.getElementById('inspect-seal-power');
         if (powerEl) powerEl.innerHTML = `⚡ ${card.power}`;
-
         const nameEl = document.getElementById('inspect-card-name');
         if (nameEl) nameEl.textContent = card.name;
-
         const multEl = document.getElementById('inspect-seal-mult');
         if (multEl) multEl.textContent = `x${card.mult}`;
-
         const typeEl = document.getElementById('inspect-card-type');
         if (typeEl) typeEl.textContent = `${(card.type || 'DESTINAZIONE').toUpperCase()} • ${card.country.toUpperCase()}`;
 
-        // RETRO & LORE CONSOLARE
         const docNoEl = document.getElementById('inspect-back-doc');
         if (docNoEl) docNoEl.textContent = card.docNo || `DOC-${card.country.substring(0,3).toUpperCase()}-2026/DIP`;
-
         const backTypeEl = document.getElementById('inspect-back-type');
         if (backTypeEl) backTypeEl.textContent = `PASSAPORTO ${card.rarity ? card.rarity.toUpperCase() : 'DIPLOMATICO'}`;
-
         const stampBox = document.getElementById('inspect-stamp-box');
         if (stampBox) stampBox.innerHTML = `✈️ VISTO CONSOLARE • ${card.airport || 'ENTRY GRANTED'}`;
-
         const loreHistEl = document.getElementById('inspect-lore-history');
         if (loreHistEl) loreHistEl.innerHTML = `<b>📜 Storia & Meraviglia:</b> ${card.loreHistory || card.text}`;
-
         const loreSecEl = document.getElementById('inspect-lore-secret');
         if (loreSecEl) loreSecEl.innerHTML = `<b>🧭 Nota dell'Esploratore:</b> ${card.travelerSecret || "Accesso autorizzato per viaggiatori internazionali accreditati."}`;
-
         const loreTacEl = document.getElementById('inspect-lore-tactical');
         if (loreTacEl) loreTacEl.innerHTML = `<b>⚡ Tattica di Volo:</b> ${card.tacticalFlight || card.text}`;
-
         const consulEl = document.getElementById('inspect-consul-sign');
         if (consulEl) consulEl.textContent = card.consulSign || `Console Generale di ${card.country}`;
 
-        // Dettagli Tattici sotto la carta
         const matText = card.materialDesc || (card.material ? card.material.toUpperCase() : 'MATERIALE AUTENTICO');
         const matBadge = document.getElementById('inspect-material-badge');
         if (matBadge) matBadge.textContent = `✦ ${matText} ✦`;
@@ -3341,74 +3477,335 @@
         }
         const descEl = document.getElementById('inspect-desc');
         if (descEl) descEl.innerHTML = descHtml;
-
         const quoteEl = document.getElementById('inspect-quote');
         if (quoteEl) quoteEl.textContent = card.voiceLine ? `«${card.voiceLine}»` : '';
+
+        // Tasto Upgrade Maestria Foil
+        const btnUpgrade = document.getElementById('btn-upgrade-mastery');
+        if (btnUpgrade) {
+          const m = card.mastery || 1;
+          const nextName = m === 1 ? 'FOIL ARGENTO' : (m === 2 ? 'ORO PRISMATICO' : (m === 3 ? 'DIAMANTE CELESTE' : 'MAX GRADO'));
+          btnUpgrade.textContent = m >= 4 ? '👑 MAESTRIA MASSIMA (DIAMANTE)' : `✨ POTENZIA A ${nextName} (-150 MIGLIA)`;
+          btnUpgrade.disabled = m >= 4;
+          btnUpgrade.onclick = () => {
+            if (m >= 4) return;
+            if (this.saveData.miles < 150) {
+              alert('Miglia insufficienti per l\'upgrade! Guadagna miglia vincendo partite in Arena o risolvendo i puzzle.');
+              return;
+            }
+            this.addMiles(-150);
+            card.mastery = m + 1;
+            this.saveData.cardMastery[card.id] = card.mastery;
+            this.saveState();
+
+            sound.playFanfare();
+            fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#ffd700', 80);
+            this.showInspect(card);
+            this.setupCollection();
+            this.setupDeckbuilder();
+
+            this.checkAchievements('foil_master');
+            if (card.mastery >= 4) this.checkAchievements('diamond_master');
+          };
+        }
 
         sound.playStamp();
         modal.style.display = 'flex';
         document.getElementById('inspect-close').onclick = () => modal.style.display = 'none';
       }
 
+      // ==================== IL GIRO DEL MONDO (SPIRE ROGUE-LITE) ====================
       setupSpireTour() {
-        const container = document.getElementById('spire-tree-nodes');
-        const nodes = [
-          { floor: 6, type: '👑 Capitale Mondiale', desc: 'Scontro per il Passaporto d\'Oro' },
-          { floor: 5, type: '🏨 Resort 5 Stelle', desc: 'Riposo o Upgrade Valigia' },
-          { floor: 4, type: '⚠️ Dogana Rigida', desc: 'Ispezione d\'Élite con Souvenir raro' },
-          { floor: 3, type: '🛍️ Duty Free Aeroporto', desc: 'Acquista visti ed edizioni lusso' },
-          { floor: 2, type: '❓ Scalo Misterioso', desc: 'Incontro fortuito con un console' },
-          { floor: 1, type: '🛫 Volo Regionale', desc: 'Volo di riscaldamento' }
-        ];
-        container.innerHTML = nodes.map(n => `
-          <div class="spire-node ${n.floor === this.spireFloor ? 'available' : (n.floor < this.spireFloor ? 'completed' : '')}" data-floor="${n.floor}">
-            <span style="font-size:18px;">${n.type.split(' ')[0]}</span>
-            <span style="font-size:8px; font-weight:800; margin-top:2px;">F${n.floor}</span>
-          </div>
-        `).join('');
+        const container = document.getElementById('spire-map-container');
+        if (!container) return;
 
-        container.querySelectorAll('.spire-node').forEach(el => {
-          el.onclick = () => {
-            const f = parseInt(el.getAttribute('data-floor'));
-            if (f === this.spireFloor) {
-              alert(`Hai iniziato lo Scalo ${f}! Guadagni +120 Miglia d'Oro e un Souvenir.`);
-              this.spireFloor = Math.min(6, this.spireFloor + 1);
-              this.spireMiles += 120;
-              document.getElementById('spire-floor').textContent = `${this.spireFloor}/6`;
-              document.getElementById('spire-gold').textContent = this.spireMiles;
+        const hpNum = document.getElementById('spire-hp-num');
+        const hpFill = document.getElementById('spire-hp-fill');
+        if (hpNum && hpFill) {
+          const curHp = this.saveData.spireRun.hp;
+          const maxHp = this.saveData.spireRun.maxHp;
+          hpNum.textContent = `${curHp}/${maxHp} HP`;
+          hpFill.style.width = `${Math.round((curHp / maxHp) * 100)}%`;
+        }
+
+        const spireTiers = [
+          [ { id: 's6_1', tier: 6, type: 'boss', name: '👑 Summit Mondiale', icon: '👑', desc: 'Gran Console Mondiale' } ],
+          [ { id: 's5_1', tier: 5, type: 'resort', name: '🏨 Grand Resort 5★', icon: '🏨', desc: 'Riposo o Upgrade Passaporto' } ],
+          [ { id: 's4_1', tier: 4, type: 'vip', name: '⚠️ Dogana VIP Francoforte', icon: '⚠️', desc: 'Scontro d\'Élite con Ispettore' } ],
+          [ { id: 's3_1', tier: 3, type: 'shop', name: '🛍️ Duty Free Aeroporto', icon: '🛍️', desc: 'Acquista Carte & Reliquie' } ],
+          [
+            { id: 's2_1', tier: 2, type: 'choice', name: '✈️ Rotta Atlantica', icon: '🌎', desc: 'Scalo verso le Americhe' },
+            { id: 's2_2', tier: 2, type: 'choice', name: '✈️ Rotta Asiatica', icon: '🏮', desc: 'Scalo verso Tokyo & Seoul' }
+          ],
+          [ { id: 's1_1', tier: 1, type: 'regional', name: '🛫 Volo Regionale', icon: '🛫', desc: 'Decollo iniziale da Roma' } ]
+        ];
+
+        container.innerHTML = '';
+        spireTiers.forEach(tierRow => {
+          const rowEl = document.createElement('div');
+          rowEl.className = 'spire-tier-row';
+          tierRow.forEach(node => {
+            const btn = document.createElement('div');
+            const isAvail = node.tier === this.saveData.spireRun.floor;
+            const isComp = node.tier < this.saveData.spireRun.floor;
+            btn.className = `spire-node-btn ${isAvail ? 'available' : (isComp ? 'completed' : 'locked')}`;
+            btn.innerHTML = `
+              <span style="font-size:22px;">${node.icon}</span>
+              <span style="font-size:8px; font-weight:900; margin-top:2px; color:#cbd5e1;">F${node.tier}</span>
+            `;
+            btn.title = `${node.name} - ${node.desc}`;
+            btn.onclick = () => {
+              if (isAvail) this.handleSpireNode(node);
+            };
+            rowEl.appendChild(btn);
+          });
+          container.appendChild(rowEl);
+        });
+
+        const btnRestart = document.getElementById('btn-spire-restart');
+        if (btnRestart) {
+          btnRestart.onclick = () => {
+            if (confirm('Vuoi davvero riavviare il Giro del Mondo dal piano 1?')) {
+              this.saveData.spireRun.floor = 1;
+              this.saveData.spireRun.hp = 30;
+              this.saveData.spireRun.miles = 350;
+              this.saveState();
+              this.updateGlobalMilesUI();
               this.setupSpireTour();
+              sound.playTakeoff();
             }
           };
+        }
+      }
+
+      handleSpireNode(node) {
+        sound.playStamp();
+        if (node.type === 'resort') {
+          const m = document.getElementById('modal-spire-resort');
+          m.style.display = 'flex';
+          document.getElementById('btn-resort-heal').onclick = () => {
+            this.saveData.spireRun.hp = Math.min(this.saveData.spireRun.maxHp, this.saveData.spireRun.hp + 12);
+            this.saveData.spireRun.floor++;
+            this.saveState();
+            m.style.display = 'none';
+            sound.playChime();
+            this.setupSpireTour();
+          };
+          document.getElementById('btn-resort-foil').onclick = () => {
+            this.saveData.spireRun.floor++;
+            this.addMiles(100);
+            this.saveState();
+            m.style.display = 'none';
+            sound.playFanfare();
+            this.setupSpireTour();
+          };
+        } else if (node.type === 'shop') {
+          const m = document.getElementById('modal-spire-shop');
+          const grid = document.getElementById('spire-shop-items-grid');
+          grid.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:6px 10px; border-radius:8px;">
+              <span>🧳 Ricarica Valigia (+10 HP)</span>
+              <button id="buy-hp" style="background:#10b981; border:none; color:#000; font-weight:900; font-size:9.5px; padding:4px 8px; border-radius:6px; cursor:pointer;">80 M</button>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:6px 10px; border-radius:8px;">
+              <span>🧭 Bussola di Platino (Reliquia)</span>
+              <button id="buy-relic" style="background:#facc15; border:none; color:#000; font-weight:900; font-size:9.5px; padding:4px 8px; border-radius:6px; cursor:pointer;">150 M</button>
+            </div>
+          `;
+          document.getElementById('buy-hp').onclick = () => {
+            if (this.saveData.spireRun.miles >= 80) {
+              this.saveData.spireRun.miles -= 80;
+              this.saveData.spireRun.hp = Math.min(this.saveData.spireRun.maxHp, this.saveData.spireRun.hp + 10);
+              this.saveState();
+              this.updateGlobalMilesUI();
+              this.setupSpireTour();
+              alert('Valigia ricaricata con successo!');
+            } else alert('Miglia della run insufficienti!');
+          };
+          document.getElementById('buy-relic').onclick = () => {
+            if (this.saveData.spireRun.miles >= 150) {
+              this.saveData.spireRun.miles -= 150;
+              this.saveData.spireRun.relics.push('💎 Bussola di Platino');
+              this.saveState();
+              this.updateGlobalMilesUI();
+              alert('Reliquia acquisita!');
+            } else alert('Miglia della run insufficienti!');
+          };
+          document.getElementById('btn-spire-shop-close').onclick = () => {
+            m.style.display = 'none';
+            this.saveData.spireRun.floor++;
+            this.saveState();
+            this.setupSpireTour();
+          };
+          m.style.display = 'flex';
+        } else {
+          // Combat / Dogana node
+          alert(`Inizi lo scontro sullo Scalo F${node.tier}: ${node.name}! Vincendo guadagni +150 Miglia Run.`);
+          this.saveData.spireRun.miles += 150;
+          this.saveData.spireRun.floor++;
+          if (this.saveData.spireRun.floor >= 4) this.checkAchievements('spire_halfway');
+          if (this.saveData.spireRun.floor > 6) {
+            alert('🎉 CONGRATULAZIONI! HAI COMPLETATO IL GIRO DEL MONDO IN 80 GIORNI!');
+            this.checkAchievements('spire_champion');
+            this.addMiles(300);
+            this.saveData.spireRun.floor = 6;
+          }
+          this.saveState();
+          this.updateGlobalMilesUI();
+          this.setupSpireTour();
+        }
+      }
+
+      // ==================== CUSTOM DECKBUILDER & CARD CURVE ====================
+      setupDeckbuilder() {
+        const deckSelect = document.getElementById('deck-select');
+        const grid = document.getElementById('deck-slots-grid');
+        const btnSave = document.getElementById('btn-save-deck');
+
+        if (deckSelect) {
+          deckSelect.value = this.saveData.activeDeckIdx.toString();
+          deckSelect.onchange = (e) => {
+            this.saveData.activeDeckIdx = parseInt(e.target.value, 10);
+            this.saveState();
+            this.setupDeckbuilder();
+          };
+        }
+
+        const curDeck = this.saveData.customDecks[this.saveData.activeDeckIdx] || this.saveData.customDecks[0];
+
+        if (grid) {
+          grid.innerHTML = '';
+          for (let i = 0; i < 12; i++) {
+            const cardId = curDeck.cards[i];
+            const slot = document.createElement('div');
+            if (cardId) {
+              const card = ALL_CARDS.find(c => c.id === cardId) || ALL_CARDS[0];
+              slot.className = 'deck-slot-item filled';
+              if (card.image) slot.style.backgroundImage = `url('${card.image}')`;
+              slot.innerHTML = `
+                <div style="position:absolute; top:2px; left:2px; background:#0284c7; color:#fff; border-radius:3px; padding:1px 3px; font-size:7px; font-weight:900;">${card.cost}</div>
+                <div style="position:absolute; bottom:2px; right:2px; background:rgba(239,68,68,0.85); color:#fff; border-radius:3px; padding:0 3px; font-size:7px; cursor:pointer;" title="Rimuovi">✕</div>
+              `;
+              slot.querySelector('div:last-child').onclick = (e) => {
+                e.stopPropagation();
+                curDeck.cards.splice(i, 1);
+                this.saveState();
+                this.setupDeckbuilder();
+                sound.playStamp();
+              };
+              slot.onclick = () => this.showInspect(card);
+            } else {
+              slot.className = 'deck-slot-item';
+              slot.textContent = `+${i + 1}`;
+            }
+            grid.appendChild(slot);
+          }
+        }
+
+        // Analizzatore Curva di Volo (Flight Curve)
+        let costCounts = [0, 0, 0, 0, 0];
+        let totalPower = 0;
+        let totalCost = 0;
+        curDeck.cards.forEach(id => {
+          const c = ALL_CARDS.find(card => card.id === id);
+          if (c) {
+            totalCost += c.cost;
+            totalPower += c.power;
+            if (c.cost <= 1) costCounts[0]++;
+            else if (c.cost === 2) costCounts[1]++;
+            else if (c.cost === 3) costCounts[2]++;
+            else if (c.cost === 4) costCounts[3]++;
+            else costCounts[4]++;
+          }
         });
+
+        const maxCount = Math.max(1, ...costCounts);
+        for (let i = 1; i <= 5; i++) {
+          const bar = document.getElementById(`curve-bar-${i}`);
+          if (bar) {
+            const h = Math.max(4, Math.round((costCounts[i - 1] / maxCount) * 36));
+            bar.style.height = `${h}px`;
+          }
+        }
+
+        const avgCostEl = document.getElementById('stat-avg-cost');
+        const avgPowerEl = document.getElementById('stat-avg-power');
+        if (avgCostEl && curDeck.cards.length > 0) {
+          avgCostEl.textContent = (totalCost / curDeck.cards.length).toFixed(1);
+        }
+        if (avgPowerEl && curDeck.cards.length > 0) {
+          avgPowerEl.textContent = (totalPower / curDeck.cards.length).toFixed(1);
+        }
+
+        if (btnSave) {
+          btnSave.onclick = () => {
+            this.saveState();
+            sound.playChime();
+            alert('Mazzo salvato con successo!');
+            if (curDeck.cards.length === 12) this.checkAchievements('full_deck');
+          };
+        }
       }
 
       setupCollection() {
         const grid = document.getElementById('collection-grid');
-        const renderList = (country = 'all') => {
+        const searchInput = document.getElementById('card-search-input');
+
+        const renderList = () => {
           grid.innerHTML = '';
-          const filtered = country === 'all' ? ALL_CARDS : ALL_CARDS.filter(c => c.country === country);
+          const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+          let filtered = ALL_CARDS;
+          if (this.activeFilter !== 'all') {
+            filtered = filtered.filter(c => c.country === this.activeFilter);
+          }
+          if (q) {
+            filtered = filtered.filter(c => 
+              c.name.toLowerCase().includes(q) || 
+              c.country.toLowerCase().includes(q) || 
+              (c.materialDesc && c.materialDesc.toLowerCase().includes(q))
+            );
+          }
+
           filtered.forEach(c => {
             const item = document.createElement('div');
-            item.className = `card-item ${c.material}`;
+            const masteryClass = c.mastery === 2 ? 'mastery-silver' : (c.mastery === 3 ? 'mastery-gold' : (c.mastery === 4 ? 'mastery-diamond' : ''));
+            item.className = `card-item ${c.material} ${masteryClass}`;
             item.style.width = '100%'; item.style.height = '148px';
             if (c.image) item.style.backgroundImage = `url('${c.image}')`;
             item.innerHTML = renderIntegratedCardInner(c);
-            item.onclick = () => this.showInspect(c);
+            item.onclick = () => {
+              // Se il mazzo ha meno di 12 carte, chiedi se aggiungere
+              const curDeck = this.saveData.customDecks[this.saveData.activeDeckIdx];
+              if (curDeck && curDeck.cards.length < 12 && !curDeck.cards.includes(c.id)) {
+                curDeck.cards.push(c.id);
+                sound.playStamp();
+                this.saveState();
+                this.setupDeckbuilder();
+              } else {
+                this.showInspect(c);
+              }
+            };
             grid.appendChild(item);
           });
         };
+
         renderList();
+
+        if (searchInput) {
+          searchInput.oninput = () => renderList();
+        }
 
         document.querySelectorAll('.faction-filter-btn').forEach(btn => {
           btn.onclick = () => {
             document.querySelectorAll('.faction-filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            renderList(btn.getAttribute('data-country'));
+            this.activeFilter = btn.getAttribute('data-country');
+            renderList();
           };
         });
       }
 
-      
       setupFlipCard() {
         const flipper = document.getElementById('inspect-card-flipper');
         const container = document.getElementById('inspect-flipper-container');
@@ -3428,7 +3825,6 @@
       }
 
       setupCodexSimulator() {
-        // Navigazione Capitoli del Codex
         const navBtns = document.querySelectorAll('.codex-nav-btn');
         navBtns.forEach(btn => {
           btn.addEventListener('click', () => {
@@ -3443,7 +3839,6 @@
           });
         });
 
-        // Simulatore Hype Engine Interattivo
         const slider = document.getElementById('sim-power-slider');
         const powerDisp = document.getElementById('sim-power-display');
         const multBtns = document.querySelectorAll('.sim-mult-btn');
@@ -3477,9 +3872,7 @@
           }
         };
 
-        if (slider) {
-          slider.addEventListener('input', recalculate);
-        }
+        if (slider) slider.addEventListener('input', recalculate);
 
         multBtns.forEach(btn => {
           btn.addEventListener('click', () => {
@@ -3501,17 +3894,210 @@
         recalculate();
       }
 
+      // ==================== ACCADEMIA DI VOLO (PUZZLE TATTICI) ====================
+      setupAcademyPuzzles() {
+        const puzzles = [
+          {
+            id: 1,
+            correct: 'b',
+            feedbackGood: '✦ ECCELLENTE! M.te Fuji con moltiplicatore x1.8 eleva il punteggio da 15 a 27, superando il rivale! +100 Miglia!',
+            feedbackBad: 'Attenzione: Espresso + Shinkansen arrivano solo a 18 punti, insufficienti a battere 22.'
+          },
+          {
+            id: 2,
+            correct: 'a',
+            feedbackGood: '✦ PERFETTO! Visto Negato respinge e distrugge istantaneamente qualsiasi carta di costo 3 o superiore! +100 Miglia!',
+            feedbackBad: 'Bagaglio Smarrito colpisce a caso e rischia di mancare il Sovrano avversario.'
+          },
+          {
+            id: 3,
+            correct: 'b',
+            feedbackGood: '✦ VITTORIA TRIONFALE! Il Colosseo raddoppia x2 il Prestigio UNESCO su Roma, garantendo 2 capitali su 3 e la vittoria massima! +100 Miglia!',
+            feedbackBad: 'Ritirarsi cede la partita senza combattere quando la vittoria su Roma era a portata di mano.'
+          }
+        ];
+
+        puzzles.forEach(p => {
+          const badge = document.getElementById(`puz-badge-${p.id}`);
+          if (badge && this.saveData.puzzlesSolved[p.id - 1]) {
+            badge.textContent = '✓ RISOLTO';
+            badge.style.color = '#4ade80';
+            badge.style.background = 'rgba(74,222,128,0.2)';
+          }
+
+          document.querySelectorAll(`.btn-puz-choice[data-puzzle="${p.id}"]`).forEach(btn => {
+            btn.onclick = () => {
+              const choice = btn.getAttribute('data-opt');
+              const fb = document.getElementById(`puz-feedback-${p.id}`);
+              if (!fb) return;
+
+              if (choice === p.correct) {
+                fb.style.display = 'block';
+                fb.style.background = '#064e3b';
+                fb.style.color = '#a7f3d0';
+                fb.textContent = p.feedbackGood;
+                sound.playFanfare();
+
+                if (!this.saveData.puzzlesSolved[p.id - 1]) {
+                  this.saveData.puzzlesSolved[p.id - 1] = true;
+                  this.addMiles(100);
+                  if (badge) {
+                    badge.textContent = '✓ RISOLTO';
+                    badge.style.color = '#4ade80';
+                    badge.style.background = 'rgba(74,222,128,0.2)';
+                  }
+                  if (this.saveData.puzzlesSolved.every(Boolean)) {
+                    this.checkAchievements('puzzle_master');
+                  }
+                }
+              } else {
+                fb.style.display = 'block';
+                fb.style.background = '#450a0a';
+                fb.style.color = '#fca5a5';
+                fb.textContent = p.feedbackBad;
+                sound.playChime();
+              }
+            };
+          });
+        });
+      }
+
+      // ==================== 15 TROFEI & TRAGUARDI CONSOLARI ====================
+      setupAchievements() {
+        const container = document.getElementById('achievements-container');
+        if (!container) return;
+
+        const list = [
+          { id: 'first_win', name: 'Primo Decollo', desc: 'Vinci la tua prima partita in Arena', reward: 100, icon: '🛫' },
+          { id: 'elite_pilot', name: 'Asso dell\'Aviazione', desc: 'Ottieni 3 vittorie in Arena', reward: 150, icon: '🎖️' },
+          { id: 'high_roller', name: 'First Class High-Roller', desc: 'Vinci con Overcharge 2x o superiore', reward: 200, icon: '💎' },
+          { id: 'schengen', name: 'Schengen Express', desc: 'Attiva la Sinergia Europea in una metropoli', reward: 100, icon: '🇪🇺' },
+          { id: 'pacific_rim', name: 'Pacific Rim Hyperloop', desc: 'Attiva la Sinergia Asiatica in una metropoli', reward: 100, icon: '🏮' },
+          { id: 'pan_american', name: 'Pan-American Corridor', desc: 'Attiva la Sinergia Americana in una metropoli', reward: 100, icon: '🌎' },
+          { id: 'spire_halfway', name: 'Scalatore dei Cieli', desc: 'Raggiungi lo Scalo 4 nel Giro del Mondo', reward: 120, icon: '🏔️' },
+          { id: 'spire_champion', name: 'Conquistatore del Globo', desc: 'Completa tutti i 6 scali del Giro del Mondo', reward: 300, icon: '👑' },
+          { id: 'puzzle_master', name: 'Tattico Consolare', desc: 'Risolvi tutti i 3 puzzle dell\'Accademia', reward: 200, icon: '🎓' },
+          { id: 'foil_master', name: 'Finitura d\'Élite', desc: 'Potenzia almeno una carta a livello Foil', reward: 150, icon: '✨' },
+          { id: 'diamond_master', name: 'Maestria Diamante', desc: 'Porta una carta a livello Diamante Celeste', reward: 300, icon: '💎' },
+          { id: 'pack_unboxing', name: 'Shopping Duty Free', desc: 'Apri un pacchetto Business o Sovereign', reward: 100, icon: '🛍️' },
+          { id: 'miles_500', name: 'Passeggero Frequente', desc: 'Accumula almeno 500 Miglia Aeree', reward: 150, icon: '✈️' },
+          { id: 'miles_1000', name: 'Magnate Internazionale', desc: 'Accumula almeno 1.000 Miglia Aeree', reward: 250, icon: '🏦' },
+          { id: 'full_deck', name: 'Flotta Completa', desc: 'Salva un mazzo personalizzato con 12 carte', reward: 100, icon: '🗂️' }
+        ];
+
+        container.innerHTML = '';
+        list.forEach(ach => {
+          const isClaimed = this.saveData.achievementsClaimed[ach.id];
+          const card = document.createElement('div');
+          card.className = `achievement-card ${isClaimed ? 'completed' : ''}`;
+          card.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:20px;">${ach.icon}</span>
+              <div>
+                <div style="font-size:11px; font-weight:900; color:#fde047;">${ach.name}</div>
+                <div style="font-size:9.5px; color:#cbd5e1;">${ach.desc}</div>
+              </div>
+            </div>
+            <button class="btn-claim-reward ${isClaimed ? 'claimed' : ''}" id="claim-${ach.id}">
+              ${isClaimed ? '✓ RISCATTATO' : `+${ach.reward} M`}
+            </button>
+          `;
+
+          const btn = card.querySelector(`#claim-${ach.id}`);
+          if (!isClaimed) {
+            btn.onclick = () => {
+              this.saveData.achievementsClaimed[ach.id] = true;
+              this.addMiles(ach.reward);
+              sound.playFanfare();
+              btn.textContent = '✓ RISCATTATO';
+              btn.className = 'btn-claim-reward claimed';
+              card.className = 'achievement-card completed';
+            };
+          }
+          container.appendChild(card);
+        });
+      }
+
+      checkAchievements(key) {
+        if (!key) {
+          if (this.saveData.miles >= 500) this.checkAchievements('miles_500');
+          if (this.saveData.miles >= 1000) this.checkAchievements('miles_1000');
+          return;
+        }
+        const btn = document.getElementById(`claim-${key}`);
+        if (btn && !this.saveData.achievementsClaimed[key]) {
+          btn.style.boxShadow = '0 0 15px #facc15';
+          btn.style.animation = 'pulse-fast 1s infinite alternate';
+        }
+      }
+
+      // ==================== DUTY FREE 3-TIER PACK CONTROLS ====================
       setupBoosterControls() {
+        const tierCards = document.querySelectorAll('.pack-tier-card');
+        tierCards.forEach(card => {
+          card.onclick = () => {
+            tierCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            this.activePackTier = card.getAttribute('data-tier');
+            sound.playChime();
+          };
+        });
+
         const btnReset = document.getElementById('btn-booster-reset');
         if (btnReset) {
           btnReset.onclick = () => {
-            if (threeBooster) threeBooster.reset();
+            const cost = this.activePackTier === 'economy' ? 100 : (this.activePackTier === 'business' ? 250 : 500);
+            if (this.saveData.miles < cost) {
+              alert(`Miglia insufficienti! Il pacchetto ${this.activePackTier.toUpperCase()} costa ${cost} Miglia.`);
+              return;
+            }
+            this.addMiles(-cost);
+            this.saveData.stats.packsOpened = (this.saveData.stats.packsOpened || 0) + 1;
+            if (this.activePackTier !== 'economy') this.checkAchievements('pack_unboxing');
+            if (pixiBooster) pixiBooster.reset();
           };
         }
+
         const btnClose = document.getElementById('btn-booster-close-inspect');
         if (btnClose) {
           btnClose.onclick = () => {
-            if (threeBooster) threeBooster.closeInspect();
+            if (pixiBooster) pixiBooster.reset();
+          };
+        }
+      }
+
+      // ==================== IMPOSTAZIONI MODALE ====================
+      setupSettingsModal() {
+        const modal = document.getElementById('modal-settings');
+        const btnOpen = document.getElementById('btn-open-settings');
+        const btnClose = document.getElementById('btn-close-settings');
+        const volSlider = document.getElementById('setting-vol-slider');
+        const volText = document.getElementById('setting-vol-text');
+        const hapToggle = document.getElementById('setting-haptics-toggle');
+        const btnReset = document.getElementById('btn-reset-data');
+
+        if (btnOpen) btnOpen.onclick = () => modal.style.display = 'flex';
+        if (btnClose) btnClose.onclick = () => modal.style.display = 'none';
+
+        if (volSlider) {
+          volSlider.oninput = (e) => {
+            const val = e.target.value;
+            if (volText) volText.textContent = `${val}%`;
+          };
+        }
+
+        if (hapToggle) {
+          hapToggle.onchange = (e) => {
+            window.__wto_haptics_disabled = !e.target.checked;
+          };
+        }
+
+        if (btnReset) {
+          btnReset.onclick = () => {
+            if (confirm('ATTENZIONE: Vuoi ripristinare tutti i salvataggi, progressi e mazzi personalizzati?')) {
+              localStorage.removeItem('wto_save_data_v1');
+              location.reload();
+            }
           };
         }
       }
@@ -3527,7 +4113,7 @@
         const skipHint = document.getElementById('splash-skip-hint');
 
         const stages = [
-          { threshold: 25, text: '✈️ Controllo visti e passaporti...' },
+          { threshold: 25, text: '✈️ Controllo visti e passaporti biometrici...' },
           { threshold: 55, text: '🌍 Tracciamento rotte aeree mondiali...' },
           { threshold: 85, text: '🏛️ Generazione terminali 3D e Duty Free...' },
           { threshold: 100, text: '✨ Decollo autorizzato! Pronto all\'imbarco.' }
@@ -3546,12 +4132,8 @@
 
           if (currentProgress >= 100 && !isDone) {
             isDone = true;
-            if (btnEnter) {
-              btnEnter.classList.add('ready');
-            }
-            if (skipHint) {
-              skipHint.textContent = '✦ Tocca per iniziare il volo ✦';
-            }
+            if (btnEnter) btnEnter.classList.add('ready');
+            if (skipHint) skipHint.textContent = '✦ Tocca per iniziare il volo ✦';
           }
         };
 
@@ -3573,7 +4155,6 @@
         const dismissSplash = () => {
           if (!splash || splash.classList.contains('hidden')) return;
 
-          // Sound effects & celebration particles
           try {
             if (typeof sound !== 'undefined') {
               sound.playTakeoff();
@@ -3626,20 +4207,20 @@
       } catch (e) {}
 
       try {
-        if (typeof ThreeWorldScene !== 'undefined' && typeof THREE !== 'undefined') {
+        if (typeof PixiArenaEngine !== 'undefined') {
           try {
             const arenaContainer = document.getElementById('three-canvas-container');
-            if (arenaContainer) threeArena = new ThreeWorldScene(arenaContainer);
-          } catch (err) { console.warn('[WTO] ThreeWorldScene fallback:', err); }
+            if (arenaContainer) pixiArena = new PixiArenaEngine(arenaContainer);
+          } catch (err) { console.warn('[WTO] PixiArena fallback:', err); }
         }
       } catch (e) {}
 
       try {
-        if (typeof ThreeBoosterScene !== 'undefined' && typeof THREE !== 'undefined') {
+        if (typeof PixiBoosterEngine !== 'undefined') {
           try {
             const boosterContainer = document.getElementById('booster-3d-viewport');
-            if (boosterContainer) threeBooster = new ThreeBoosterScene(boosterContainer);
-          } catch (err) { console.warn('[WTO] ThreeBoosterScene fallback:', err); }
+            if (boosterContainer) pixiBooster = new PixiBoosterEngine(boosterContainer);
+          } catch (err) { console.warn('[WTO] PixiBooster fallback:', err); }
         }
       } catch (e) {}
 
