@@ -18,23 +18,23 @@
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    /* Stili Specifici Materiali per Nazione e Finitura Carta di Lusso */
+    /* Stili Specifici per Carte con Grafica Integrata e Finiture Materiche di Lusso */
     .card-item {
-      width: 92px !important;
-      height: 138px !important;
-      border-radius: 12px !important;
-      position: relative !important;
-      overflow: hidden !important;
-      background-size: cover !important;
-      background-position: center !important;
-      background-repeat: no-repeat !important;
-      display: flex !important;
-      flex-direction: column !important;
-      justify-content: space-between !important;
-      padding: 6px !important;
-      cursor: pointer !important;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.92), inset 0 0 0 1.5px rgba(255,255,255,0.22) !important;
-      transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease !important;
+      width: 96px;
+      height: 144px;
+      border-radius: 12px;
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 5px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.92), inset 0 0 0 1px rgba(255,255,255,0.18);
+      transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease;
       touch-action: manipulation;
       user-select: none;
     }
@@ -42,7 +42,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(15,23,42,0.65) 0%, rgba(15,23,42,0.05) 35%, rgba(15,23,42,0.1) 60%, rgba(10,15,29,0.92) 100%);
+      background: linear-gradient(180deg, rgba(10,15,29,0.72) 0%, rgba(10,15,29,0.05) 30%, rgba(10,15,29,0.1) 60%, rgba(4,7,15,0.94) 100%);
       pointer-events: none;
       z-index: 1;
     }
@@ -53,95 +53,120 @@
     .card-item.selected, .card-item:hover {
       transform: translateY(-24px) scale(1.12) !important;
       z-index: 50 !important;
-      box-shadow: 0 16px 36px rgba(245, 158, 11, 0.7), 0 0 24px rgba(255, 255, 255, 0.5) !important;
+      box-shadow: 0 16px 36px rgba(245, 158, 11, 0.8), 0 0 24px rgba(255, 255, 255, 0.6) !important;
     }
 
-    .card-item.leather { border: 2px solid #f59e0b !important; box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45) !important; }
-    .card-item.leather::before { content: '🇮🇹'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
+    /* Cornici & Finiture Lusso per Nazione */
+    .card-item.leather { border: 2px solid #f59e0b; box-shadow: 0 0 16px rgba(245, 158, 11, 0.45), inset 0 0 0 1px #78350f; }
+    .card-item.titanium { border: 2px solid #10b981; box-shadow: 0 0 16px rgba(16, 185, 129, 0.45), inset 0 0 0 1px #064e3b; }
+    .card-item.neon { border: 2px solid #00f0ff; box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), inset 0 0 0 1px #0369a1; }
+    .card-item.papyrus { border: 2px solid #ca8a04; box-shadow: 0 0 16px rgba(202, 138, 4, 0.5), inset 0 0 0 1px #713f12; }
+    .card-item.silk { border: 2px solid #ec4899; box-shadow: 0 0 16px rgba(236, 72, 153, 0.5), inset 0 0 0 1px #831843; }
+    .card-item.tweed { border: 2px solid #10b981; box-shadow: 0 0 16px rgba(16, 185, 129, 0.45), inset 0 0 0 1px #064e3b; }
+    .card-item.tropical { border: 2px solid #facc15; box-shadow: 0 0 16px rgba(250, 204, 21, 0.5), inset 0 0 0 1px #854d0e; }
+    .card-item.swiss { border: 2px solid #ef4444; box-shadow: 0 0 16px rgba(239, 68, 68, 0.5), inset 0 0 0 1px #7f1d1d; }
+    .card-item.korea { border: 2px solid #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, 0.6), inset 0 0 0 1px #581c87; }
 
-    .card-item.titanium { border: 2px solid #10b981 !important; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45) !important; }
-    .card-item.titanium::before { content: '🇺🇸'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    .card-item.neon { border: 2px solid #00f0ff !important; box-shadow: 0 0 22px rgba(0, 240, 255, 0.55) !important; }
-    .card-item.neon::before { content: '🇯🇵'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    .card-item.papyrus { border: 2px solid #ca8a04 !important; box-shadow: 0 6px 20px rgba(202, 138, 4, 0.5) !important; }
-    .card-item.papyrus::before { content: '🇪🇬'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    .card-item.silk { border: 2px solid #ec4899 !important; box-shadow: 0 6px 20px rgba(236, 72, 153, 0.5) !important; }
-    .card-item.silk::before { content: '🇫🇷'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    .card-item.tweed { border: 2px solid #10b981 !important; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.45) !important; }
-    .card-item.tweed::before { content: '🇬🇧'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    .card-item.tropical { border: 2px solid #facc15 !important; box-shadow: 0 6px 20px rgba(250, 204, 21, 0.5) !important; }
-    .card-item.tropical::before { content: '🇧🇷'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    .card-item.swiss { border: 2px solid #ef4444 !important; box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5) !important; }
-    .card-item.swiss::before { content: '🇨🇭'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    .card-item.korea { border: 2px solid #a855f7 !important; box-shadow: 0 0 22px rgba(168, 85, 247, 0.6) !important; }
-    .card-item.korea::before { content: '🇰🇷'; position: absolute; top: 4px; right: 4px; font-size: 11px; z-index: 3; }
-
-    /* Floating Badges */
-    .card-cost-circle {
-      width: 24px !important;
-      height: 24px !important;
-      border-radius: 50% !important;
-      background: rgba(2, 132, 199, 0.9) !important;
-      backdrop-filter: blur(4px) !important;
-      border: 1px solid #7dd3fc !important;
-      color: #fff !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font-size: 11px !important;
-      font-weight: 900 !important;
-      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.6) !important;
+    /* Header & Footer Integrati */
+    .card-head-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      height: 24px;
     }
-    .card-power-circle {
-      width: 24px !important;
-      height: 24px !important;
-      border-radius: 50% !important;
-      background: rgba(185, 28, 28, 0.9) !important;
-      backdrop-filter: blur(4px) !important;
-      border: 1px solid #fca5a5 !important;
-      color: #fff !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-      font-size: 11px !important;
-      font-weight: 900 !important;
-      box-shadow: 0 2px 8px rgba(185, 28, 28, 0.6) !important;
+    .card-seal-cost {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 2px 5px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0284c7, #0369a1);
+      border: 1.2px solid #7dd3fc;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.4);
     }
-    .card-mult-badge {
-      position: absolute;
-      bottom: 25px;
-      right: 6px;
+    .card-crest-country {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(245, 158, 11, 0.6);
+      padding: 1px 5px;
+      border-radius: 6px;
+      font-size: 8px;
+      font-weight: 800;
+      color: #facc15;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+      text-transform: uppercase;
+    }
+    .card-seal-power {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 2px 5px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #b91c1c, #991b1b);
+      border: 1.2px solid #fca5a5;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 900;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+    .card-foot-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 100%;
+    }
+    .card-name-plate {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10, 15, 29, 0.94);
+      border: 1px solid rgba(245, 158, 11, 0.65);
+      border-radius: 6px;
+      padding: 2px 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+    .card-title-text {
+      font-size: 8px;
+      font-weight: 900;
+      color: #f8fafc;
+      text-shadow: 0 1px 3px #000;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+      text-transform: uppercase;
+    }
+    .card-seal-mult {
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #000;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 900;
-      padding: 1px 6px;
-      border-radius: 6px;
-      border: 1px solid #fde047;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.6);
-      z-index: 3;
+      padding: 1px 4px;
+      border-radius: 4px;
+      border: 0.8px solid #fef08a;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      margin-left: 3px;
+      flex-shrink: 0;
     }
-    .card-name-title {
-      font-size: 9px !important;
-      font-weight: 900 !important;
-      text-align: center !important;
-      white-space: nowrap !important;
-      overflow: hidden !important;
-      text-overflow: ellipsis !important;
-      color: #f8fafc !important;
-      text-shadow: 0 1px 4px #000, 0 2px 6px rgba(0,0,0,0.9) !important;
-      background: rgba(15, 23, 42, 0.88);
-      border-radius: 6px;
-      padding: 3px 4px;
-      border: 0.5px solid rgba(255,255,255,0.2);
-      z-index: 3;
+    .card-type-sub {
+      font-size: 6.5px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      text-align: center;
+      letter-spacing: 1px;
+      background: rgba(0,0,0,0.6);
+      border-radius: 3px;
+      padding: 1px 0;
     }
 
     /* Rarity Glows per Carte */
@@ -456,33 +481,175 @@
       </div>
     </section>
 
-    <!-- ==================== TAB 5: CODEX DELLE 10 REGOLE ==================== -->
+    <!-- ==================== TAB 5: CODEX DELLE REGOLE & MANUALE D'AVIAZIONE ==================== -->
     <section id="tab-codex" class="tab-view codex-view">
-      <h2 style="font-size: 18px; font-weight: 900; color: #00f0ff; text-align: center; margin-bottom: 14px;">📜 CODEX DEL VIAGGIATORE</h2>
-      
-      <div class="codex-rule-card">
-        <h4 style="color:#f59e0b;">1. Marvel Snap • 3 Metropoli del Mondo & First Class Upgrade</h4>
-        <p style="font-size: 11px; color:#cbd5e1;">Atterra su Tokyo, Roma e New York. Il tasto Upgrade raddoppia le Miglia Aeree a 2x o 4x.</p>
+      <div style="text-align: center; margin-bottom: 12px;">
+        <h2 style="font-size: 18px; font-weight: 900; color: #38bdf8; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><circle cx="12" cy="12" r="9" stroke="#38bdf8" stroke-width="2"/><ellipse cx="12" cy="12" rx="9" ry="4" stroke="#38bdf8" stroke-width="1.2"/><polygon points="12,4 14,10 20,12 14,14 12,20 10,14 4,12 10,10" fill="#facc15"/></svg>
+          GRANDE CODEX DEL VIAGGIATORE
+        </h2>
+        <p style="font-size: 10.5px; color: #94a3b8;">Manuale Ufficiale della Gilda degli Esploratori • Regolamento, Meccaniche & Sinergie</p>
       </div>
-      <div class="codex-rule-card">
-        <h4 style="color:#f43f5e;">2. Balatro • Hype Turistico & Patrimonio UNESCO (Mult x Mult)</h4>
-        <p style="font-size: 11px; color:#cbd5e1;">Recensioni Michelin, attrazioni virali e meraviglie generano moltiplicatori a cascata.</p>
+
+      <!-- Navigatore Capitoli a Schede Orizzontale -->
+      <div class="codex-tab-nav" id="codex-nav-bar">
+        <button class="codex-nav-btn active" data-chapter="codex-ch1">📘 1. Regole & Turni</button>
+        <button class="codex-nav-btn" data-chapter="codex-ch2">⚡ 2. Balatro Hype Simulator</button>
+        <button class="codex-nav-btn" data-chapter="codex-ch3">💎 3. First Class (Snap)</button>
+        <button class="codex-nav-btn" data-chapter="codex-ch4">🗺️ 4. Le 9 Fazioni</button>
+        <button class="codex-nav-btn" data-chapter="codex-ch5">⚠️ 5. Dogana & Trappole</button>
+        <button class="codex-nav-btn" data-chapter="codex-ch6">🧳 6. Giro del Mondo</button>
       </div>
-      <div class="codex-rule-card">
-        <h4 style="color:#facc15;">3. Legends of Runeterra • Cittadinanza d'Onore (Level-Up)</h4>
-        <p style="font-size: 11px; color:#cbd5e1;">I grandi esploratori ricevono il timbro d'oro sul passaporto con cut-in a tutto schermo.</p>
+
+      <!-- CAPITOLO 1: STRUTTURA DEL VOLO -->
+      <div id="codex-ch1" class="codex-chapter-content active">
+        <div class="codex-rule-card">
+          <h4 style="color:#38bdf8; font-size:13px; font-weight:900; margin-bottom:4px;">1.1 Le 3 Metropoli Mondiali & Controllo Territorio</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            Il match si disputa su <b>3 corsie aeree (Tokyo HND, Roma FCO, New York JFK)</b> in stile <i>Marvel Snap</i>. Ogni corsia può ospitare fino a 4 carte per giocatore. Per vincere la partita è necessario conquistare <b>almeno 2 metropoli su 3</b> al termine dei 6 scali aerei.
+          </p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#facc15; font-size:13px; font-weight:900; margin-bottom:4px;">1.2 Economia delle Miglia Aeree (Energy Curve)</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            Inizi lo Scalo 1 con <b>1 Miglia Aerea</b>. A ogni nuovo scalo, il serbatoio aumenta di +1 fino a un massimo di <b>6 Miglia al turno 6</b>. Le Miglia non spese non si accumulano: pianifica attentamente gli atterraggi per massimizzare la presenza aerea su ogni pista.
+          </p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#4ade80; font-size:13px; font-weight:900; margin-bottom:4px;">1.3 Condizioni di Parità & Visti di Scalo</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            In caso di parità su una metropoli o di 1 vittoria a testa, vince chi ha ottenuto il <b>maggior differenziale di Prestigio totale cumulativo</b> tra tutti i terminal del mondo.
+          </p>
+        </div>
       </div>
-      <div class="codex-rule-card">
-        <h4 style="color:#b91c1c;">4. Inscryption • Scali & Coincidenze</h4>
-        <p style="font-size: 11px; color:#cbd5e1;">Sacrifica piccoli voli charter locali per sbloccare treni Shinkansen ad altissima velocità o jet privati.</p>
+
+      <!-- CAPITOLO 2: BALATRO HYPE SIMULATOR -->
+      <div id="codex-ch2" class="codex-chapter-content">
+        <div class="codex-rule-card">
+          <h4 style="color:#f43f5e; font-size:13px; font-weight:900; margin-bottom:4px;">2.1 La Matematica dell'Hype Turistico</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            In World Travel Odyssey il punteggio di una città non è una semplice somma algebrica! Il <b>Potere Base</b> delle carte viene moltiplicato a catena da ciascun <b>Moltiplicatore Hype</b> presente nello scalo:<br>
+            <code style="display:block; background:rgba(0,0,0,0.6); padding:6px; margin:6px 0; border-radius:6px; color:#fde047; font-size:11px; text-align:center;">
+              Punteggio Finale = (Somma Potere) × Mult₁ × Mult₂ × Multₙ
+            </code>
+          </p>
+        </div>
+
+        <!-- SIMULATORE PRATICO INTERATTIVO -->
+        <div class="codex-simulator-box">
+          <h4 style="color:#fbbf24; font-size:12.5px; font-weight:900; text-align:center; margin-bottom:8px;">🧮 SIMULATORE HYPE ENGINE IN TEMPO REALE</h4>
+          
+          <div style="margin-bottom:10px;">
+            <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:700; margin-bottom:4px;">
+              <span>Potere Base Totale:</span>
+              <span id="sim-power-display" style="color:#38bdf8; font-size:12px; font-weight:900;">10 ⚡</span>
+            </div>
+            <input type="range" id="sim-power-slider" min="1" max="30" value="10" style="width:100%; accent-color:#0284c7;">
+          </div>
+
+          <div style="margin-bottom:12px;">
+            <div style="font-size:10.5px; font-weight:700; color:#cbd5e1; margin-bottom:6px;">Seleziona Moltiplicatori Attivi nella Corsia:</div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;" id="sim-mult-buttons">
+              <button class="sim-mult-btn active" data-mult="1.2" style="background:#0284c7; border:1px solid #7dd3fc; color:#fff; font-size:10px; font-weight:800; padding:4px 8px; border-radius:8px; cursor:pointer;">Colosseo x1.2</button>
+              <button class="sim-mult-btn active" data-mult="1.5" style="background:#0284c7; border:1px solid #7dd3fc; color:#fff; font-size:10px; font-weight:800; padding:4px 8px; border-radius:8px; cursor:pointer;">Toro Wall St x1.5</button>
+              <button class="sim-mult-btn" data-mult="1.8" style="background:#1e293b; border:1px solid #475569; color:#94a3b8; font-size:10px; font-weight:800; padding:4px 8px; border-radius:8px; cursor:pointer;">M.te Fuji x1.8</button>
+              <button class="sim-mult-btn" data-mult="2.0" style="background:#1e293b; border:1px solid #475569; color:#94a3b8; font-size:10px; font-weight:800; padding:4px 8px; border-radius:8px; cursor:pointer;">Broadway x2.0</button>
+              <button class="sim-mult-btn" data-mult="3.5" style="background:#1e293b; border:1px solid #475569; color:#94a3b8; font-size:10px; font-weight:800; padding:4px 8px; border-radius:8px; cursor:pointer;">K-Pop Idol x3.5</button>
+            </div>
+          </div>
+
+          <div style="background:rgba(0,0,0,0.7); border:1px solid #facc15; border-radius:10px; padding:8px 12px; text-align:center;">
+            <div style="font-size:10px; color:#94a3b8; text-transform:uppercase; letter-spacing:1px;">Punteggio Metropoli Calcolato</div>
+            <div id="sim-total-result" style="font-size:24px; font-weight:900; color:#facc15; text-shadow:0 0 12px rgba(250,204,21,0.8);">18 PUNTI</div>
+            <div id="sim-formula-breakdown" style="font-size:9.5px; color:#38bdf8; margin-top:2px;">10 × 1.2 × 1.5 = 18</div>
+          </div>
+        </div>
       </div>
-      <div class="codex-rule-card">
-        <h4 style="color:#c084fc;">5. Yu-Gi-Oh! • Imprevisti Doganali (Trappole Coperte)</h4>
-        <p style="font-size: 11px; color:#cbd5e1;">Visto negato, sciopero generale o bagaglio smarrito ribaltano le sorti del terminal.</p>
+
+      <!-- CAPITOLO 3: FIRST CLASS OVERCHARGE & RITIRO -->
+      <div id="codex-ch3" class="codex-chapter-content">
+        <div class="codex-rule-card">
+          <h4 style="color:#f59e0b; font-size:13px; font-weight:900; margin-bottom:4px;">3.1 Il Tasto First Class (Meccanica Snap)</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            In qualsiasi momento prima del decollo, puoi premere il tasto <b>1st CLASS</b> per raddoppiare la posta in palio (da 1x a 2x, poi 4x e fino a 8x Miglia di Gloria). Se l'avversario accetta, la posta sale per entrambi. Se sospetti una trappola, la decisione diventa cruciale.
+          </p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#ef4444; font-size:13px; font-weight:900; margin-bottom:4px;">3.2 Il Ritiro Strategico</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            Se l'avversario chiama l'Overcharge e la tua mano non è favorevole, puoi premere <b>RITIRO</b>. Ti ritirerai perdendo soltanto la quota iniziale (1 Miglio), salvaguardando il tuo ranking rispetto alla perdita catastrofica della posta raddoppiata.
+          </p>
+        </div>
       </div>
-      <div class="codex-rule-card">
-        <h4 style="color:#00f0ff;">6. Hearthstone • Scalo Last-Minute (Discover)</h4>
-        <p style="font-size: 11px; color:#cbd5e1;">Scegli 1 destinazione esotica tra 3 offerte dalla compagnia aerea.</p>
+
+      <!-- CAPITOLO 4: ATLANTE DELLE 9 FAZIONI -->
+      <div id="codex-ch4" class="codex-chapter-content">
+        <div class="codex-rule-card">
+          <h4 style="color:#f59e0b; font-size:12px; font-weight:900;">🇮🇹 Italia • Pelle Toscana & Oro Rinascimentale</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Riduzione del potere avversario e potenziamento globale dei monumenti storici UNESCO.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#00f0ff; font-size:12px; font-weight:900;">🇯🇵 Giappone • Acrilico High-Tech & Carta Washi</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Puntualità assoluta, immunità a scioperi, mobilità di corsia con lo Shinkansen.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#10b981; font-size:12px; font-weight:900;">🇺🇸 USA • Titanio Nero Satinato & Chip EMV 24k</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Capitale di rischio, potenziamenti esponenziali con l'Overcharge e spettacoli di Broadway.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#ec4899; font-size:12px; font-weight:900;">🇫🇷 Francia • Seta Haute-Couture & Fleur-de-Lis</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Cucina d'élite, rimozione di tutti i malus e sinergie transfrontaliere europee.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#10b981; font-size:12px; font-weight:900;">🇬🇧 Regno Unito • Tweed Savile Row & Filigrana MI6</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Spionaggio tattico, visione delle carte nemiche e ricarica permanente di Miglia.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#facc15; font-size:12px; font-weight:900;">🇧🇷 Brasile • Jacaranda Tropicale & Piume di Rio</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Immunità doganale, poteri colossali (Corcovado 9) e festa congelante del Carnevale.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#ef4444; font-size:12px; font-weight:900;">🇨🇭 Svizzera • Acciaio Satinato & Orologeria Meccanica</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Neutralità bancaria, protezione assoluta dei dividendi e sottrazione di risorse rivali.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#ca8a04; font-size:12px; font-weight:900;">🇪🇬 Egitto • Papiro d'Oro Antico & Lapislazzuli</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Meraviglie millenarie (Piramidi 15), conversione di truppe nemiche e sacrifici di volo.</p>
+        </div>
+        <div class="codex-rule-card">
+          <h4 style="color:#a855f7; font-size:12px; font-weight:900;">🇰🇷 Corea del Sud • Vetro Smart Olografico K-Pop</h4>
+          <p style="font-size: 10.5px; color:#cbd5e1;"><b>Punto di Forza:</b> Hype a valanga stile Balatro (+1 mult per ogni carta) e connettività 6G con pescata rapida.</p>
+        </div>
+      </div>
+
+      <!-- CAPITOLO 5: DOGANA & TRAPPOLE COPERTE -->
+      <div id="codex-ch5" class="codex-chapter-content">
+        <div class="codex-rule-card">
+          <h4 style="color:#c084fc; font-size:13px; font-weight:900; margin-bottom:4px;">5.1 Imprevisti Doganali (Facedown Traps)</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            In stile <i>Yu-Gi-Oh!</i>, le carte Imprevisto Doganale vengono schierate <b>a faccia in giù</b>. L'avversario vede solo il dorso consolare, senza sapere quale imprevisto lo attenda:
+          </p>
+          <ul style="font-size: 10.5px; color:#cbd5e1; margin:6px 0 0 16px; line-height:1.4;">
+            <li><b>Visto Negato:</b> Respinge e azzera la prima carta nemica giocata di costo 3 o superiore.</li>
+            <li><b>Sciopero Generale:</b> Se l'avversario tenta l'Overcharge, annulla il suo bonus e raddoppia il TUO Hype.</li>
+            <li><b>Bagaglio Smarrito:</b> Fa scartare una carta casuale direttamente dalla mano nemica.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- CAPITOLO 6: IL GIRO DEL MONDO (ROGUE-LITE) -->
+      <div id="codex-ch6" class="codex-chapter-content">
+        <div class="codex-rule-card">
+          <h4 style="color:#facc15; font-size:13px; font-weight:900; margin-bottom:4px;">6.1 La Scalata dei 6 Piani Continenti</h4>
+          <p style="font-size: 11px; color:#cbd5e1; line-height:1.45;">
+            Ispirata a <i>Slay the Spire</i>, la modalità Giro del Mondo ti sfida a completare un itinerario a bivi attraverso 6 piani:
+          </p>
+          <ul style="font-size: 10.5px; color:#cbd5e1; margin:6px 0 0 16px; line-height:1.4;">
+            <li><b>Valigia (Punti Vita):</b> Inizi con 30/30 punti resistenza bagaglio. I ritardi e i malus la logorano.</li>
+            <li><b>Resort 5 Stelle:</b> Permettono di riposare ripristinando la valigia o potenziare una carta del mazzo.</li>
+            <li><b>Duty Free & Souvenir:</b> Spendendo Miglia d'Oro puoi acquistare visti consolari ed edizioni rare.</li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -744,24 +911,70 @@
       </div>
     </div>
 
-    <!-- Modale Ispezione Passaporto della Carta -->
+    <!-- Modale Ispezione Passaporto della Carta con Flip 3D e Lore -->
     <div id="modal-inspect" class="modal-overlay" style="display: none; align-items: center; justify-content: center;">
-      <div class="modal-content" style="max-width: 340px; width: 92%; max-height: 90vh; overflow-y: auto; padding: 16px; border-radius: 20px; background: rgba(15, 23, 42, 0.95); border: 2px solid #f59e0b; box-shadow: 0 0 35px rgba(245, 158, 11, 0.4); text-align: center;">
-        <!-- Grande Carta Fisica 2.5D con Immagine HD Reale -->
-        <div id="inspect-card-slab" style="width: 220px; height: 320px; margin: 0 auto 12px; border-radius: 16px; overflow: hidden; position: relative; box-shadow: 0 12px 30px rgba(0,0,0,0.9), inset 0 0 0 2px rgba(255,215,0,0.6); background-size: cover; background-position: center; border: 3px solid #ffd700;">
-          <div style="position: absolute; top: 10px; left: 10px; background: rgba(2, 132, 199, 0.9); border: 1.5px solid #7dd3fc; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; box-shadow: 0 3px 8px rgba(0,0,0,0.6); z-index: 3;" id="inspect-cost">✈️3</div>
-          <div style="position: absolute; top: 10px; right: 10px; background: rgba(185, 28, 28, 0.9); border: 1.5px solid #fca5a5; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; box-shadow: 0 3px 8px rgba(0,0,0,0.6); z-index: 3;" id="inspect-power">⚡5</div>
-          <div style="position: absolute; bottom: 10px; left: 10px; right: 10px; background: rgba(10, 15, 29, 0.92); border: 1px solid rgba(255,215,0,0.4); border-radius: 8px; padding: 6px; text-align: center; z-index: 3;">
-            <div id="inspect-origin-badge" style="font-size: 9px; color: #ffd700; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;">🇮🇹 ROMA • FCO</div>
-            <div id="inspect-title" style="color: #fff; font-size: 13px; font-weight: 900;">Leonardo da Vinci</div>
+      <div class="modal-content" style="max-width: 370px; width: 94%; max-height: 92vh; overflow-y: auto; padding: 16px 14px; border-radius: 20px; background: rgba(15, 23, 42, 0.96); border: 2px solid #f59e0b; box-shadow: 0 0 35px rgba(245, 158, 11, 0.4); text-align: center;">
+        
+        <!-- Flipper 3D per Fronte e Retro con Lore -->
+        <div class="card-flipper-container" id="inspect-flipper-container" title="Tocca per girare la carta">
+          <div class="card-flipper" id="inspect-card-flipper">
+            <!-- FRONTE INTEGRATO -->
+            <div class="card-flipper-face card-flipper-front" id="inspect-card-front">
+              <div class="card-head-bar">
+                <div class="card-seal-cost" id="inspect-seal-cost">✈ 3</div>
+                <div class="card-crest-country" id="inspect-crest-country">🇮🇹 FCO</div>
+                <div class="card-seal-power" id="inspect-seal-power">⚡ 5</div>
+              </div>
+              <div style="flex:1;"></div>
+              <div class="card-foot-bar">
+                <div class="card-name-plate">
+                  <div class="card-title-text" id="inspect-card-name" style="font-size: 11px;">Leonardo da Vinci</div>
+                  <div class="card-seal-mult" id="inspect-seal-mult" style="font-size: 11px;">x1.5</div>
+                </div>
+                <div class="card-type-sub" id="inspect-card-type">SOVEREIGN • DIPLOMATIC</div>
+              </div>
+            </div>
+
+            <!-- RETRO CON LORE E TIMBRO CONSOLARE -->
+            <div class="card-flipper-face card-flipper-back" id="inspect-card-back">
+              <div>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid rgba(245, 158, 11, 0.4); padding-bottom: 4px; margin-bottom: 6px;">
+                  <span style="font-size: 9px; font-weight: 800; color: #fbbf24;" id="inspect-back-doc">DOC-IT-ROM-1452/DIP</span>
+                  <span style="font-size: 9px; color: #94a3b8;" id="inspect-back-type">PASSAPORTO DIPLOMATICO</span>
+                </div>
+                <div class="passport-stamp-box" id="inspect-stamp-box">
+                  ✈️ CONSOLATO GENERALE • VISTO D'INGRESSO DIPLOMATICO
+                </div>
+              </div>
+
+              <div style="flex:1; overflow-y:auto; padding-right:2px; text-align:left;">
+                <div style="font-size: 10px; color: #e2e8f0; line-height: 1.45; margin-bottom: 8px;" id="inspect-lore-history"></div>
+                <div style="font-size: 9px; color: #fde047; font-style: italic; background: rgba(245, 158, 11, 0.12); border-left: 2.5px solid #f59e0b; padding: 4px 6px; border-radius: 4px; margin-bottom: 8px;" id="inspect-lore-secret"></div>
+                <div style="font-size: 8.5px; color: #38bdf8; background: rgba(56, 189, 248, 0.08); padding: 4px 6px; border-radius: 4px;" id="inspect-lore-tactical"></div>
+              </div>
+
+              <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 4px; margin-top: 4px; display:flex; justify-content:space-between; align-items:center;">
+                <span style="font-size: 8px; color: #64748b;" id="inspect-consul-sign">Console di Frontiera</span>
+                <span style="font-size: 8px; color: #fbbf24; font-weight:900;">★ WTO PASSPORT CORPS ★</span>
+              </div>
+            </div>
           </div>
         </div>
-        <!-- Info Tattili e Meccaniche -->
+
+        <div style="display:flex; justify-content:center; gap:8px; margin-bottom:8px;">
+          <button id="btn-flip-card" type="button" style="background: rgba(245, 158, 11, 0.2); border: 1.5px solid #f59e0b; color: #facc15; padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; cursor: pointer; display:flex; align-items:center; gap:6px;">
+            <span>🔄 GIRA CARTA / LEGGI LORE</span>
+          </button>
+        </div>
+
+        <!-- Info Meccaniche e Abilità -->
         <div id="inspect-material-badge" style="font-size: 10px; color: #f59e0b; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; background: rgba(245, 158, 11, 0.12); padding: 4px 12px; border-radius: 20px; display: inline-block; border: 1px solid rgba(245, 158, 11, 0.35);">Pelle Toscana Conciata al Vegetale</div>
-        <div id="inspect-stats" style="font-size: 12px; font-weight: 800; color: #38bdf8; margin: 6px 0; background: rgba(255,255,255,0.05); padding: 6px; border-radius: 8px;"></div>
-        <div id="inspect-desc" style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin: 8px 0; text-align: left;"></div>
-        <div id="inspect-quote" style="font-size: 10px; font-style: italic; color: #fde047; margin: 6px 0;"></div>
-        <button id="inspect-close" style="margin-top: 10px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; padding: 8px 24px; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">CHIUDI ATLANTE</button>
+        <div id="inspect-desc" style="font-size: 11px; color: #cbd5e1; line-height: 1.4; margin: 6px 0; text-align: left; background: rgba(0,0,0,0.4); padding: 8px; border-radius: 8px;"></div>
+        <div id="inspect-quote" style="font-size: 10px; font-style: italic; color: #fde047; margin: 4px 0;"></div>
+        
+        <button id="inspect-close" style="margin-top: 8px; width: 100%; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #000; padding: 10px 24px; border-radius: 10px; font-weight: 900; font-size: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);">
+          CHIUDI ATLANTE
+        </button>
       </div>
     </div>
 
@@ -870,6 +1083,294 @@
       { id: 'spell_lastminute', country: 'Club Viaggiatori', name: 'Scalo Last-Minute', type: CARD_TYPES.EVENT, cost: 1, power: 0, mult: 1.0, material: MATERIALS.ACRYLIC_NEON, materialDesc: 'Carta Boarding Pass Digitale Olografica', rarity: RARITY.COMMON, airport: 'WORLD GATE', image: 'assets/cards/japan.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#042f2e" stroke="#14b8a6" stroke-width="2"/><path d="M50 20 L58 42 L80 50 L58 58 L50 80 L42 58 L20 50 L42 42 Z" fill="#2dd4bf"/></svg>`, text: 'Discover: Scegli 1 destinazione o passaporto esotico tra 3 offerte.', isDiscover: true, soundType: 'chime' },
       { id: 'spell_diplomatic_pass', country: 'Ambasciata', name: 'Passaporto Diplomatico VIP', type: CARD_TYPES.EVENT, cost: 2, power: 3, mult: 1.5, material: MATERIALS.LEATHER, materialDesc: 'Passaporto Diplomatico in Pelle Blu & Lettere d\'Oro 24k', rarity: RARITY.EPIC, airport: 'DIPLOMATIC', image: 'assets/cards/italy.jpg', artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><rect x="15" y="15" width="70" height="70" rx="10" fill="#1e1b4b" stroke="#facc15" stroke-width="2"/><text x="50" y="58" font-size="20" font-weight="900" fill="#facc15" text-anchor="middle">VIP</text></svg>`, text: 'Immunità Totale: Protegge tutte le tue carte dagli imprevisti avversari.', soundType: 'stamp' }
     ];
+
+    
+    // Integrazione Lore Diplomatica e Dossier Storico per tutte le 39 Carte
+    const LORE_DB = {
+  "card_italy_champ": {
+    "docNo": "IT-ROM-1452/DIP",
+    "consulSign": "Console Generale di Firenze & Roma",
+    "loreHistory": "Leonardo da Vinci (1452–1519), archetipo universale del Genio Rinascimentale. Pittore della Gioconda, scienziato, inventore e visionario del volo umano attraverso il celebre Codice sul Volo degli Uccelli (1505). In WTO incarna la mente sovrana in grado di anticipare qualsiasi rotta e coordinare i cieli con armonia geometrica divina.",
+    "travelerSecret": "A Firenze, nella biblioteca degli Uffizi e a Vinci, è possibile ammirare i disegni originali della vite aerea e del paracadute piramidale in lino: la prima idea di aviazione moderna nata 400 anni prima dei fratelli Wright.",
+    "tacticalFlight": "Leonardo è il cardine dell'espansione: la sua aura Genio Universale potenzia con +2 Prestigio tutte le metropoli. Quando ascende al Rinascimento Totale, raddoppia simultaneamente tutti i moltiplicatori mondiali."
+  },
+  "card_italy_colosseum": {
+    "docNo": "IT-FCO-0080/MON",
+    "consulSign": "Sovrintendenza Archeologica di Roma Capitolina",
+    "loreHistory": "L'Anfiteatro Flavio, inaugurato nell'80 d.C. dall'imperatore Tito con cento giorni di festeggiamenti e battaglie navali (naumachie). Capace di ospitare oltre 50.000 spettatori, è il simbolo imperituro della civiltà romana e una delle Sette Meraviglie del Mondo Moderno.",
+    "travelerSecret": "Scendendo negli ipogei sotterranei (il labirinto di botole e montacarichi lignei), si percepisce l'ingegneria che sollevava le fiere direttamente sull'arena coperta di sabbia dorata. Al tramonto la pietra di travertino assume un riflesso dorato inconfondibile.",
+    "tacticalFlight": "Riduce di 3 punti il Prestigio nemico sulla città di atterraggio. Se giocato su Roma (FCO), il bonus UNESCO dell'aeroporto raddoppia il moltiplicatore a x2.0."
+  },
+  "card_italy_espresso": {
+    "docNo": "IT-NAP-1884/TRAD",
+    "consulSign": "Gilda Maestri Torrefattori Napoletani",
+    "loreHistory": "Nato dalla tradizione della \"cuccumella\" e perfezionato con le macchine a leva ad alta pressione (9 atmosfere) nei vicoli di Napoli. Riconosciuto come rituale di convivialità e patrimonio culturale immateriale, l'espresso napoletano è sinonimo di energia pura e arte della lentezza.",
+    "travelerSecret": "A Napoli chiedi il leggendario \"Caffè Sospeso\": paghi due caffè ma ne consumi uno solo, lasciando l'altro in dono a chiunque entri in difficoltà. Una tradizione di solidarietà unica al mondo.",
+    "tacticalFlight": "Costo minimo (1 Miglio) per 2 Potere e ricarica immediata di 1 Miglio supplementare. Ideale per concatenare giocate ad alta frequenza nel finale di turno."
+  },
+  "card_japan_champ": {
+    "docNo": "JP-HND-1603/CYBER",
+    "consulSign": "Comando Difesa Aerospaziale Shinjuku & Neo-Kyoto",
+    "loreHistory": "Kenji rappresenta la convergenza tra il Bushido millenario dei samurai e la frontiera cyberpunk di Neo-Tokyo. Custode della katana nanotecnologica forgiata in acciaio al tungsteno e memorie olografiche, presidia le tratte aeree con implacabile disciplina d'onore.",
+    "travelerSecret": "A Shinjuku, tra i vicoli di Omoide Yokocho e le luci al neon della Torre Toho, esiste una minuscola bottega di maestri forgiatori che ripara katane tradizionali accanto a officine di robotica d'avanguardia.",
+    "tacticalFlight": "Puntualità Assoluta lo rende immune a qualsiasi imprevisto doganale o sciopero. Al Level-Up (Linea Shinkansen) sottrae 5 Miglia all'avversario congelando il suo turno."
+  },
+  "card_japan_fuji": {
+    "docNo": "JP-TYO-3776/SACRED",
+    "consulSign": "Santuario Shintoista Fujisan Hongu Sengen Taisha",
+    "loreHistory": "Volo sacro a 3.776 metri sul livello del mare. Il Monte Fuji (Fuji-san) è il vulcano attivo simbolo spirituale del Giappone, immortalato nelle Trentasei vedute di Hokusai. Luogo di pellegrinaggio shintoista dove il cielo incontra il mare di nuvole (unkai).",
+    "travelerSecret": "I pellegrini salgono di notte lungo il sentiero Yoshida per assistere al \"Goraiko\", il sorgere del sole dalla vetta, accompagnati dal suono delle campane e dai bastoni di legno marchiati a fuoco a ogni stazione.",
+    "tacticalFlight": "Dotato di un impressionante x1.8 Moltiplicatore Hype Balatro. Posizionato a Tokyo (HND) innesca cascate di punteggio capaci di ribaltare il controllo della città."
+  },
+  "card_japan_shinkansen": {
+    "docNo": "JP-NRT-0500/MAGLEV",
+    "consulSign": "Japan Railway Central High-Speed Bureau",
+    "loreHistory": "La ferrovia ad altissima velocità Tokaido Shinkansen, inaugurata per i Giochi Olimpici di Tokyo del 1964. Con il nuovo sistema Maglev a levitazione magnetica superconduttrice della serie L0, ha infranto il record mondiale superando i 603 km/h.",
+    "travelerSecret": "Il ritardo medio annuo dello Shinkansen è inferiore a 54 secondi per convoglio, inclusi eventi sismici e tifoni. Se un treno ritarda più di un minuto, il capotreno rilascia un certificato ufficiale di giustificazione.",
+    "tacticalFlight": "Permette di riposizionare istantaneamente una carta già atterrata verso un altro scalo, spiazzando completamente i calcoli del rivale prima del calcolo finale."
+  },
+  "card_usa_champ": {
+    "docNo": "US-JFK-1792/CAPITAL",
+    "consulSign": "Presidente Fed District New York & Manhattan",
+    "loreHistory": "Nato nel cuore del distretto finanziario di Lower Manhattan, il Magnate di Wall Street domina i flussi globali di capitale, hedge fund e rotte mercantili transatlantiche. Con la sua tessera in titanio nero e cifratura quantistica, trasforma ogni rischio in dividendo.",
+    "travelerSecret": "All'angolo tra Wall Street e Broad Street si trova la Federal Hall, dove George Washington prestò giuramento come primo Presidente degli Stati Uniti nel 1789, a pochi metri dai sotterranei che custodiscono il più grande caveau d'oro del pianeta.",
+    "tacticalFlight": "Cresce di +5 Potere per ogni Overcharge (Snap) effettuato. Quando si raddoppia la posta a 2x o 4x, diventa inarrestabile nella metropoli di New York."
+  },
+  "card_usa_wallstreet": {
+    "docNo": "US-NYC-1989/BULL",
+    "consulSign": "Camera di Commercio di New York Bowling Green",
+    "loreHistory": "La statua in bronzo \"Charging Bull\" creata dallo scultore Arturo Di Modica e installata a sorpresa nel dicembre 1989 come inno alla forza, resilienza e ottimismo del popolo americano dopo il crollo di borsa del 1987.",
+    "travelerSecret": "L'opera fu posizionata illegalmente di notte sotto l'albero di Natale di Wall Street come regalo alla città. La polizia la rimosse, ma le proteste popolari costrinsero il comune a ricollocarla trionfalmente a Bowling Green Park.",
+    "tacticalFlight": "Con 8 punti di Potere e moltiplicatore x1.5, è un pilastro economico. L'attivazione dell'Upgrade First Class conferisce +4 Potere istantaneo."
+  },
+  "card_usa_broadway": {
+    "docNo": "US-BWAY-1943/SHOW",
+    "consulSign": "Broadway Theater League & Times Square Alliance",
+    "loreHistory": "La leggendaria \"Great White Way\", il distretto dei 41 teatri storici tra Times Square e la 42esima strada. Dalla nascita dei grandi musical ai premi Tony, rappresenta la mecca mondiale dello spettacolo teatrale dal vivo e dell'intrattenimento.",
+    "travelerSecret": "Il Palace Theatre conserva la tradizione della \"Ghost Light\": una lampada solitaria lasciata sempre accesa sul palco vuoto dopo la chiusura, per placare gli spiriti dei grandi attori del passato e prevenire incidenti al buio.",
+    "tacticalFlight": "Raddoppia (x2.0) il moltiplicatore dell'intera città dove viene eseguita la performance. Ottima in sinergia con carte americane ad alto valore nominale."
+  },
+  "card_france_champ": {
+    "docNo": "FR-CDG-1900/GASTRO",
+    "consulSign": "Guida Michelin & Accademia Culinaria di Parigi",
+    "loreHistory": "Custode dell'alta gastronomia francese, proclamata patrimonio intangibile dell'umanità dall'UNESCO. Chef Pierre ha conquistato le 3 Stelle Michelin elevando ogni ingrediente a composizione artistica e armonia di sapori senza tempo.",
+    "travelerSecret": "Nel mercato storico di Rungis a sud di Parigi, il più grande mercato alimentare del pianeta, i grandi chef scelgono le materie prime all'alba tra formaggi affinati in grotta, tartufi del Périgord e ostriche della Bretagna.",
+    "tacticalFlight": "Conferisce +1 al moltiplicatore di tutte le carte alleate sulla corsia. Al Level-Up moltiplica x4.0 il punteggio complessivo del terminal di Parigi."
+  },
+  "card_france_eiffel": {
+    "docNo": "FR-PAR-1889/MONUMENT",
+    "consulSign": "Société d'Exploitation de la Tour Eiffel",
+    "loreHistory": "Eretta da Gustave Eiffel per l'Esposizione Universale del 1889 per celebrare il centenario della Rivoluzione Francese. Alta 330 metri, con 18.038 pezzi di ferro forgiato e 2,5 milioni di rivetti, è il monumento a pagamento più visitato al mondo.",
+    "travelerSecret": "Gustave Eiffel si costruì un appartamento segreto in cima alla torre per ricevere scienziati illustri come Thomas Edison. La torre oscilla di 9 cm con il vento forte e cresce di 15 cm in estate per la dilatazione termica del ferro.",
+    "tacticalFlight": "Prestigio 6, Moltiplicatore x1.7. Eroga un bonus passivo del +50% di Prestigio a tutte le carte provenienti dal continente europeo."
+  },
+  "card_france_champagne": {
+    "docNo": "FR-ORY-1693/VINTAGE",
+    "consulSign": "Comité Interprofessionnel du Vin de Champagne (Épernay)",
+    "loreHistory": "Nato nelle abbazie benedettine di Hautvillers grazie all'intuizione di Dom Pérignon nel XVII secolo. Prodotto con il metodo champenoise nelle cantine scavate nel gesso bianco (crayères) della Champagne.",
+    "travelerSecret": "I chilometri di gallerie sotterranee sotto Reims ed Épernay conservano bottiglie centenarie e durante la Prima Guerra Mondiale ospitarono scuole, ospedali e rifugi per l'intera popolazione civile.",
+    "tacticalFlight": "Costo 1, rimuove all'istante ogni malus, riduzione di potere o imprevisto doganale attivo sulle carte alleate schierate."
+  },
+  "card_uk_agent": {
+    "docNo": "UK-LHR-0070/MI6",
+    "consulSign": "Secret Intelligence Service (Vauxhall Cross, London)",
+    "loreHistory": "Elegante, letale e impeccabile nel suo abito sartoriale di Savile Row. L'Agente 00 opera sotto copertura consolare britannica per proteggere le rotte aeree e sventare cospirazioni internazionali che minacciano la Corona.",
+    "travelerSecret": "Dietro le porte della sartoria Huntsman al civico 11 di Savile Row si celano specchi e cabine di prova che hanno ispirato la saga cinematografica di Kingsman e vestito regnanti, esploratori e primi ministri da oltre 170 anni.",
+    "tacticalFlight": "La sua Licenza di Spionaggio rivela tutte le carte nella mano nemica. Al Level-Up neutralizza e azzera il potere della carta nemica più minacciosa sul campo."
+  },
+  "card_uk_bigben": {
+    "docNo": "UK-LON-1859/CLOCK",
+    "consulSign": "Parlamento del Regno Unito, Elizabeth Tower",
+    "loreHistory": "La celebre campana principale da 13,7 tonnellate ospitata all'interno dell'Elizabeth Tower nel Palazzo di Westminster. I suoi rintocchi, accordati sulle note del \"Westminster Chimes\", scandiscono il tempo dell'impero dal 1859.",
+    "travelerSecret": "Il pendolo dell'orologio è regolato aggiungendo o rimuovendo vecchie monete da un penny britannico sul piatto: una singola moneta altera la velocità del pendolo di appena due quinti di secondo al giorno.",
+    "tacticalFlight": "Potere 5, garantisce +1 Miglia permanente a ogni turno successivo, accelerando l'economia di gioco del giocatore."
+  },
+  "card_brazil_samba": {
+    "docNo": "BR-GIG-1932/SAMBA",
+    "consulSign": "Liga Independente das Escolas de Samba (Rio de Janeiro)",
+    "loreHistory": "La regina del Carnevale di Rio de Janeiro, anima del Sambodromo Marquês de Sapucaí disegnato da Oscar Niemeyer. Con piume iridescenti, percussioni batucada e costumi scolpiti a mano, incarna la gioia primordiale e la creatività brasiliana.",
+    "travelerSecret": "Ogni scuola di samba del Gruppo Speciale lavora tutto l'anno nelle \"barracões\" della Città del Samba: oltre 4.000 costumi e mastodontici carri allegorici costruiti in segreto assoluto fino alla notte della sfilata.",
+    "tacticalFlight": "Annulla gli imprevisti doganali. Al Level-Up scatena il Carnevale di Rio, elevando il moltiplicatore a x3.8 e congelando le giocate avversarie."
+  },
+  "card_brazil_corcovado": {
+    "docNo": "BR-RIO-1931/FAITH",
+    "consulSign": "Santuario Arquidiocesano Cristo Redentor",
+    "loreHistory": "Monumento Art Déco alto 38 metri eretto sulla vetta del monte Corcovado a 710 metri sopra la baia di Guanabara. Realizzato in cemento armato e rivestito da milioni di tessere triangolari di pietra ollare (esteatite).",
+    "travelerSecret": "Le donne che ritagliarono le tessere di pietra ollare negli anni '20 scrissero sul retro i nomi dei loro cari e preghiere segrete, sigillandole per sempre nella pelle della statua più famosa del Sud America.",
+    "tacticalFlight": "Costo 4, Potere colossale 9. La Benedizione Tropicale protegge le carte adiacenti rendendole immuni da distruzioni o riduzioni di Prestigio."
+  },
+  "card_swiss_banker": {
+    "docNo": "CH-ZRH-1856/SECRET",
+    "consulSign": "Swiss Bankers Association & Eidgenössische Banken",
+    "loreHistory": "Erede della tradizione bancaria elvetica di Paradeplatz a Zurigo. Con maestria impassibile, gestisce patrimoni riservati, lingotti d'oro a 24k nei bunker alpini e investimenti transfrontalieri con precisione cronometrica.",
+    "travelerSecret": "Nel massiccio del San Gottardo, profondi bunker militari della Seconda Guerra Mondiale sono stati convertiti in caveau ad altissima sicurezza per custodire oro, collezioni d'arte e server quantistici.",
+    "tacticalFlight": "La Neutralità Svizzera lo rende immune a imprevisti e trappole. Al Level-Up sottrae 3 Miglia per ogni turno rimasto alla conclusione dello scalo."
+  },
+  "card_swiss_train": {
+    "docNo": "CH-GVA-1910/UNESCO",
+    "consulSign": "Ferrovia Retica & Patrimonio Mondiale UNESCO",
+    "loreHistory": "La linea ferroviaria a scartamento ridotto che collega Coira a Tirano attraverso il valico del Bernina a 2.253 metri d'altitudine senza l'uso di cremagliera, tra ghiacciai perenni, viadotti elicoidali e tornanti di roccia.",
+    "travelerSecret": "Il viadotto circolare di Brusio compie un giro completo di 360 gradi a cielo aperto per consentire al treno di superare un dislivello di 30 metri in uno spazio ristrettissimo senza pendenze eccessive.",
+    "tacticalFlight": "Costo 2, Potere 4, mult x1.3. Aumenta di +1 il Potere di tutte le carte ambientate in località alpine o montane."
+  },
+  "card_egypt_cleopatra": {
+    "docNo": "EG-CAI-0069/PHARAOH",
+    "consulSign": "Supremo Consiglio delle Antichità d'Egitto (Il Cairo)",
+    "loreHistory": "Ultima regina dell'Antico Egitto tolemaico (69–30 a.C.). Diplomatica brillante, poliglotta che parlava nove lingue e stratega senza eguali. Incarna il fascino millenario delle corti di Alessandria e il dominio sulle ricchezze del Nilo.",
+    "travelerSecret": "La tomba di Cleopatra e Marco Antonio non è mai stata trovata: le ricerche più recenti indicano il tempio sommerso di Taposiris Magna, a ovest di Alessandria, dove sono stati rinvenuti tunnel millenari verso il Mediterraneo.",
+    "tacticalFlight": "Ruba la carta con il potere più basso dal campo nemico e la converte tra i tuoi alleati. Al Level-Up raddoppia il potere di tutte le meraviglie storiche."
+  },
+  "card_egypt_pyramids": {
+    "docNo": "EG-GIZ-2560/WONDER",
+    "consulSign": "Direzione Generale dell'Altopiano di Giza",
+    "loreHistory": "La Grande Piramide di Cheope, l'unica delle Sette Meraviglie del Mondo Antico ancora intatta dopo oltre 4.500 anni. Costruita con 2,3 milioni di blocchi calcarei allineati astronomicamente con precisione millimetrica alle stelle di Orione.",
+    "travelerSecret": "All'interno della Grande Piramide la temperatura si mantiene costante a 20 gradi Celsius tutto l'anno, indipendentemente dal caldo cocente del deserto circostante. Recenti scansioni muoniche hanno scoperto una camera segreta intatta lunga 30 metri.",
+    "tacticalFlight": "Costo 5 ma Potere mostruoso di 15 e mult x2.0. Richiede il sacrificio di 1 volo charter per essere atterrata, ma garantisce quasi sempre la vittoria del terminal."
+  },
+  "card_korea_kpop": {
+    "docNo": "KR-ICN-2020/HALLYU",
+    "consulSign": "Korea Creative Content Agency & Gangnam District",
+    "loreHistory": "Fenomeno globale della \"Hallyu\" (onda coreana). Cantanti, ballerini e performer capaci di polverizzare record di visualizzazioni su YouTube e conquistare la vetta della classifica Billboard Hot 100 con coreografie robotiche perfette.",
+    "travelerSecret": "Nel quartiere di Cheongdam-dong a Seoul si snoda la \"K-Star Road\", dove le maggiori case di produzione mondiale hanno i loro quartier generali e i fan possono incontrare gli idol durante le prove generali.",
+    "tacticalFlight": "Incrementa di +1 il moltiplicatore a ogni nuova carta giocata nel turno corrente. Al Level-Up scatena un mega-moltiplicatore x5.0 in stile Balatro esponenziale."
+  },
+  "card_korea_tower": {
+    "docNo": "KR-SEL-1975/SEOUL",
+    "consulSign": "Metropolitan Government of Seoul, Namsan Tower",
+    "loreHistory": "Torre di trasmissione e osservatorio alta 236 metri eretta sul monte Namsan nel cuore di Seoul. Circondata da decine di migliaia di lucchetti d'amore, domina la metropoli illuminandosi con colori che segnalano in tempo reale la qualità dell'aria.",
+    "travelerSecret": "I ponti panoramici della torre ospitano schermi OLED curvi a 360 gradi che mostrano le proiezioni digitali dei tramonti di Seoul e le coordinate esatte verso le principali capitali del mondo.",
+    "tacticalFlight": "Costo 2, Potere 5, mult x1.3. La sua Connettività 6G fa pescare 1 carta addizionale immediata dal mazzo."
+  },
+  "card_iceland_geysir": {
+    "docNo": "IS-KEF-1294/GEOTHERM",
+    "consulSign": "Circolo d'Oro d'Islanda & Parco Geotermico",
+    "loreHistory": "La sorgente eruttiva della valle di Haukadalur che ha dato il nome a tutti i geyser del pianeta. Con il vicino Strokkur, spara colonne d'acqua bollente fino a 30 metri verso il cielo ogni 6-10 minuti con forza geotermica primordiale.",
+    "travelerSecret": "I panettieri locali seppelliscono recipienti di pane di segale (\"Rúgbrauð\") direttamente nella sabbia bollente accanto alle sorgenti geotermiche, cuocendolo lentamente per 24 ore sfruttando il calore della terra.",
+    "tacticalFlight": "Potere 6, mult x1.6. La sua eruzione congela la corsia della metropoli nemica per 1 turno intero."
+  },
+  "card_iceland_aurora": {
+    "docNo": "IS-AUR-0001/SKY",
+    "consulSign": "Osservatorio Geofisico di Thingvellir",
+    "loreHistory": "La danza magnetica dell'Aurora Boreale causata dall'interazione tra il vento solare e la magnetosfera terrestre nei cieli artici. Nastri verdi, viola e cremisi che ondeggiano nel silenzio assoluto dei ghiacciai islandesi.",
+    "travelerSecret": "Secondo le antiche saghe norrene, l'aurora era il riflesso degli scudi e delle armature delle Valchirie che scortavano i guerrieri caduti verso il Valhalla.",
+    "tacticalFlight": "Costo 2, mult x2.2. Raddoppia i moltiplicatori di tutte le carte di categoria Cielo e Natura sul terreno di gioco."
+  },
+  "card_mexico_chichen": {
+    "docNo": "MX-CUN-0600/MAYA",
+    "consulSign": "Istituto Nazionale di Antropologia e Storia (INAH)",
+    "loreHistory": "La piramide di Kukulkán a Chichén Itzá nella penisola dello Yucatán. Capolavoro di astronomia e matematica maya, conta esattamente 365 gradini come i giorni dell'anno solare.",
+    "travelerSecret": "Durante gli equinozi di primavera e autunno, il gioco di luci e ombre del sole proietta sui gradoni della piramide l'illusione ottica di un serpente piumato che scivola lentamente verso la terra.",
+    "tacticalFlight": "Costo 4, Potere 9, mult x1.5. Conferisce +3 di Potere a tutte le destinazioni monumentali storiche alleate."
+  },
+  "card_mexico_mariachi": {
+    "docNo": "MX-MEX-1898/FIESTA",
+    "consulSign": "Plaza Garibaldi & Gilda dei Mariachi di Città del Messico",
+    "loreHistory": "Trombe squillanti, vihuelas, chitarroni e sombreri decorati d'argento. I mariachi sono il cuore pulsante delle feste messicane e patrimonio immateriale UNESCO.",
+    "travelerSecret": "A Plaza Garibaldi i gruppi di mariachi si sfidano a cielo aperto 24 ore su 24: basta avvicinarsi e richiedere la propria canzone preferita per far cantare l'intera piazza.",
+    "tacticalFlight": "Costo 1, conferisce +2 Prestigio a tutte le carte presenti nella corsia centrale."
+  },
+  "card_australia_reef": {
+    "docNo": "AU-CNS-1770/OCEAN",
+    "consulSign": "Great Barrier Reef Marine Park Authority (Cairns)",
+    "loreHistory": "La più grande struttura vivente sulla Terra, visibile persino dallo spazio. Si estende per oltre 2.300 chilometri al largo del Queensland, ospitando oltre 1.500 specie di pesci e centinaia di coralli multicolore.",
+    "travelerSecret": "A Lady Elliot Island è possibile nuotare accanto alle gigantesche mante oceaniche e alle tartarughe verdi nate sulla spiaggia corallina.",
+    "tacticalFlight": "Cura la tua Valigia di 5 punti nella modalità Giro del Mondo e garantisce un moltiplicatore x1.7 nella corsia marina."
+  },
+  "card_australia_sydney": {
+    "docNo": "AU-SYD-1973/DESIGN",
+    "consulSign": "Sydney Opera House Trust & Port Jackson",
+    "loreHistory": "Capolavoro dell'architettura espressionista disegnato dal danese Jørn Utzon sulle sponde della baia di Sydney. Le sue iconiche \"vele\" in guscio di cemento prefabbricato sono rivestite da oltre un milione di piastrelle ceramiche svedesi.",
+    "travelerSecret": "La sala da concerto principale custodisce il più grande organo meccanico a canne del mondo, con 10.244 canne costruite su misura nell'arco di dieci anni.",
+    "tacticalFlight": "Moltiplica x1.6 il punteggio delle carte alleate schierate sulle città costiere."
+  },
+  "card_spain_sagrada": {
+    "docNo": "ES-BCN-1882/GAUDI",
+    "consulSign": "Fundació Junta Constructora del Temple Expiatori (Barcelona)",
+    "loreHistory": "La basilica capolavoro del modernismo catalano ideata da Antoni Gaudí, in costruzione dal 1882. Le sue 18 torri monumentali e le colonne interne ad albero riproducono una foresta di pietra inondata dalla luce caleidoscopica delle vetrate.",
+    "travelerSecret": "Gaudí sapeva che non avrebbe visto l'opera completata e ripeteva: «Il mio cliente non ha fretta». È sepolto nella cripta della chiesa dove lavorò negli ultimi 15 anni della sua vita.",
+    "tacticalFlight": "Cattedrale Viva: aumenta autonomamente il proprio Potere di +2 alla fine di ogni singolo turno di volo."
+  },
+  "card_spain_flamenco": {
+    "docNo": "ES-MAD-1800/DUENDE",
+    "consulSign": "Tablao Flamenco Villa-Rosa & Gilda Andalusa",
+    "loreHistory": "Cante jondo, battito di tacchi (zapateado) e chitarra gitana. Il flamenco è l'espressione viscerale del \"Duende\", l'emozione autentica e misteriosa che possiede l'artista sul palco.",
+    "travelerSecret": "Nei quartieri di Triana a Siviglia e Sacromonte a Granada, gli spettacoli più autentici si tengono dentro grotte scavate nella roccia viva tra pareti decorate con piatti di rame.",
+    "tacticalFlight": "Costo 1, conferisce furia immediata a una carta bersaglio raddoppiandone l'efficacia nel turno."
+  },
+  "card_germany_brandenburg": {
+    "docNo": "DE-BER-1791/UNITY",
+    "consulSign": "Stiftung Denkmalschutz Berlin, Pariser Platz",
+    "loreHistory": "Monumento neoclassico a sei colonne doriche sormontato dalla Quadriga della Vittoria alata. Testimone della divisione della Guerra Fredda e poi simbolo eterno della caduta del Muro e della riunificazione della Germania.",
+    "travelerSecret": "Durante la divisione della città, la porta rimase isolata all'interno della fascia di sicurezza del Muro di Berlino, inaccessibile sia ai cittadini dell'Est che a quelli dell'Ovest per quasi trent'anni.",
+    "tacticalFlight": "Unità d'Acciaio: incrementa di +2 il Potere di tutte le carte adiacenti nello scalo."
+  },
+  "card_germany_autobahn": {
+    "docNo": "DE-FRA-1932/SPEED",
+    "consulSign": "Autobahn GmbH des Bundes (Frankfurt am Main)",
+    "loreHistory": "La celebre rete autostradale federale tedesca priva di limiti di velocità generali sui tratti rettilinei. Banco di prova per l'eccellenza ingegneristica delle più celebri case automobilistiche mondiali.",
+    "travelerSecret": "L'asfalto delle sezioni senza limiti è spesso il doppio rispetto alle normali autostrade, per garantire aderenza e sicurezza a velocità superiori ai 300 km/h.",
+    "tacticalFlight": "Velocità Pura: azzera a 0 Miglie il costo della prossima giocata effettuata dal giocatore."
+  },
+  "card_canada_niagara": {
+    "docNo": "CA-YYZ-1678/WATERFALL",
+    "consulSign": "The Niagara Parks Commission (Ontario, Canada)",
+    "loreHistory": "Le cascate a ferro di cavallo (Horseshoe Falls) sul confine tra Canada e Stati Uniti. Oltre 168.000 metri cubi d'acqua al minuto precipitano con un fragore udibile a chilometri di distanza.",
+    "travelerSecret": "Nel 1901 l'insegnante sessantatreenne Annie Edson Taylor fu la prima persona a sopravvivere alla caduta dentro una botte di quercia imbottita con un cuscino.",
+    "tacticalFlight": "Spazza via 1 malus o effetto negativo presente sull'intero campo di battaglia."
+  },
+  "card_argentina_tango": {
+    "docNo": "AR-EZE-1880/MILONGA",
+    "consulSign": "Academia Nacional del Tango de la República Argentina",
+    "loreHistory": "Nato nei bassifondi portuali di Buenos Aires e Montevideo alla fine del XIX secolo. L'abbraccio intimo del tango e il lamento del bandoneón riflettono la nostalgia, la passione e l'orgoglio dei migranti d'oltremare.",
+    "travelerSecret": "Nel quartiere di San Telmo e a La Boca, tra i vicoli colorati di Caminito, le coppie ballano per strada sui ciottoli mentre i caffè d'epoca servono malbec e mate caldo.",
+    "tacticalFlight": "Passione del Sud: raddoppia all'istante l'Hype della destinazione su cui viene suonato."
+  },
+  "trap_visa_denied": {
+    "docNo": "DOG-IMM-0001/BORDER",
+    "consulSign": "Direzione Centrale Polizia di Frontiera & Immigrazione",
+    "loreHistory": "Il documento più temuto da qualsiasi viaggiatore internazionale. Il timbro rosso di \"Entry Denied\" scatta in caso di visti non conformi, passaporti scaduti o controlli biometrici falliti al varco di sicurezza.",
+    "travelerSecret": "Negli aeroporti internazionali la \"zona sterile\" di transito extraterritoriale non appartiene legalmente allo stato di sosta finché non si supera la linea gialla del controllo passaporti.",
+    "tacticalFlight": "Trappola Coperta: quando l'avversario gioca una carta di costo 3 o superiore, la respinge azzerandone completamente il potere per il turno."
+  },
+  "trap_strike": {
+    "docNo": "AIR-CTR-2026/TOWER",
+    "consulSign": "Associazione Internazionale Controllori di Volo (IFATCA)",
+    "loreHistory": "Tabelloni partenze completamente tinti di rosso, aerei bloccati sul tarmac e torri di controllo silenti. Lo sciopero generale paralizza l'intero scalo aereo con effetto domino planetario.",
+    "travelerSecret": "In caso di blocco dei cieli (Ground Stop), le compagnie aeree calcolano rotte di diversione transoceaniche verso gli scali alternati più vicini tramite sistemi radar satellitari ADS-B.",
+    "tacticalFlight": "Trappola Coperta: se l'avversario chiama l'Overcharge raddoppiando le scommesse, lo sciopero annulla il suo bonus e raddoppia il TUO Hype!"
+  },
+  "trap_lost_luggage": {
+    "docNo": "MXP-BAG-7731/LOST",
+    "consulSign": "Ufficio Lost & Found Smistamento Bagagli Milano Malpensa",
+    "loreHistory": "Il nastro trasportatore numero 4 gira a vuoto: la valigia etichettata è finita sul volo per Singapore invece che per Roma. L'imprevisto da incubo per ogni esploratore in transito.",
+    "travelerSecret": "Ogni giorno milioni di valigie sono tracciate tramite codici a barre IATA a 10 cifre e chip RFID integrati nei manici che comunicano con lettori laser ad alta velocità.",
+    "tacticalFlight": "Trappola Coperta: all'attivazione fa scartare una carta casuale direttamente dalla mano dell'avversario."
+  },
+  "spell_lastminute": {
+    "docNo": "WLD-DISC-9999/GATE",
+    "consulSign": "Desk Partenze Urgenti World Travel Club",
+    "loreHistory": "L'adrenalina di presentarsi al gate senza una meta prestabilita e salire sull'ultimo volo con posti disponibili in prima classe verso una destinazione sconosciuta.",
+    "travelerSecret": "I \"gate standby\" degli hub internazionali offrono le migliori tariffe al mondo a chi viaggia leggero e possiede un passaporto biometrico valido per tutti i continenti.",
+    "tacticalFlight": "Meccanica Discover stile Hearthstone: offre 3 destinazioni esotiche o passaporti speciali tra cui scegliere quello migliore per la situazione."
+  },
+  "spell_diplomatic_pass": {
+    "docNo": "VIP-CORPS-0001/IMMUNITY",
+    "consulSign": "Ministero Plenipotenziario Affari Esteri & Nazioni Unite",
+    "loreHistory": "Il passaporto diplomatico di colore bordeaux o nero con scritte in lamina d'oro 24k. Conferisce immunità totale da perquisizioni doganali, corsie preferenziali VIP e rispetto incondizionato alle frontiere.",
+    "travelerSecret": "I possessori di passaporto diplomatico godono della tutela della Convenzione di Vienna del 1961: i loro bagagli non possono essere aperti né sottoposti a dazi o confische doganali in nessun paese firmatario.",
+    "tacticalFlight": "Immunità Totale: protegge l'intera flotta di carte alleate dagli imprevisti, trappole e malus dell'avversario."
+  }
+};
+    ALL_CARDS.forEach(c => {
+      const lore = LORE_DB[c.id];
+      if (lore) {
+        c.docNo = lore.docNo;
+        c.consulSign = lore.consulSign;
+        c.loreHistory = lore.loreHistory;
+        c.travelerSecret = lore.travelerSecret;
+        c.tacticalFlight = lore.tacticalFlight;
+      }
+    });
 
     const STARTER_DECK_P1 = ['card_italy_champ', 'card_italy_colosseum', 'card_japan_fuji', 'card_usa_wallstreet', 'card_egypt_pyramids', 'trap_visa_denied', 'spell_lastminute'];
     const STARTER_DECK_P2 = ['card_japan_champ', 'card_japan_fuji', 'card_france_eiffel', 'card_usa_wallstreet', 'card_brazil_samba', 'trap_strike', 'spell_lastminute'];
@@ -1077,6 +1578,66 @@
 
         const colors = [0x00f0ff, 0xf59e0b, 0x10b981];
         const spacingX = 4.1;
+
+        // ==================== TAVOLO 3D IN NOCE & OTTONE (FIRST-CLASS LOUNGE) ====================
+        const tableGroup = new THREE.Group();
+        tableGroup.position.set(0, -0.6, -2);
+
+        // Piano Tavolo in Noce Pregiato Lucido
+        const tableTopGeo = new THREE.BoxGeometry(22, 0.7, 18);
+        const tableTopMat = new THREE.MeshStandardMaterial({
+          color: 0x1f140e,
+          roughness: 0.35,
+          metalness: 0.15
+        });
+        const tableTopMesh = new THREE.Mesh(tableTopGeo, tableTopMat);
+        tableTopMesh.receiveShadow = true;
+        tableGroup.add(tableTopMesh);
+
+        // Bordo / Modanatura in Ottone Dorato Satinato
+        const tableRimGeo = new THREE.BoxGeometry(22.4, 0.15, 18.4);
+        const tableRimMat = new THREE.MeshStandardMaterial({
+          color: 0xf59e0b,
+          metalness: 0.85,
+          roughness: 0.25
+        });
+        const tableRimMesh = new THREE.Mesh(tableRimGeo, tableRimMat);
+        tableRimMesh.position.y = 0.36;
+        tableGroup.add(tableRimMesh);
+
+        // Rosa dei Venti & Anello delle Rotte Aeree Intagliato a Specchio
+        const compassRingGeo = new THREE.RingGeometry(2.0, 2.15, 48);
+        const compassRingMat = new THREE.MeshStandardMaterial({
+          color: 0xfde047,
+          emissive: 0xf59e0b,
+          emissiveIntensity: 0.35,
+          metalness: 0.9,
+          roughness: 0.2,
+          side: THREE.DoubleSide
+        });
+        const compassRing = new THREE.Mesh(compassRingGeo, compassRingMat);
+        compassRing.rotation.x = -Math.PI / 2;
+        compassRing.position.y = 0.37;
+        tableGroup.add(compassRing);
+
+        // Linee di Atterraggio Piste Vettoriali sul Tavolo
+        for (let r = -1; r <= 1; r++) {
+          const runwayGeo = new THREE.PlaneGeometry(0.08, 12);
+          const runwayMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, opacity: 0.35, transparent: true });
+          const runwayMesh = new THREE.Mesh(runwayGeo, runwayMat);
+          runwayMesh.rotation.x = -Math.PI / 2;
+          runwayMesh.position.set(r * 4.1, 0.37, 0);
+          tableGroup.add(runwayMesh);
+        }
+
+        this.scene.add(tableGroup);
+
+        // Faretto da Tavolo con Ombre e Illuminazione Soffusa
+        const tableSpot = new THREE.SpotLight(0xfef08a, 1.4, 30, Math.PI / 3.5, 0.4);
+        tableSpot.position.set(0, 16, 4);
+        tableSpot.target.position.set(0, -0.6, -2);
+        this.scene.add(tableSpot);
+        this.scene.add(tableSpot.target);
 
         for (let i = 0; i < 3; i++) {
           const group = new THREE.Group();
@@ -2231,6 +2792,38 @@
     }
     let threeBooster = null;
 
+    
+    // --- FUNZIONI DI SUPPORTO GRAFICA INTEGRATA CARTE ---
+    function getCountryFlag(country) {
+      const flags = {
+        'Italia': '🇮🇹', 'Giappone': '🇯🇵', 'USA': '🇺🇸', 'Francia': '🇫🇷',
+        'Regno Unito': '🇬🇧', 'Brasile': '🇧🇷', 'Svizzera': '🇨🇭', 'Egitto': '🇪🇬',
+        'Corea del Sud': '🇰🇷', 'Islanda': '🇮🇸', 'Messico': '🇲🇽', 'Australia': '🇦🇺',
+        'Spagna': '🇪🇸', 'Germania': '🇩🇪', 'Canada': '🇨🇦', 'Argentina': '🇦🇷'
+      };
+      return flags[country] || '✈️';
+    }
+
+    function renderIntegratedCardInner(card) {
+      const flag = getCountryFlag(card.country);
+      const code = card.airport ? card.airport.split(' ')[0] : 'WTO';
+      return `
+        <div class="card-head-bar">
+          <div class="card-seal-cost" title="Miglia Aeree">✈ ${card.cost}</div>
+          <div class="card-crest-country"><span>${flag}</span> <span>${code}</span></div>
+          <div class="card-seal-power" title="Potere Prestigio">⚡ ${card.power}</div>
+        </div>
+        <div style="flex:1;"></div>
+        <div class="card-foot-bar">
+          <div class="card-name-plate">
+            <div class="card-title-text">${card.name}</div>
+            <div class="card-seal-mult">x${card.mult}</div>
+          </div>
+          <div class="card-type-sub">${(card.type || 'DESTINAZIONE').toUpperCase()}</div>
+        </div>
+      `;
+    }
+
     // --- 6. HUB & CONTROLLER GLOBALE ---
     class WorldTravelHub {
       constructor() {
@@ -2248,6 +2841,8 @@
         this.setupCollection();
         this.setupBoosterControls();
         this.setupSplashScreen();
+        this.setupFlipCard();
+        this.setupCodexSimulator();
       }
 
       setupP2PChannel() {
@@ -2472,15 +3067,7 @@
           if (card.image) el.style.backgroundImage = `url('${card.image}')`;
           const angle = (i - (this.playerHand.length - 1) / 2) * 5;
           el.style.transform = `rotate(${angle}deg) translateY(${Math.abs(angle) * 0.8}px)`;
-          el.innerHTML = `
-            <div class="card-header-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-              <div class="card-cost-circle">✈️${card.cost}</div>
-              <div class="card-power-circle">⚡${card.power}</div>
-            </div>
-            <div style="flex:1;"></div>
-            <div class="card-mult-badge">x${card.mult}</div>
-            <div class="card-name-title">${card.name}</div>
-          `;
+          el.innerHTML = renderIntegratedCardInner(card);
           el.onclick = (e) => {
             e.stopPropagation();
             if (this.selectedCardId === card.instanceId) {
@@ -2570,15 +3157,7 @@
           el.className = `card-item ${c.material}`;
           el.style.width = '105px'; el.style.height = '155px';
           if (c.image) el.style.backgroundImage = `url('${c.image}')`;
-          el.innerHTML = `
-            <div class="card-header-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-              <div class="card-cost-circle">✈️${c.cost}</div>
-              <div class="card-power-circle">⚡${c.power}</div>
-            </div>
-            <div style="flex:1;"></div>
-            <div class="card-mult-badge">x${c.mult}</div>
-            <div class="card-name-title">${c.name}</div>
-          `;
+          el.innerHTML = renderIntegratedCardInner(c);
           el.onclick = () => {
             modal.style.display = 'none';
             this.playerHand.push(c);
@@ -2692,34 +3271,79 @@
 
       showInspect(card) {
         const modal = document.getElementById('modal-inspect');
-        const slab = document.getElementById('inspect-card-slab');
-        if (card.image) {
-          slab.style.backgroundImage = `url('${card.image}')`;
-        } else {
-          slab.style.backgroundImage = 'none';
+        const flipper = document.getElementById('inspect-card-flipper');
+        const front = document.getElementById('inspect-card-front');
+
+        // Reset flip sul fronte
+        if (flipper) flipper.classList.remove('flipped');
+
+        const flag = getCountryFlag(card.country);
+        const airportCode = card.airport ? card.airport.split(' ')[0] : 'WTO';
+
+        // FRONTE INTEGRATO
+        if (front) {
+          front.style.backgroundImage = card.image ? `url('${card.image}')` : 'none';
+          const rColor = card.rarity === RARITY.LEGENDARY ? '#ffd700' :
+                         (card.rarity === RARITY.EPIC ? '#c084fc' :
+                         (card.rarity === RARITY.RARE ? '#38bdf8' : '#94a3b8'));
+          front.style.borderColor = rColor;
+          front.style.boxShadow = `0 12px 32px rgba(0,0,0,0.95), 0 0 25px ${rColor}66`;
         }
 
-        const rColor = card.rarity === RARITY.LEGENDARY ? '#ffd700' :
-                       (card.rarity === RARITY.EPIC ? '#c084fc' :
-                       (card.rarity === RARITY.RARE ? '#38bdf8' : '#94a3b8'));
-        slab.style.borderColor = rColor;
-        slab.style.boxShadow = `0 12px 32px rgba(0,0,0,0.95), 0 0 25px ${rColor}66`;
+        const costEl = document.getElementById('inspect-seal-cost');
+        if (costEl) costEl.innerHTML = `✈ ${card.cost}`;
 
-        document.getElementById('inspect-cost').textContent = `✈️${card.cost}`;
-        document.getElementById('inspect-power').textContent = `⚡${card.power}`;
-        document.getElementById('inspect-origin-badge').textContent = `${card.country.toUpperCase()} • ${card.airport}`;
-        document.getElementById('inspect-title').textContent = card.name;
+        const crestEl = document.getElementById('inspect-crest-country');
+        if (crestEl) crestEl.innerHTML = `<span>${flag}</span> <span>${airportCode}</span>`;
 
+        const powerEl = document.getElementById('inspect-seal-power');
+        if (powerEl) powerEl.innerHTML = `⚡ ${card.power}`;
+
+        const nameEl = document.getElementById('inspect-card-name');
+        if (nameEl) nameEl.textContent = card.name;
+
+        const multEl = document.getElementById('inspect-seal-mult');
+        if (multEl) multEl.textContent = `x${card.mult}`;
+
+        const typeEl = document.getElementById('inspect-card-type');
+        if (typeEl) typeEl.textContent = `${(card.type || 'DESTINAZIONE').toUpperCase()} • ${card.country.toUpperCase()}`;
+
+        // RETRO & LORE CONSOLARE
+        const docNoEl = document.getElementById('inspect-back-doc');
+        if (docNoEl) docNoEl.textContent = card.docNo || `DOC-${card.country.substring(0,3).toUpperCase()}-2026/DIP`;
+
+        const backTypeEl = document.getElementById('inspect-back-type');
+        if (backTypeEl) backTypeEl.textContent = `PASSAPORTO ${card.rarity ? card.rarity.toUpperCase() : 'DIPLOMATICO'}`;
+
+        const stampBox = document.getElementById('inspect-stamp-box');
+        if (stampBox) stampBox.innerHTML = `✈️ VISTO CONSOLARE • ${card.airport || 'ENTRY GRANTED'}`;
+
+        const loreHistEl = document.getElementById('inspect-lore-history');
+        if (loreHistEl) loreHistEl.innerHTML = `<b>📜 Storia & Meraviglia:</b> ${card.loreHistory || card.text}`;
+
+        const loreSecEl = document.getElementById('inspect-lore-secret');
+        if (loreSecEl) loreSecEl.innerHTML = `<b>🧭 Nota dell'Esploratore:</b> ${card.travelerSecret || "Accesso autorizzato per viaggiatori internazionali accreditati."}`;
+
+        const loreTacEl = document.getElementById('inspect-lore-tactical');
+        if (loreTacEl) loreTacEl.innerHTML = `<b>⚡ Tattica di Volo:</b> ${card.tacticalFlight || card.text}`;
+
+        const consulEl = document.getElementById('inspect-consul-sign');
+        if (consulEl) consulEl.textContent = card.consulSign || `Console Generale di ${card.country}`;
+
+        // Dettagli Tattici sotto la carta
         const matText = card.materialDesc || (card.material ? card.material.toUpperCase() : 'MATERIALE AUTENTICO');
-        document.getElementById('inspect-material-badge').textContent = `✦ ${matText} ✦`;
-        document.getElementById('inspect-stats').textContent = `Miglia Richieste: ${card.cost} ✈️  |  Potere Base: ${card.power} ⚡  |  Hype Balatro: x${card.mult}`;
+        const matBadge = document.getElementById('inspect-material-badge');
+        if (matBadge) matBadge.textContent = `✦ ${matText} ✦`;
 
-        let descHtml = `<div style="margin-bottom:6px;">${card.text}</div>`;
+        let descHtml = `<div style="margin-bottom:6px;"><b>Abilità in Volo:</b> ${card.text}</div>`;
         if (card.levelUpText) {
           descHtml += `<div style="color:#ffd700; font-weight:800; background:rgba(255,215,0,0.12); padding:6px; border-radius:8px; border:1px solid rgba(255,215,0,0.35); margin-top:4px;">👑 LEVEL-UP: ${card.levelUpText}</div>`;
         }
-        document.getElementById('inspect-desc').innerHTML = descHtml;
-        document.getElementById('inspect-quote').textContent = card.voiceLine ? `«${card.voiceLine}»` : '';
+        const descEl = document.getElementById('inspect-desc');
+        if (descEl) descEl.innerHTML = descHtml;
+
+        const quoteEl = document.getElementById('inspect-quote');
+        if (quoteEl) quoteEl.textContent = card.voiceLine ? `«${card.voiceLine}»` : '';
 
         sound.playStamp();
         modal.style.display = 'flex';
@@ -2766,17 +3390,9 @@
           filtered.forEach(c => {
             const item = document.createElement('div');
             item.className = `card-item ${c.material}`;
-            item.style.width = '100%'; item.style.height = '145px';
+            item.style.width = '100%'; item.style.height = '148px';
             if (c.image) item.style.backgroundImage = `url('${c.image}')`;
-            item.innerHTML = `
-              <div class="card-header-row" style="display:flex; justify-content:space-between; align-items:center; width:100%;">
-                <div class="card-cost-circle">✈️${c.cost}</div>
-                <div class="card-power-circle">⚡${c.power}</div>
-              </div>
-              <div style="flex:1;"></div>
-              <div class="card-mult-badge">x${c.mult}</div>
-              <div class="card-name-title">${c.name}</div>
-            `;
+            item.innerHTML = renderIntegratedCardInner(c);
             item.onclick = () => this.showInspect(c);
             grid.appendChild(item);
           });
@@ -2790,6 +3406,99 @@
             renderList(btn.getAttribute('data-country'));
           };
         });
+      }
+
+      
+      setupFlipCard() {
+        const flipper = document.getElementById('inspect-card-flipper');
+        const container = document.getElementById('inspect-flipper-container');
+        const btnFlip = document.getElementById('btn-flip-card');
+
+        const doFlip = (e) => {
+          if (e) e.stopPropagation();
+          if (!flipper) return;
+          flipper.classList.toggle('flipped');
+          try {
+            if (typeof sound !== 'undefined' && sound.playCardFlip) sound.playCardFlip();
+          } catch (err) {}
+        };
+
+        if (container) container.onclick = doFlip;
+        if (btnFlip) btnFlip.onclick = doFlip;
+      }
+
+      setupCodexSimulator() {
+        // Navigazione Capitoli del Codex
+        const navBtns = document.querySelectorAll('.codex-nav-btn');
+        navBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            navBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const chapterId = btn.getAttribute('data-chapter');
+            document.querySelectorAll('.codex-chapter-content').forEach(c => c.classList.remove('active'));
+            const target = document.getElementById(chapterId);
+            if (target) target.classList.add('active');
+            try { sound.playStamp(); } catch (e) {}
+          });
+        });
+
+        // Simulatore Hype Engine Interattivo
+        const slider = document.getElementById('sim-power-slider');
+        const powerDisp = document.getElementById('sim-power-display');
+        const multBtns = document.querySelectorAll('.sim-mult-btn');
+        const totalResult = document.getElementById('sim-total-result');
+        const formulaBreakdown = document.getElementById('sim-formula-breakdown');
+
+        const recalculate = () => {
+          if (!slider || !totalResult) return;
+          const basePower = parseInt(slider.value, 10);
+          if (powerDisp) powerDisp.textContent = `${basePower} ⚡`;
+
+          let totalMult = 1.0;
+          const multsList = [];
+          multBtns.forEach(btn => {
+            if (btn.classList.contains('active')) {
+              const val = parseFloat(btn.getAttribute('data-mult'));
+              totalMult *= val;
+              multsList.push(val);
+            }
+          });
+
+          const score = Math.round(basePower * totalMult);
+          totalResult.textContent = `${score.toLocaleString()} PUNTI`;
+          
+          if (formulaBreakdown) {
+            if (multsList.length === 0) {
+              formulaBreakdown.textContent = `${basePower} × 1.0 = ${score}`;
+            } else {
+              formulaBreakdown.textContent = `${basePower} × ${multsList.join(' × ')} = ${score}`;
+            }
+          }
+        };
+
+        if (slider) {
+          slider.addEventListener('input', recalculate);
+        }
+
+        multBtns.forEach(btn => {
+          btn.addEventListener('click', () => {
+            btn.classList.toggle('active');
+            if (btn.classList.contains('active')) {
+              btn.style.background = '#0284c7';
+              btn.style.borderColor = '#7dd3fc';
+              btn.style.color = '#fff';
+            } else {
+              btn.style.background = '#1e293b';
+              btn.style.borderColor = '#475569';
+              btn.style.color = '#94a3b8';
+            }
+            try { sound.playChime(); } catch (e) {}
+            recalculate();
+          });
+        });
+
+        recalculate();
       }
 
       setupBoosterControls() {

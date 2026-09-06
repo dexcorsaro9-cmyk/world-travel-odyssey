@@ -286,108 +286,231 @@ body {
   cursor: pointer;
 }
 
-/* Mano Giocatore ad Arco */
+/* Mano Giocatore ad Arco & Tavolo Playmat di Lusso */
 .hand-container {
-  height: 145px;
+  height: 154px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  padding: 0 8px 6px;
+  padding: 0 8px 8px;
+  background: linear-gradient(180deg, rgba(20, 16, 12, 0.75) 0%, rgba(12, 9, 6, 0.95) 40%, rgba(4, 3, 2, 0.98) 100%);
+  border-top: 2px solid rgba(245, 158, 11, 0.5);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(254, 240, 138, 0.3);
 }
 
+.hand-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    repeating-linear-gradient(90deg, transparent 0, transparent 48px, rgba(245, 158, 11, 0.05) 49px, transparent 50px),
+    radial-gradient(ellipse at 50% 100%, rgba(0, 240, 255, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ==================== ARCHITETTURA CARTE INTEGRATE (ZERO ADESIVI INCOLLATI) ==================== */
 .card-item {
-  width: 85px;
-  height: 125px;
-  background: var(--bg-card);
-  border-radius: 10px;
-  border: 1.5px solid rgba(255, 255, 255, 0.18);
+  width: 96px;
+  height: 144px;
+  border-radius: 12px;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 5px;
-  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.92), inset 0 0 0 1px rgba(255,255,255,0.15);
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   cursor: pointer;
-  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease;
-  transform-origin: bottom center;
+  transition: transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
   margin: 0 -9px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+}
+
+.card-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 15, 29, 0.72) 0%, rgba(10, 15, 29, 0.05) 30%, rgba(10, 15, 29, 0.1) 60%, rgba(4, 7, 15, 0.94) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-item > * {
+  position: relative;
+  z-index: 2;
 }
 
 .card-item:hover, .card-item.selected {
   transform: translateY(-24px) scale(1.12) !important;
-  z-index: 30 !important;
-  border-color: var(--accent-cyan);
-  box-shadow: 0 12px 24px rgba(0, 240, 255, 0.5);
+  z-index: 50 !important;
+  box-shadow: 0 16px 36px rgba(245, 158, 11, 0.8), 0 0 24px rgba(255, 255, 255, 0.6) !important;
 }
 
-.card-item.foil {
-  border-color: #ffd700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-
-.card-item.polychrome {
-  border-color: #f43f5e;
-  animation: rainbow-border 4s linear infinite;
-}
-
-.card-cost-circle {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #0284c7;
-  color: #fff;
+/* Header con Sigilli Fusi e Medaglioni Intagliati */
+.card-head-bar {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 24px;
+}
+
+.card-seal-cost {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  font-weight: 900;
-}
-
-.card-power-circle {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #b91c1c;
+  gap: 2px;
+  padding: 2px 5px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border: 1.2px solid #7dd3fc;
   color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 10px;
   font-weight: 900;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.4);
 }
 
-.card-art-box {
-  flex: 1;
-  margin: 3px 0;
+.card-crest-country {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(245, 158, 11, 0.6);
+  padding: 1px 5px;
   border-radius: 6px;
-  background: #0b0e17;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 8px;
+  font-weight: 800;
+  color: #facc15;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.6);
+  text-transform: uppercase;
 }
 
-.card-name-title {
-  font-size: 9px;
-  font-weight: 800;
-  text-align: center;
+.card-seal-power {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 2px 5px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
+  border: 1.2px solid #fca5a5;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+/* Footer Integrato con Targa Metallica e Sigillo Moltiplicatore */
+.card-foot-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+}
+
+.card-name-plate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(10, 15, 29, 0.94);
+  border: 1px solid rgba(245, 158, 11, 0.65);
+  border-radius: 6px;
+  padding: 2px 4px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.8);
+}
+
+.card-title-text {
+  font-size: 8px;
+  font-weight: 900;
+  color: #f8fafc;
+  text-shadow: 0 1px 3px #000;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: #e2e8f0;
+  flex: 1;
+  text-transform: uppercase;
 }
 
-/* --- TAB 2: LA GUGLIA ROGUELIKE (SLAY THE SPIRE) --- */
+.card-seal-mult {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #000;
+  font-size: 8px;
+  font-weight: 900;
+  padding: 1px 4px;
+  border-radius: 4px;
+  border: 0.8px solid #fef08a;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  margin-left: 3px;
+  flex-shrink: 0;
+}
+
+.card-type-sub {
+  font-size: 6.5px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 1px;
+  background: rgba(0,0,0,0.6);
+  border-radius: 3px;
+  padding: 1px 0;
+}
+
+/* Materiali & Finiture Lusso per Nazione */
+.card-item.leather { border: 2px solid #f59e0b; box-shadow: 0 0 16px rgba(245, 158, 11, 0.45), inset 0 0 0 1px #78350f; }
+.card-item.titanium { border: 2px solid #10b981; box-shadow: 0 0 16px rgba(16, 185, 129, 0.45), inset 0 0 0 1px #064e3b; }
+.card-item.neon { border: 2px solid #00f0ff; box-shadow: 0 0 20px rgba(0, 240, 255, 0.6), inset 0 0 0 1px #0369a1; }
+.card-item.papyrus { border: 2px solid #ca8a04; box-shadow: 0 0 16px rgba(202, 138, 4, 0.5), inset 0 0 0 1px #713f12; }
+.card-item.silk { border: 2px solid #ec4899; box-shadow: 0 0 16px rgba(236, 72, 153, 0.5), inset 0 0 0 1px #831843; }
+.card-item.tweed { border: 2px solid #10b981; box-shadow: 0 0 16px rgba(16, 185, 129, 0.45), inset 0 0 0 1px #064e3b; }
+.card-item.tropical { border: 2px solid #facc15; box-shadow: 0 0 16px rgba(250, 204, 21, 0.5), inset 0 0 0 1px #854d0e; }
+.card-item.swiss { border: 2px solid #ef4444; box-shadow: 0 0 16px rgba(239, 68, 68, 0.5), inset 0 0 0 1px #7f1d1d; }
+.card-item.korea { border: 2px solid #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, 0.6), inset 0 0 0 1px #581c87; }
+
+/* ==================== SFONDI & TAVOLI DI GIOCO PER LE 5 SCHERMATE ==================== */
+
+/* TAB 1: ARENA COCKPIT & FIRST CLASS VISTA */
+#tab-arena {
+  background: 
+    radial-gradient(circle at 50% 15%, rgba(56, 189, 248, 0.12) 0%, transparent 60%),
+    radial-gradient(circle at 50% 85%, rgba(245, 158, 11, 0.1) 0%, transparent 60%),
+    linear-gradient(180deg, #050711 0%, #070a16 50%, #020306 100%);
+}
+
+/* TAB 2: IL GIRO DEL MONDO (ROTTE CELESTI & ASTROLABIO) */
 .spire-view {
-  background: radial-gradient(circle at 50% 20%, #1e112a, #090a10 80%);
-  padding: 16px;
+  background: 
+    radial-gradient(circle at 50% 15%, rgba(99, 102, 241, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.15) 0%, transparent 60%),
+    linear-gradient(180deg, #09091d 0%, #05060e 50%, #020307 100%);
+  background-attachment: fixed;
+  position: relative;
+  padding: 16px 14px 80px;
   overflow-y: auto;
+}
+
+.spire-view::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    repeating-radial-gradient(circle at 50% 40%, transparent 0, transparent 40px, rgba(245, 158, 11, 0.03) 41px, transparent 42px),
+    repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(56, 189, 248, 0.03) 50px);
+  pointer-events: none;
 }
 
 .spire-header {
   text-align: center;
   margin-bottom: 16px;
+  position: relative;
+  z-index: 2;
 }
 
 .spire-tree {
@@ -396,26 +519,28 @@ body {
   gap: 16px;
   align-items: center;
   margin-top: 10px;
+  position: relative;
+  z-index: 2;
 }
 
 .spire-node {
-  width: 60px;
-  height: 60px;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
-  background: #151824;
-  border: 2px solid #6366f1;
+  background: radial-gradient(circle at 35% 35%, #1e1b4b, #090a14);
+  border: 2px solid #a855f7;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.8), 0 0 15px rgba(168, 85, 247, 0.4);
 }
 
 .spire-node:hover, .spire-node.available {
   border-color: #facc15;
-  box-shadow: 0 0 16px rgba(250, 204, 21, 0.6);
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.7);
   transform: scale(1.08);
 }
 
@@ -424,11 +549,22 @@ body {
   border-color: #22c55e;
 }
 
-/* --- TAB 3: COLLEZIONE & 3D INSPECTOR --- */
+/* TAB 3: PASSAPORTO & SCRIVANIA CONSOLARE */
 .collection-view {
-  background: #090b12;
-  padding: 14px;
+  background: 
+    radial-gradient(circle at 50% 5%, rgba(245, 158, 11, 0.2) 0%, transparent 55%),
+    linear-gradient(180deg, #1c1008 0%, #120904 40%, #070402 100%);
+  position: relative;
+  padding: 16px 14px 80px;
   overflow-y: auto;
+}
+
+.collection-view::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(245, 158, 11, 0.025) 0, rgba(245, 158, 11, 0.025) 2px, transparent 2px, transparent 16px);
+  pointer-events: none;
 }
 
 .collection-grid {
@@ -436,11 +572,16 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-top: 14px;
+  position: relative;
+  z-index: 2;
 }
 
-/* --- TAB 4: FORGIA PACCHETTI (UNBOXING) --- */
+/* TAB 4: SBUSTAMENTO 3D (VETRINA VIP DUTY FREE) */
 .booster-view {
-  background: radial-gradient(circle at 50% 40%, #1e1035, #060814 80%);
+  background: 
+    radial-gradient(circle at 50% 30%, rgba(254, 240, 138, 0.18) 0%, rgba(245, 158, 11, 0.08) 40%, transparent 70%),
+    radial-gradient(circle at 50% 90%, rgba(0, 240, 255, 0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #180d04 0%, #0d0601 50%, #040201 100%);
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -448,40 +589,171 @@ body {
   overflow: hidden;
 }
 
-.booster-pack-3d {
-  width: 170px;
-  height: 250px;
-  background: linear-gradient(135deg, #4338ca, #6b21a8, #b91c1c);
-  border-radius: 16px;
-  border: 3px solid #fbbf24;
-  box-shadow: 0 0 35px rgba(251, 191, 36, 0.4), 0 15px 25px rgba(0,0,0,0.8);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  padding: 16px;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.booster-pack-3d:hover {
-  transform: translateY(-8px) scale(1.04);
-  box-shadow: 0 0 50px rgba(251, 191, 36, 0.7);
-}
-
-/* --- TAB 5: CODEX 10 REGOLE --- */
+/* TAB 5: CODEX UFFICIALE (STUDIO DELL'ANTIQUARIO & GRANDE ATLANTE) */
 .codex-view {
-  background: #0a0c14;
-  padding: 16px;
+  background: 
+    radial-gradient(circle at 50% 10%, rgba(0, 240, 255, 0.14) 0%, transparent 55%),
+    linear-gradient(180deg, #090e1a 0%, #060912 50%, #020306 100%);
+  position: relative;
+  padding: 16px 14px 80px;
   overflow-y: auto;
 }
 
+.codex-tab-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 6px 0 12px;
+  scrollbar-width: none;
+}
+
+.codex-tab-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.codex-nav-btn {
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #cbd5e1;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.codex-nav-btn.active {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  border-color: #7dd3fc;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(14, 165, 233, 0.6);
+}
+
+.codex-chapter-content {
+  display: none;
+}
+
+.codex-chapter-content.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
 .codex-rule-card {
-  background: #131724;
-  border-left: 4px solid var(--accent-cyan);
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 0 8px 8px 0;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-left: 4px solid #f59e0b;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+
+.codex-simulator-box {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1.5px solid #facc15;
+  border-radius: 14px;
+  padding: 14px;
+  margin: 12px 0;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.8), 0 0 20px rgba(250, 204, 21, 0.25);
+}
+
+/* ==================== 3D CARD FLIPPER & DOSSIER DI LORE SUL RETRO ==================== */
+.card-flipper-container {
+  perspective: 1200px;
+  width: 230px;
+  height: 340px;
+  margin: 0 auto 12px;
+  cursor: pointer;
+}
+
+.card-flipper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 16px;
+}
+
+.card-flipper.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-flipper-face {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.card-flipper-front {
+  z-index: 2;
+  transform: rotateY(0deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 8px;
+  background-size: cover;
+  background-position: center;
+  border: 3px solid #ffd700;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.95);
+}
+
+.card-flipper-front::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15,23,42,0.6) 0%, rgba(15,23,42,0.05) 35%, rgba(10,15,29,0.92) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.card-flipper-front > * {
+  position: relative;
+  z-index: 2;
+}
+
+.card-flipper-back {
+  transform: rotateY(180deg);
+  background: radial-gradient(circle at 50% 10%, #1f1b18 0%, #0d0a08 60%, #050403 100%);
+  border: 2px solid #f59e0b;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.95), 0 12px 30px rgba(0,0,0,0.9);
+  overflow-y: auto;
+}
+
+.card-flipper-back::-webkit-scrollbar {
+  width: 4px;
+}
+.card-flipper-back::-webkit-scrollbar-thumb {
+  background: #f59e0b;
+  border-radius: 4px;
+}
+
+.passport-stamp-box {
+  border: 1.5px dashed #ef4444;
+  border-radius: 8px;
+  padding: 4px 8px;
+  transform: rotate(-3deg);
+  color: #ef4444;
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: inline-block;
+  background: rgba(239, 68, 68, 0.08);
+  margin-bottom: 6px;
 }
 
 /* --- BOTTOM THUMB-BAR (NAVIGAZIONE MOBILE A UNA MANO) --- */
