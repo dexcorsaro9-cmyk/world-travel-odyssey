@@ -944,12 +944,14 @@ body {
   position: absolute;
   inset: 0;
   z-index: 10000;
-  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0c0a20 50%, #03040b 100%);
+  background: 
+    radial-gradient(ellipse 130% 85% at 50% 28%, #171c42 0%, #090e24 45%, #02040b 100%),
+    radial-gradient(ellipse 100% 50% at 50% 100%, rgba(14, 165, 233, 0.22) 0%, rgba(245, 158, 11, 0.12) 40%, transparent 75%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 36px 20px 28px;
+  padding: 34px 20px 26px;
   overflow: hidden;
   transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -963,37 +965,44 @@ body {
 /* Background animated rings / cosmos aura */
 .splash-bg-aura {
   position: absolute;
-  top: 32%;
+  top: 31%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 480px;
-  height: 480px;
+  width: 520px;
+  height: 520px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, rgba(99, 102, 241, 0.12) 40%, transparent 70%);
-  filter: blur(40px);
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(14, 165, 233, 0.18) 35%, rgba(99, 102, 241, 0.08) 60%, transparent 75%);
+  filter: blur(50px);
   pointer-events: none;
-  animation: splash-aura-pulse 4s ease-in-out infinite alternate;
+  animation: splash-aura-pulse 4.5s ease-in-out infinite alternate;
 }
 
 .splash-compass-ring {
   position: absolute;
-  top: 32%;
+  top: 31%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 360px;
-  height: 360px;
+  width: 440px;
+  height: 440px;
   border-radius: 50%;
-  border: 1px dashed rgba(245, 158, 11, 0.25);
+  border: 1.5px dashed rgba(245, 158, 11, 0.35);
   pointer-events: none;
-  animation: spin-slow 60s linear infinite;
+  animation: spin-slow 70s linear infinite;
+  box-shadow: 0 0 30px rgba(245, 158, 11, 0.12);
 }
 
 .splash-compass-ring::after {
   content: '';
   position: absolute;
-  inset: 24px;
+  inset: 32px;
   border-radius: 50%;
-  border: 1px solid rgba(56, 189, 248, 0.15);
+  border: 1px dotted rgba(56, 189, 248, 0.3);
+  animation: spin-reverse 45s linear infinite;
+}
+
+@keyframes spin-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
 }
 
 /* Header flight status tag */
@@ -1011,8 +1020,8 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: rgba(15, 23, 42, 0.82);
+  border: 1px solid rgba(245, 158, 11, 0.45);
   border-radius: 20px;
   padding: 4px 12px;
   font-size: 10px;
@@ -1021,13 +1030,18 @@ body {
   color: #fbbf24;
   text-transform: uppercase;
   backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
 }
 
 .splash-version-tag {
   font-size: 10px;
-  font-weight: 700;
+  font-weight: 800;
   color: #94a3b8;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 3px 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Logo Center Container */
@@ -1039,32 +1053,33 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  max-width: 400px;
-  margin-top: -10px;
+  max-width: 420px;
+  margin-top: -14px;
   animation: splash-logo-enter 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .splash-logo-img {
-  width: 100%;
+  width: 94%;
   max-width: 370px;
   height: auto;
-  filter: drop-shadow(0 18px 40px rgba(245, 158, 11, 0.45)) drop-shadow(0 0 25px rgba(0, 240, 255, 0.3));
-  animation: splash-logo-float 4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 35px rgba(245, 158, 11, 0.55)) drop-shadow(0 0 20px rgba(0, 240, 255, 0.35));
+  animation: splash-logo-float 4.5s ease-in-out infinite alternate;
 }
 
 .splash-subtitle {
-  margin-top: 10px;
-  font-size: 10.5px;
-  font-weight: 800;
-  letter-spacing: 3px;
+  margin-top: 8px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 3.5px;
   text-transform: uppercase;
-  color: #94a3b8;
+  color: #cbd5e1;
   text-align: center;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 15px rgba(245, 158, 11, 0.4);
 }
 
 .splash-subtitle span {
-  color: #f59e0b;
+  color: #fbbf24;
+  font-weight: 900;
 }
 
 /* Boarding Controls & Checklist Box */
