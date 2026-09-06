@@ -1110,12 +1110,20 @@
       </div>
     </div>
 
-    <!-- Modale Scalo Last-Minute (Discover) -->
+    <!-- Modale Scalo Last-Minute (Discover) AAA -->
     <div id="modal-discover" class="modal-overlay" style="display: none;">
-      <div class="modal-content">
-        <h3 style="color: #67e8f9; font-size: 16px; font-weight: 900;">✈️ SCALO LAST-MINUTE</h3>
-        <p style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Scegli 1 destinazione o passaporto da aggiungere all'itinerario:</p>
+      <div class="modal-content discover-modal-content">
+        <div class="discover-top-pill">✦ OPPORTUNITÀ IN VOLO ✦</div>
+        <h3 class="discover-title">✈️ SCALO LAST-MINUTE</h3>
+        <p class="discover-subtitle">Seleziona 1 destinazione da aggiungere subito alla tua mano di gioco:</p>
+        
         <div class="discover-cards-row" id="discover-cards-row"></div>
+
+        <div id="discover-card-details" class="discover-details-box">
+          Tocca una destinazione per visualizzarne gli effetti di viaggio
+        </div>
+
+        <button id="btn-discover-skip" class="discover-skip-btn">Rinuncia allo Scalo</button>
       </div>
     </div>
 
@@ -3300,30 +3308,77 @@ class PixiBoosterEngine {
       }
 
       triggerDiscover() {
-        const choices = [
-          { ...ALL_CARDS.find(c => c.id === 'card_japan_fuji'), cost: 1, name: 'Volo Espresso Tokyo' },
-          { ...ALL_CARDS.find(c => c.id === 'card_france_eiffel'), cost: 1, name: 'Scalo Romantico Parigi' },
-          { ...ALL_CARDS.find(c => c.id === 'card_usa_wallstreet'), cost: 0, name: 'Gold Card Wall St' }
-        ].map((c, i) => ({ ...c, instanceId: `disc_${i}_${Date.now()}` }));
+        const pool = ALL_CARDS.filter(c => c.type === CARD_TYPES.DESTINATION || c.type === CARD_TYPES.EVENT);
+        const shuffled = [...pool].sort(() => 0.5 - Math.random());
+        const candidates = (shuffled.length >= 3 ? shuffled.slice(0, 3) : [
+          ALL_CARDS.find(c => c.id === 'card_japan_fuji'),
+          ALL_CARDS.find(c => c.id === 'card_france_eiffel'),
+          ALL_CARDS.find(c => c.id === 'card_usa_wallstreet')
+        ]);
+
+        const choices = candidates.map((c, i) => ({
+          ...c,
+          cost: Math.max(0, c.cost - 1), // Sconto speciale Last-Minute: -1 Miglia!
+          instanceId: `disc_${i}_${Date.now()}`
+        }));
 
         const modal = document.getElementById('modal-discover');
         const row = document.getElementById('discover-cards-row');
+        const detailsBox = document.getElementById('discover-card-details');
+        const skipBtn = document.getElementById('btn-discover-skip');
+
         row.innerHTML = '';
-        choices.forEach(c => {
-          const el = document.createElement('div');
-          el.className = `card-item ${c.material}`;
-          el.style.width = '105px'; el.style.height = '155px';
-          if (c.image) el.style.backgroundImage = `url('${c.image}')`;
-          el.innerHTML = renderIntegratedCardInner(c);
-          el.onclick = () => {
-            modal.style.display = 'none';
-            this.playerHand.push(c);
-            sound.playStamp();
-            this.combatLog.push(`✨ Scalo Confermato: [${c.name}] aggiunto!`);
-            this.renderArena();
+        if (detailsBox) {
+          detailsBox.innerHTML = `<span>Tocca una destinazione o premi <b>IMBARCA ✈</b> per aggiungerla alla mano.</span>`;
+        }
+
+        const onCardSelect = (c) => {
+          modal.style.display = 'none';
+          this.playerHand.push(c);
+          sound.playStamp();
+          fx.spawnExplosion(window.innerWidth / 2, window.innerHeight / 2, '#38bdf8', 60);
+          this.combatLog.push(`✨ Scalo Confermato: [${c.name}] aggiunto alla mano!`);
+          this.renderArena();
+        };
+
+        choices.forEach((c) => {
+          const col = document.createElement('div');
+          col.className = 'discover-card-col';
+
+          const cardEl = document.createElement('div');
+          cardEl.className = `card-item ${c.material || 'leather'}`;
+          if (c.image) cardEl.style.backgroundImage = `url('${c.image}')`;
+          cardEl.innerHTML = renderIntegratedCardInner(c);
+
+          const btn = document.createElement('button');
+          btn.className = 'discover-pick-btn';
+          btn.textContent = 'IMBARCA ✈';
+
+          const updateDetails = () => {
+            if (detailsBox) {
+              detailsBox.innerHTML = `<b style="color:#facc15;">${c.name}</b> (${c.country}) — <span style="color:#38bdf8;">✈ ${c.cost} M</span>: ${c.text || 'Nessun effetto aggiuntivo.'}`;
+            }
           };
-          row.appendChild(el);
+
+          col.onmouseenter = updateDetails;
+          col.ontouchstart = updateDetails;
+          col.onclick = (e) => {
+            e.stopPropagation();
+            onCardSelect(c);
+          };
+
+          col.appendChild(cardEl);
+          col.appendChild(btn);
+          row.appendChild(col);
         });
+
+        if (skipBtn) {
+          skipBtn.onclick = () => {
+            modal.style.display = 'none';
+            sound.playChime();
+          };
+        }
+
         modal.style.display = 'flex';
       }
 
@@ -4416,7 +4471,7 @@ class PixiBoosterEngine {
     // Registrazione Service Worker per Installazione PWA & Gioco Offline
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js?v=2.6.0')
+        navigator.serviceWorker.register('./sw.js?v=2.6.1')
           .then((reg) => {
             console.log('[WTO PWA] Service Worker attivo! Scope:', reg.scope);
             try { reg.update(); } catch(e) {}
