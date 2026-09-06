@@ -86,15 +86,15 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: calc(100% - 60px); /* Esclude la bottom bar */
-  display: none;
+  height: calc(100% - 60px - env(safe-area-inset-bottom, 0px));
+  display: none !important;
   flex-direction: column;
   overflow: hidden;
   z-index: 5;
 }
 
 .tab-view.active {
-  display: flex;
+  display: flex !important;
 }
 
 /* --- TAB 1: ARENA 3D --- */
@@ -441,12 +441,10 @@ body {
 /* --- TAB 4: FORGIA PACCHETTI (UNBOXING) --- */
 .booster-view {
   background: radial-gradient(circle at 50% 40%, #1e1035, #060814 80%);
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 0;
-  position: relative;
   overflow: hidden;
 }
 
@@ -492,13 +490,15 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 60px;
+  height: calc(60px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   background: linear-gradient(0deg, #050608, #0d0f16);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  z-index: 100;
+  z-index: 9999 !important;
+  pointer-events: auto !important;
 }
 
 .nav-tab-btn {
@@ -514,6 +514,14 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
   width: 20%;
+  pointer-events: auto !important;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-tab-btn * {
+  pointer-events: none;
 }
 
 .nav-tab-btn.active {

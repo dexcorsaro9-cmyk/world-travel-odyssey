@@ -338,7 +338,7 @@
     </section>
 
     <!-- ==================== TAB 4: SBUSTAMENTO 3D AIRPORT DUTY FREE ==================== -->
-    <section id="tab-booster" class="tab-view booster-view" style="position: relative;">
+    <section id="tab-booster" class="tab-view booster-view">
       
       <!-- Badge Superiore Duty Free -->
       <div class="booster-top-badge">
@@ -844,9 +844,17 @@
 
         this.animate();
       }
+      onResize() {
+        if (!this.container || !this.renderer || !this.camera) return;
+        const w = this.container.clientWidth || 390;
+        const h = this.container.clientHeight || 450;
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
+        this.renderer.setSize(w, h);
+      }
       animate() {
         requestAnimationFrame(() => this.animate());
-        if (!this.clock) return;
+        if (!this.clock || !this.renderer || !this.scene || !this.camera) return;
         const time = this.clock.getElapsedTime();
         this.terminals.forEach((term, i) => {
           term.group.position.y = Math.sin(time * 1.5 + i * 2) * 0.12;
@@ -879,9 +887,15 @@
         this.isTearing = false;
         this.inspectingItem = null;
         this.clock = null;
-        this.raycaster = new THREE.Raycaster();
-        this.mouse = new THREE.Vector2();
-        this.targetTilt = new THREE.Vector2(0, 0);
+        if (typeof THREE !== 'undefined') {
+          this.raycaster = new THREE.Raycaster();
+          this.mouse = new THREE.Vector2();
+          this.targetTilt = new THREE.Vector2(0, 0);
+        } else {
+          this.raycaster = null;
+          this.mouse = { x: 0, y: 0 };
+          this.targetTilt = { x: 0, y: 0 };
+        }
         this.isDragging = false;
         this.lastPointer = { x: 0, y: 0 };
         this.init();
@@ -2050,22 +2064,49 @@
         }
       }
 
+      switchTab(target) {
+        if (!target) return;
+        const targetEl = document.getElementById(target);
+        if (!targetEl) return;
+
+        try { sound.playStamp(); } catch (e) {}
+
+        document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+          if (btn.getAttribute('data-tab') === target) {
+            btn.classList.add('active');
+          } else {
+            btn.classList.remove('active');
+          }
+        });
+
+        document.querySelectorAll('.tab-view').forEach(view => {
+          if (view.id === target) {
+            view.classList.add('active');
+            view.style.display = 'flex';
+          } else {
+            view.classList.remove('active');
+            view.style.display = 'none';
+          }
+        });
+
+        try {
+          if (target === 'tab-arena' && threeArena && typeof threeArena.onResize === 'function') {
+            threeArena.onResize();
+          }
+          if (target === 'tab-booster' && threeBooster && typeof threeBooster.onResize === 'function') {
+            threeBooster.onResize();
+          }
+        } catch (e) {
+          console.warn('[WTO] 3D resize error on tab switch:', e);
+        }
+      }
+
       setupNavigation() {
         document.querySelectorAll('.nav-tab-btn').forEach(btn => {
-          btn.addEventListener('click', () => {
-            const target = btn.getAttribute('data-tab');
-            document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-view').forEach(t => t.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById(target).classList.add('active');
-
-            // Resize viewport 3D quando si entra nei rispettivi tab
-            if (target === 'tab-arena' && threeArena) {
-              threeArena.renderer.setSize(threeArena.container.clientWidth, threeArena.container.clientHeight);
-            }
-            if (target === 'tab-booster' && threeBooster) {
-              threeBooster.onResize();
-            }
+          const target = btn.getAttribute('data-tab');
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.switchTab(target);
           });
         });
       }
@@ -2496,13 +2537,50 @@
       }
     }
 
-    // Inizializzazione Globale
-    window.addEventListener('DOMContentLoaded', () => {
-      fx = new ParticleEngine();
-      threeArena = new ThreeWorldScene(document.getElementById('three-canvas-container'));
-      threeBooster = new ThreeBoosterScene(document.getElementById('booster-3d-viewport'));
-      new WorldTravelHub();
-    });
+    // Inizializzazione Globale Ultra-Resiliente (Desktop, Mobile PWA & Offline)
+    function initApp() {
+      if (window.__wto_initialized) return;
+      window.__wto_initialized = true;
+
+      try {
+        if (typeof ParticleEngine !== 'undefined') {
+          try { fx = new ParticleEngine(); } catch (err) { console.warn('[WTO] ParticleEngine fallback:', err); }
+        }
+      } catch (e) {}
+
+      try {
+        if (typeof ThreeWorldScene !== 'undefined' && typeof THREE !== 'undefined') {
+          try {
+            const arenaContainer = document.getElementById('three-canvas-container');
+            if (arenaContainer) threeArena = new ThreeWorldScene(arenaContainer);
+          } catch (err) { console.warn('[WTO] ThreeWorldScene fallback:', err); }
+        }
+      } catch (e) {}
+
+      try {
+        if (typeof ThreeBoosterScene !== 'undefined' && typeof THREE !== 'undefined') {
+          try {
+            const boosterContainer = document.getElementById('booster-3d-viewport');
+            if (boosterContainer) threeBooster = new ThreeBoosterScene(boosterContainer);
+          } catch (err) { console.warn('[WTO] ThreeBoosterScene fallback:', err); }
+        }
+      } catch (e) {}
+
+      // Istanziazione del Controller di Gioco e Navigazione (Garantita)
+      try {
+        window.hub = new WorldTravelHub();
+        console.log('[WTO] WorldTravelHub avviato con successo!');
+      } catch (err) {
+        console.error('[WTO] Errore critico avvio WorldTravelHub:', err);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+      window.addEventListener('load', initApp);
+    } else {
+      initApp();
+    }
 
     // Registrazione Service Worker per Installazione PWA & Gioco Offline
     if ('serviceWorker' in navigator) {
