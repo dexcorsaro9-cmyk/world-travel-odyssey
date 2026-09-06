@@ -1,15 +1,16 @@
 // World Travel Odyssey (WTO) - Service Worker PWA
-const CACHE_NAME = 'wto-cache-v17';
+const CACHE_NAME = 'wto-cache-v18';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './styles.css',
   './manifest.json',
+  './apple-touch-icon.png',
+  './apple-touch-icon-180.png',
+  './apple-touch-icon-1024.png',
   './icon-192.png',
   './icon-512.png',
-  './icon.svg',
   './assets/logo.png',
-  './assets/logo.svg',
   './assets/characters/flight_attendant.jpg',
   './assets/pixi.min.js',
   './assets/boosters/pack_economy.jpg',
