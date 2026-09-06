@@ -81,7 +81,7 @@ export const ALL_CARDS = [
     material: MATERIALS.ACRYLIC_NEON, materialDesc: 'Acrilico High-Tech Neon & Carta Washi Incastonata', rarity: RARITY.EPIC, airport: 'HND - Tokyo',
     image: 'assets/cards/japan.jpg',
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#1e1b4b" stroke="#ec4899" stroke-width="2"/><polygon points="50,20 20,80 80,80" fill="#312e81"/><polygon points="50,20 40,40 60,40" fill="#ffffff"/></svg>`,
-    text: 'Hype Balatro: Moltiplica x1.8 il punteggio finale della destinazione.', soundType: 'tokyo'
+    text: 'Hype Turistico: Moltiplica x1.8 il punteggio finale della destinazione.', soundType: 'tokyo'
   },
   {
     id: 'card_japan_shinkansen', country: 'Giappone', name: 'Treno Maglev Shinkansen', type: CARD_TYPES.EVENT, cost: 2, power: 4, mult: 1.4,
@@ -227,7 +227,7 @@ export const ALL_CARDS = [
     artSvg: `<svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="42" fill="#030712" stroke="#ec4899" stroke-width="2"/><polygon points="50,15 65,50 50,85 35,50" fill="#a855f7"/></svg>`,
     levelUpReq: 'Raggiungi 200 Hype virale nei terminal asiatici', isLeveledUp: false, leveledPower: 12, leveledMult: 5.0,
     text: 'Trend Globale: Guadagna +1 Mult ogni volta che una carta viene giocata.',
-    levelUpText: 'MEGA HIT BILLBOARD: Moltiplicatore x5.0 esponenziale in stile Balatro!',
+    levelUpText: 'MEGA HIT BILLBOARD: Moltiplicatore x5.0 esponenziale a catena!',
     voiceLine: 'Siete pronti a cantare con me in tutto il mondo?', soundType: 'tokyo'
   },
   {

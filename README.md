@@ -8,7 +8,7 @@
 
 **World Travel Odyssey** è il primo videogioco di carte collezionabili mobile al mondo ambientato nelle capitali e meraviglie della Terra, costruito su una tecnologia ibrida **3D WebGL (Three.js)** con design ergonomico verticale per una sola mano (Portrait 9:16).
 
-Fonde ed eleva le migliori meccaniche dei 10 capolavori del genere (*Marvel Snap, Balatro, Legends of Runeterra, Slay the Spire, Inscryption, Hearthstone, Yu-Gi-Oh!, Gwent, Magic: The Gathering, Android: Netrunner*), introducendo il principio del **"Material & Cultural Card Design"**: ogni paese possiede il proprio materiale fisico, identità visiva, audio procedurale e abilità storiche.
+Fonde ed eleva le migliori meccaniche dei capolavori del genere (*Marvel Snap, Legends of Runeterra, Slay the Spire, Inscryption, Hearthstone, Yu-Gi-Oh!, Gwent, Magic: The Gathering, Android: Netrunner*), introducendo il principio del **"Material & Cultural Card Design"**: ogni paese possiede il proprio materiale fisico, identità visiva, audio procedurale e abilità storiche.
 
 ---
 

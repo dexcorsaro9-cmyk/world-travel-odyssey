@@ -135,7 +135,7 @@ class AetherClashApp {
     }
   }
 
-  // Render dei 3 Santuari (Location Marvel Snap + Lane Balatro)
+  // Render dei 3 Santuari Aerei
   renderSanctuaries(engine) {
     const container = document.getElementById('sanctuaries-container');
     container.innerHTML = '';
@@ -173,7 +173,7 @@ class AetherClashApp {
           `).join('')}
         </div>
 
-        <!-- Clash Score (Balatro Style) -->
+        <!-- Clash Score -->
         <div class="sanctuary-clash-bar">
           <span class="score-ai">${sanc.aiScore}</span>
           <span class="${laneBadgeClass}">${laneText}</span>

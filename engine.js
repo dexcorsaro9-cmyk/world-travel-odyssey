@@ -122,7 +122,7 @@ export class GameEngine {
     return actions[Math.floor(Math.random() * actions.length)];
   }
 
-  // Attivazione Overcharge / Snap (Marvel Snap + Balatro)
+  // Attivazione Overcharge / First Class Snap
   togglePlayerOvercharge() {
     if (this.playerOvercharged || this.phase !== 'PLANNING') return;
     this.playerOvercharged = true;
@@ -208,7 +208,7 @@ export class GameEngine {
   triggerDiscoverModal() {
     const choices = [
       { ...ALL_CARDS.find(c => c.id === 'creat_phoenix'), cost: 1, name: 'Fenice Rivelata', edition: EDITIONS.ASTRAL },
-      { ...ALL_CARDS.find(c => c.id === 'spell_fury'), cost: 0, name: 'Iper-Balatro', edition: EDITIONS.POLYCHROME },
+      { ...ALL_CARDS.find(c => c.id === 'spell_fury'), cost: 0, name: 'Iper-Prestigio', edition: EDITIONS.POLYCHROME },
       { ...ALL_CARDS.find(c => c.id === 'glyph_mirror'), cost: 0, name: 'Glifo d\'Ombra Assoluto', edition: EDITIONS.FOIL }
     ].map((c, i) => ({ ...c, instanceId: `discover_${i}_${Date.now()}` }));
 
@@ -240,7 +240,7 @@ export class GameEngine {
     }
   }
 
-  // Calcolo punteggio dinamico in tempo reale con Moltiplicatori Balatro
+  // Calcolo punteggio dinamico in tempo reale con Moltiplicatori Hype Engine
   calculateLiveScores() {
     this.sanctuaries.forEach(sanc => {
       // Calcolo Giocatore
@@ -279,7 +279,7 @@ export class GameEngine {
     // L'IA pianifica e gioca le sue carte
     this.executeAiTurn();
 
-    // Risoluzione Trappole (Yu-Gi-Oh) & Moltiplicatori (Balatro)
+    // Risoluzione Trappole Doganali & Moltiplicatori Hype
     setTimeout(() => {
       this.resolveTrapsAndCombat();
     }, 800);

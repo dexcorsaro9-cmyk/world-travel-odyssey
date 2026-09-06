@@ -137,7 +137,7 @@ export class ThreeBattlefield {
       edgeMesh.position.y = 0.22;
       group.add(edgeMesh);
 
-      // Cristallo di Potenza Fluttuante al Centro (Balatro Score Core)
+      // Cristallo di Potenza Fluttuante al Centro (Score Core)
       const crystalGeo = new THREE.OctahedronGeometry(0.35, 0);
       const crystalMat = new THREE.MeshStandardMaterial({
         color: altarColors[i],
@@ -286,7 +286,7 @@ export class ThreeBattlefield {
     return group;
   }
 
-  // Risoluzione Balatro in 3D: La carta si solleva e pulsa
+  // Risoluzione Punteggio in 3D: La carta si solleva e pulsa
   animateCardScoring(instanceId, multVal) {
     const group = this.cardMeshes.get(instanceId);
     if (!group) return;
@@ -331,7 +331,7 @@ export class ThreeBattlefield {
       this.starfield.rotation.y = time * 0.03;
     }
 
-    // Fluttuazione dolce altari 3D e rotazione cristalli Balatro
+    // Fluttuazione dolce altari 3D e rotazione cristalli
     this.sanctuaryPlinths.forEach((plinth, i) => {
       plinth.group.position.y = Math.sin(time * 1.5 + i * 2.1) * 0.12;
       if (plinth.crystal) {

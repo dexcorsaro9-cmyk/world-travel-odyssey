@@ -89,7 +89,7 @@ class ParticleEngine {
     }
   }
 
-  // Numeri moltiplicatori stile Balatro (+15, x2.5!, CRITICO)
+  // Numeri moltiplicatori (+15, x2.5!, CRITICO)
   spawnFloatingText(x, y, text, color = '#facc15', fontSize = 24) {
     this.floatingTexts.push({
       x,
@@ -132,7 +132,7 @@ class ParticleEngine {
       this.ctx.restore();
     }
 
-    // Render Floating Numbers (Balatro Style)
+    // Render Floating Numbers
     for (let i = this.floatingTexts.length - 1; i >= 0; i--) {
       const ft = this.floatingTexts[i];
       ft.y += ft.vy;
