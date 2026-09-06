@@ -1,5 +1,5 @@
 // World Travel Odyssey (WTO) - Service Worker PWA
-const CACHE_NAME = 'wto-cache-v12';
+const CACHE_NAME = 'wto-cache-v14';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -65,26 +65,27 @@ const ASSETS_TO_CACHE = [
   './assets/cards/usa.jpg',
 ];
 
-// Install Event: Cache Core Assets
+// Install Event: Force immediate activation
 self.addEventListener('install', (e) => {
+  self.skipWaiting();
   e.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('[WTO Service Worker] Caching core assets...');
+      console.log('[WTO Service Worker] Caching core assets v14...');
       return cache.addAll(ASSETS_TO_CACHE).catch((err) => {
-        console.warn('[WTO Service Worker] Pre-cache non-fatal error:', err);
+        console.warn('[WTO Service Worker] Pre-cache non-fatal warning:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activate Event: Clear Old Caches
+// Activate Event: Clear Old Caches and Claim Clients Immediately
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
-            console.log('[WTO Service Worker] Clearing old cache:', key);
+            console.log('[WTO Service Worker] Purging legacy cache:', key);
             return caches.delete(key);
           }
         })
@@ -93,40 +94,52 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Fetch Event: Cache-First with Network Fallback
+// Fetch Event: Network-First for HTML/CSS/Backgrounds, Stale-While-Revalidate for other assets
 self.addEventListener('fetch', (e) => {
-  // Solo richieste GET
   if (e.request.method !== 'GET') return;
 
+  const url = e.request.url;
+  const isCoreDocOrStyle = e.request.destination === 'document' || 
+                           e.request.destination === 'style' || 
+                           url.includes('styles.css') || 
+                           url.includes('index.html') ||
+                           url.includes('assets/backgrounds/');
+
+  if (isCoreDocOrStyle) {
+    // Network-First: Always try network to get the freshest visuals immediately
+    e.respondWith(
+      fetch(e.request).then((networkRes) => {
+        if (networkRes && networkRes.status === 200) {
+          const clone = networkRes.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(e.request, clone));
+        }
+        return networkRes;
+      }).catch(() => {
+        return caches.match(e.request).then(cached => cached || (e.request.destination === 'document' ? caches.match('./index.html') : null));
+      })
+    );
+    return;
+  }
+
+  // Cache-First with Background Update for other static assets
   e.respondWith(
     caches.match(e.request).then((cachedResponse) => {
       if (cachedResponse) {
-        // Fetch in background per aggiornare la cache
         fetch(e.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(e.request, networkResponse.clone());
-            });
+            caches.open(CACHE_NAME).then((cache) => cache.put(e.request, networkResponse.clone()));
           }
         }).catch(() => {});
         return cachedResponse;
       }
 
-      // Altrimenti recupera da rete e metti in cache
       return fetch(e.request).then((response) => {
         if (!response || response.status !== 200 || response.type === 'opaque') {
           return response;
         }
         const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(e.request, responseToCache);
-        });
+        caches.open(CACHE_NAME).then((cache) => cache.put(e.request, responseToCache));
         return response;
-      }).catch(() => {
-        // Se offline e la richiesta riguarda la pagina principale
-        if (e.request.destination === 'document') {
-          return caches.match('./index.html');
-        }
       });
     })
   );

@@ -15,7 +15,7 @@
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="apple-touch-icon" href="icon-192.png">
 
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2.5.1">
   <script src="assets/pixi.min.js"></script>
   <script>
     if (typeof PIXI === 'undefined') {
@@ -1268,7 +1268,10 @@
             <input type="checkbox" id="setting-haptics-toggle" checked style="width:18px; height:18px; accent-color:#f59e0b;">
           </div>
 
-          <div style="border-top:1px solid #334155; padding-top:10px; margin-top:4px;">
+          <div style="border-top:1px solid #334155; padding-top:10px; margin-top:4px; display:flex; flex-direction:column; gap:8px;">
+            <button id="btn-force-refresh-cache" style="width:100%; background:linear-gradient(135deg, #0284c7, #0ea5e9); border:none; color:#fff; font-size:11px; font-weight:800; padding:9px; border-radius:8px; cursor:pointer; box-shadow:0 0 10px rgba(14,165,233,0.5);">
+              🔄 Sincronizza & Ricarica Sfondi 8K
+            </button>
             <button id="btn-reset-data" style="width:100%; background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#fca5a5; font-size:10px; font-weight:800; padding:8px; border-radius:8px; cursor:pointer;">
               ⚠️ Ripristina Dati di Gioco
             </button>
@@ -4092,6 +4095,27 @@ class PixiBoosterEngine {
           };
         }
 
+        const btnForceRefresh = document.getElementById('btn-force-refresh-cache');
+        if (btnForceRefresh) {
+          btnForceRefresh.onclick = async () => {
+            btnForceRefresh.textContent = '⏳ Aggiornamento...';
+            btnForceRefresh.disabled = true;
+            try {
+              if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (const r of regs) await r.unregister();
+              }
+              if ('caches' in window) {
+                const keys = await caches.keys();
+                for (const k of keys) await caches.delete(k);
+              }
+            } catch (e) {
+              console.warn('[WTO] Error clearing cache:', e);
+            }
+            window.location.reload();
+          };
+        }
+
         if (btnReset) {
           btnReset.onclick = () => {
             if (confirm('ATTENZIONE: Vuoi ripristinare tutti i salvataggi, progressi e mazzi personalizzati?')) {
@@ -4243,8 +4267,21 @@ class PixiBoosterEngine {
     // Registrazione Service Worker per Installazione PWA & Gioco Offline
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('[WTO PWA] Service Worker attivo! Scope:', reg.scope))
+        navigator.serviceWorker.register('./sw.js?v=2.5.1')
+          .then((reg) => {
+            console.log('[WTO PWA] Service Worker attivo! Scope:', reg.scope);
+            try { reg.update(); } catch(e) {}
+            reg.addEventListener('updatefound', () => {
+              const newWorker = reg.installing;
+              if (newWorker) {
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    console.log('[WTO PWA] Nuovi sfondi e asset AAA disponibili! Pronto.');
+                  }
+                });
+              }
+            });
+          })
           .catch((err) => console.log('[WTO PWA] Registrazione Service Worker facoltativa:', err));
       });
     }

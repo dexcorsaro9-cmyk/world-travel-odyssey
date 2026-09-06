@@ -505,25 +505,26 @@ body {
 .card-item.swiss { border: 2px solid #ef4444; box-shadow: 0 0 16px rgba(239, 68, 68, 0.5), inset 0 0 0 1px #7f1d1d; }
 .card-item.korea { border: 2px solid #a855f7; box-shadow: 0 0 20px rgba(168, 85, 247, 0.6), inset 0 0 0 1px #581c87; }
 
-/* ==================== SFONDI & TAVOLI DI GIOCO PER LE 5 SCHERMATE ==================== */
+/* ==================== SFONDI & TAVOLI DI GIOCO PER LE 5 SCHERMATE (AAA 8K ULTRA-VIBRANT) ==================== */
 
 /* TAB 1: ARENA COCKPIT & FIRST CLASS VISTA */
 #tab-arena {
   background: 
-    linear-gradient(180deg, rgba(7, 10, 22, 0.45) 0%, rgba(3, 5, 12, 0.6) 50%, rgba(2, 3, 6, 0.82) 100%),
-    url('assets/backgrounds/bg_arena.jpg') no-repeat center center / cover;
+    radial-gradient(ellipse at 50% 25%, rgba(0, 240, 255, 0.08) 0%, transparent 65%),
+    linear-gradient(180deg, rgba(3, 6, 16, 0.12) 0%, rgba(3, 6, 16, 0.22) 45%, rgba(3, 6, 16, 0.52) 100%),
+    url('assets/backgrounds/bg_arena.jpg') no-repeat center top / cover;
   position: relative;
 }
 
 /* TAB 2: IL GIRO DEL MONDO (ROTTE CELESTI & ASTROLABIO) */
 .spire-view {
   background: 
-    linear-gradient(180deg, rgba(9, 9, 29, 0.55) 0%, rgba(5, 6, 14, 0.68) 50%, rgba(2, 3, 7, 0.88) 100%),
-    url('assets/backgrounds/bg_spire.jpg') no-repeat center center / cover;
-  background-attachment: fixed;
+    linear-gradient(180deg, rgba(9, 9, 29, 0.25) 0%, rgba(5, 6, 14, 0.38) 45%, rgba(2, 3, 7, 0.65) 100%),
+    url('assets/backgrounds/bg_spire.jpg') no-repeat center top / cover;
   position: relative;
   padding: 16px 14px 80px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .spire-view::before {
@@ -583,12 +584,12 @@ body {
 /* TAB 3: PASSAPORTO & SCRIVANIA CONSOLARE */
 .collection-view {
   background: 
-    linear-gradient(180deg, rgba(28, 16, 8, 0.5) 0%, rgba(18, 9, 4, 0.68) 40%, rgba(7, 4, 2, 0.88) 100%),
-    url('assets/backgrounds/bg_deck.jpg') no-repeat center center / cover;
-  background-attachment: fixed;
+    linear-gradient(180deg, rgba(20, 12, 6, 0.25) 0%, rgba(12, 7, 3, 0.38) 45%, rgba(6, 3, 2, 0.65) 100%),
+    url('assets/backgrounds/bg_deck.jpg') no-repeat center top / cover;
   position: relative;
   padding: 16px 14px 80px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .collection-view::before {
@@ -611,7 +612,7 @@ body {
 /* TAB 4: SBUSTAMENTO 2.5D (VETRINA VIP DUTY FREE) */
 .booster-view {
   background: 
-    radial-gradient(circle at 50% 30%, rgba(254, 240, 138, 0.15) 0%, rgba(0, 0, 0, 0.6) 60%),
+    radial-gradient(circle at 50% 30%, rgba(254, 240, 138, 0.15) 0%, rgba(0, 0, 0, 0.45) 70%),
     url('assets/backgrounds/bg_dutyfree.jpg') no-repeat center center / cover;
   flex-direction: column;
   align-items: center;
@@ -624,12 +625,12 @@ body {
 /* TAB 5: CODEX UFFICIALE (STUDIO DELL'ANTIQUARIO & GRANDE ATLANTE) */
 .codex-view {
   background: 
-    linear-gradient(180deg, rgba(9, 14, 26, 0.55) 0%, rgba(6, 9, 18, 0.7) 50%, rgba(2, 3, 6, 0.9) 100%),
-    url('assets/backgrounds/bg_codex.jpg') no-repeat center center / cover;
-  background-attachment: fixed;
+    linear-gradient(180deg, rgba(9, 14, 26, 0.25) 0%, rgba(6, 9, 18, 0.38) 45%, rgba(2, 3, 6, 0.65) 100%),
+    url('assets/backgrounds/bg_codex.jpg') no-repeat center top / cover;
   position: relative;
   padding: 16px 14px 80px;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .codex-tab-nav {
